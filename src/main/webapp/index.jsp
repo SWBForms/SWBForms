@@ -16,11 +16,21 @@
         <script type="text/javascript">
             eng.initPlatform([]);
         </script>        
-        <pre>
 <%
     SWBScriptEngine eng=DataMgr.initPlatform(session);
-    DataObject user=eng.getUser();    
+    DataObject user=eng.getUser(); 
+    if(user!=null)
+    {
+%>
+        <h2>User</h2>
+        <div>User: <%=user.getString("fullname")%></div>
+        <div>Email: <%=user.getString("email")%> <div>
+<%
+    }
 %>        
-        </pre>
+        <h2>Paths</h2>
+        <div><a href="/login">/login</a></div>
+        <div><a href="/register">/register</a></div>
+        <div><a href="/demo">/demo</a></div>
     </body>
 </html>

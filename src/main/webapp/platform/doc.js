@@ -15,7 +15,7 @@
 
 
 //Tipos de propiedades o Fields
-type: string, int, date, float, double, long            //primitivos
+type: string, int, date, float, double, long, text            //primitivos
 stype: grid, gridSelect, select, time, file             //extendidos
 
 //Tipos de links, objetos vinculados a formas
