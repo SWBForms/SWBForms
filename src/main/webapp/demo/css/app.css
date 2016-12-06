@@ -1,0 +1,7 @@
+body {
+  padding-top: 50px;
+}
+
+.smartclient-container .listGrid {
+  z-index: 0 !important;
+}

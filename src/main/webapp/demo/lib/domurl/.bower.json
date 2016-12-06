@@ -1,0 +1,27 @@
+{
+  "name": "domurl",
+  "version": "2.1.7",
+  "license": "MIT",
+  "main": "url.min.js",
+  "ignore": [
+    ".project",
+    "test",
+    "bower.json",
+    "package.json",
+    "README.md",
+    ".idea",
+    ".gitignore",
+    ".npmignore"
+  ],
+  "homepage": "https://github.com/Mikhus/domurl",
+  "_release": "2.1.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.1.7",
+    "commit": "d11b98e663599e188c23eb5c9290224d574af607"
+  },
+  "_source": "https://github.com/Mikhus/domurl.git",
+  "_target": "^2.1.7",
+  "_originalSource": "domurl",
+  "_direct": true
+}
