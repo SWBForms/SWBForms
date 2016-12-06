@@ -15,12 +15,12 @@
     }
 %><%
     String dir = config.getServletContext().getRealPath("/") + "/" + request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/";
-    System.out.println(dir);
+    //System.out.println(dir);
     
     String upload = request.getParameter("up");         
     if(upload!=null)
     {
-        System.out.println(upload);
+        //System.out.println(upload);
 
         byte code[]=readInputStream(request.getInputStream());
         

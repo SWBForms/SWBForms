@@ -27,7 +27,7 @@
                 FileItemIterator iter = upload.getItemIterator(req);
                 while (iter.hasNext()) {
                     FileItemStream item = iter.next();
-                    System.out.println(item.getContentType()+":"+item.getFieldName()+":"+item.getName()+":"+item.isFormField());
+                    //System.out.println(item.getContentType()+":"+item.getFieldName()+":"+item.getName()+":"+item.isFormField());
                     
                     InputStream input = item.openStream();
                     
@@ -35,7 +35,7 @@
                     if (item.isFormField()) {
                         String fileName = item.getFieldName();
                         String value = Streams.asString(input);
-                        System.out.println(fileName+":"+value);
+                        //System.out.println(fileName+":"+value);
                         
                         if ("name".equals(fileName)) {
                             this.name = value;
@@ -48,7 +48,7 @@
                         } else if ("time".equals(fileName)) {
                             this.time = value;
                         } else if ("file".equals(fileName)) {
-                            System.out.println("file:"+value);
+                            //System.out.println("file:"+value);
                         }
                     } // Handle a multi-part MIME encoded file.
                     else {
@@ -63,7 +63,7 @@
                         if(i>-1)fname=fname.substring(0,i);
                         
                         File dst = new File(dstFile.getPath() + "/" + fname);
-                        System.out.println("dst:"+dst);
+                        //System.out.println("dst:"+dst);
 
                         saveUploadFile(input, dst);
                     }
@@ -78,9 +78,9 @@
         }
 
         if (this.chunk == this.chunks - 1) {
-            System.out.println("User:" + this.user);
-            System.out.println("name:" + this.name);
-            System.out.println("Time:" + this.time);
+            //System.out.println("User:" + this.user);
+            //System.out.println("name:" + this.name);
+            //System.out.println("Time:" + this.time);
         }
 
         resp.setContentType(JSON);

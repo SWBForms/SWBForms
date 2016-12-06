@@ -1,7 +1,7 @@
 <%@page import="org.semanticwb.datamanager.*"%><%
     String email=request.getParameter("email");
     String password=request.getParameter("password");
-    System.out.println(email+" "+password);
+    //System.out.println(email+" "+password);
     if(email!=null && password!=null)
     {
         SWBScriptEngine engine=DataMgr.initPlatform(session);
@@ -16,7 +16,7 @@
  
         DataList rdata=ret.getDataObject("response").getDataList("data");
         
-        System.out.println("ret"+ret);
+        //System.out.println("ret"+ret);
         if(!rdata.isEmpty())
         {
             session.setAttribute("_USER_", rdata.get(0));
