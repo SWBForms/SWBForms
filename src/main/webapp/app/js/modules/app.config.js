@@ -156,7 +156,11 @@
             link:"#"
           }
         ]
-      }
+      },
+      {
+        label: "Bitácora",
+        link: '#'
+      },
     ];
 
     var dashboardMenuItems = [
