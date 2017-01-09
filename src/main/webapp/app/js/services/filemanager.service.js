@@ -7,8 +7,8 @@
 
   FileManager.$inject = ['$http'];
   function FileManager($http) {
-    var rootPath = "/app/js/datasources",
-        gatewayPath = "/swbforms/jsp/fileManager.jsp",
+    let rootPath = "/app/js/datasources",
+        gatewayPath = "/platform/jsp/fileManager.jsp",
         service = {};
 
     service.setConfig = setConfig;
@@ -21,7 +21,7 @@
 
     function setConfig(conf) {
       rootPath = conf.rootPath || "/app/js/datasources";
-      gatewayPath = conf.gatewayPath || "/swbforms/jsp/fileManager.jsp";
+      gatewayPath = conf.gatewayPath || "/platform/jsp/fileManager.jsp";
     };
 
     function getFile(filename) {
@@ -36,11 +36,23 @@
 
     function saveFile(filename, filecontent) {
       if (filename === undefined) return;
-      var theUrl = gatewayPath + "?file=" + filename;
-      var request = $http({
+
+      let fContent = filecontent,
+          theUrl = gatewayPath + "?file=" + filename;
+
+      //Remove last newline because codemirror adds one at the end of the text
+      if (fContent.endsWith("\n") && fContent.lastIndexOf("\n") > 0)
+        fContent = fContent.substring(0, fContent.lastIndexOf("\n"));
+
+      fContent = fContent.replace(/\n/g, "\\n");
+
+      let request = $http({
         url: theUrl,
         method: "POST",
-        data: filecontent
+        headers: {
+          "Content-Type": "text/plain"
+        },
+        data: fContent
       });
 
       return request;
@@ -48,10 +60,10 @@
 
     function initFile(filename, override) {
       if (filename === undefined) return;
-      var ow = override || false,
+      let ow = override || false,
           theUrl = gatewayPath + "?file=" + filename + "&override=" + ow;
 
-      var request = $http({
+      let request = $http({
         url: theUrl,
         method: "PUT"
       });
@@ -60,11 +72,11 @@
     };
 
     function getFiles() {
-      var theUrl = gatewayPath;
-      var request = $http({
-        url: theUrl,
-        method: "GET"
-      });
+      let theUrl = gatewayPath,
+          request = $http({
+            url: theUrl,
+            method: "GET"
+          });
 
       return request;
     };

@@ -11,7 +11,7 @@
 
       $FileManager.getFiles()
         .then(function (res) {
-
+          $scope.dataSources = res.data;
         });
     };
 

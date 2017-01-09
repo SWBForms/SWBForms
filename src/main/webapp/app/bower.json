@@ -34,7 +34,8 @@
     "gridster": "https://github.com/dsmorse/gridster.js.git#v0.7.0",
     "angular-ui-codemirror": "^0.3.0",
     "oclazyload": "^1.0.9",
-    "jshint": "https://github.com/jshint/jshint.git#v2.9.4"
+    "jshint": "https://github.com/jshint/jshint.git#v2.9.4",
+    "AngularJS-Toaster": "angularjs-toaster#^2.1.0"
   },
   "resolutions": {
     "jquery": "~2.1.4",

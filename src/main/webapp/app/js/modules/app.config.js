@@ -108,11 +108,13 @@
             return $ocLazyLoad.load([
               {
                   serie: true,
+                  insertBefore: "#mainStyles", //Otherwise app styles will be overridem
                   files: [
                     'lib/codemirror/lib/codemirror.css',
                     'lib/codemirror/theme/ambiance.css',
                     'lib/codemirror/addon/hint/show-hint.css',
                     'lib/codemirror/addon/lint/lint.css',
+                    'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/codemirror/lib/codemirror.js',
                     'lib/codemirror/mode/'+mode+'/'+mode+'.js',
                     'lib/codemirror/addon/edit/matchbrackets.js',
@@ -123,7 +125,8 @@
                     'lib/codemirror/addon/lint/lint.js',
                     'lib/codemirror/addon/hint/javascript-hint.js',
                     'lib/codemirror/addon/lint/javascript-lint.js',
-                    'lib/jshint/dist/jshint.js'
+                    'lib/jshint/dist/jshint.js',
+                    'lib/AngularJS-Toaster/toaster.min.js'
                   ]
               }
             ]);
