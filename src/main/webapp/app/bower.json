@@ -35,7 +35,10 @@
     "angular-ui-codemirror": "^0.3.0",
     "oclazyload": "^1.0.9",
     "jshint": "https://github.com/jshint/jshint.git#v2.9.4",
-    "AngularJS-Toaster": "angularjs-toaster#^2.1.0"
+    "AngularJS-Toaster": "angularjs-toaster#^2.1.0",
+    "angular-datatables": "^0.5.6",
+    "leaflet": "^1.0.2",
+    "d3": "^3.5.17"
   },
   "resolutions": {
     "jquery": "~2.1.4",

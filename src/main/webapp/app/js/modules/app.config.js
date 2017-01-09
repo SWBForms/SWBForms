@@ -31,6 +31,106 @@
           }
         }
       })
+      .state('dashboard.maps', {
+        url: "/maps",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/maps.html',
+            controller: "MapsCtrl as maps"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/leaflet/dist/leaflet.css',
+                    'lib/leaflet/dist/leaflet.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('dashboard.charts', {
+        url: "/charts",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/charts.html',
+            controller: "ChartsCtrl as charts"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/d3/d3.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('dashboard.datatables', {
+        url: "/datatables",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/datatables.html',
+            controller: "DataTablesCtrl as datatables"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
       .state('dashboard.gridster', {
         url: "/gridster",
         views: {
@@ -172,16 +272,19 @@
         link: "#",
         menuItems: [
           {
-            label: "Mapas"
+            label: "Mapas",
+            stateLink: 'dashboard.maps'
           },
           {
-            label: "Gráficas dinámicas"
+            label: "Gráficas dinámicas",
+            stateLink: 'dashboard.charts'
           }
         ]
       },
       {
         label: "Estadísticas",
-        link: "#"
+        link: "#",
+        stateLink: 'dashboard.datatables'
       },
       {
         label: "Consultas",

@@ -39,9 +39,12 @@
 
     <title>Register</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="app/lib/animate.css/animate.min.css">
     <style type="text/css">
-      .table tbody{background-color:#fff}body{padding-top:50px;background-color:#eee}.main{padding:20px}@media (min-width: 768px){.main{padding-right:40px;padding-left:40px}}.main .page-header{margin-top:0}.placeholders{margin-bottom:30px;text-align:center}.placeholders h4{margin-bottom:0}.placeholder{margin-bottom:20px}.placeholder img{display:inline-block;border-radius:50%}.form-signin{max-width:330px;padding:15px;margin:0 auto}.form-signin .form-control{position:relative;height:auto;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:10px;font-size:16px;margin-bottom:10px}.form-signin .form-control:focus{z-index:2}.sub-header{padding-bottom:10px;border-bottom:1px solid #eee}
+      body{padding-top:50px;background-color:#eee}
+      .form-signin{max-width:330px;padding:15px;margin:0 auto}
+      .form-signin .form-control{position:relative;height:auto;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:10px;font-size:16px;margin-bottom:10px}
+      .form-signin .form-control:focus{z-index:2}
     </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -52,14 +55,14 @@
   <body>
     <div class="container animated fadeInDown">
       <form class="form-signin" action="" method="post">
-        <h2 class="form-signin-heading">Please sign up</h2>
+        <h2 class="form-signin-heading">Registro</h2>
         <input name="fullname" type="text" class="form-control" placeholder="Full name" required autofocus>
         <input name="email" type="email" class="form-control" placeholder="Email" required>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
-        <input name="password2" type="password" class="form-control" placeholder="Confirm Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-        <p class="text-muted text-center"><small>Already have an account?</small></p>
-        <a href="/login" class="btn btn-sm btn-block">Log in</a>
+        <input name="password2" type="password" class="form-control" placeholder="Confirm password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+        <p class="text-muted text-center"><small>¿Ya tiene una cuenta?</small></p>
+        <a href="/login" class="btn btn-sm btn-block">iniciar sesi&oacute;n</a>
       </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>

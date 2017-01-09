@@ -26,8 +26,8 @@
 
     function getFile(filename) {
       if (filename === undefined) return;
-      var theUrl = gatewayPath + "?file=" + filename;
-      var request = $http({
+      let theUrl = gatewayPath + "?file=" + filename;
+      let request = $http({
         url: theUrl,
         method: "GET"
       });

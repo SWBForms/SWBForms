@@ -10,7 +10,7 @@
       $scope.dataSources = [];
 
       $FileManager.getFiles()
-        .then(function (res) {
+        .then((res) => {
           $scope.dataSources = res.data;
         });
     };

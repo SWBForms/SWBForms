@@ -30,7 +30,7 @@ eng.dataStores["ts_leveldb"]={
 eng.dataSources["User"]={
     scls: "User",
     modelid: "SWBForms",
-    dataStore: "mongodb",   
+    dataStore: "mongodb",
     fields:[
         {name:"fullname",title:"Nombre",type:"string"},
         //{name:"username",title:"Usuario",type:"string"},
@@ -50,7 +50,7 @@ eng.dataProcessors["UserProcessor"]={
             request.data.password=this.utils.encodeSHA(request.data.password);
         }
         return request;
-    }          
+    }
 };
 
 eng.routes["global"]={
