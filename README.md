@@ -21,4 +21,4 @@ java -jar target/dependency/webapp-runner.jar target/SWBForms2-1.0-SNAPSHOT.war
 ````
 
 ### Abrir la aplicación
-En su navegador Web vaya a [localhost:8080/login](localhost:8080/login) para comenzar a usar la aplicación.
+En su navegador Web vaya a [localhost:8080/login](localhost:8080/login) para iniciar sesión y porteriormente, navegue a [localhost:8080/app](localhost:8080/app) para comenzar a usar la aplicación como usuario visualizador o a [localhost:8080/app/#/admin/](localhost:8080/app/#/admin/) para ver las opciones administrativas.
