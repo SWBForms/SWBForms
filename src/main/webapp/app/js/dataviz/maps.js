@@ -2,8 +2,37 @@
 class MapsFactory {
   constructor() { }
 
+  _onEachFeature(feature, layer) {
+		var popupContent = "<p>I started out as a GeoJSON " +
+				feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
+
+		if (feature.properties && feature.properties.popupContent) {
+			popupContent += feature.properties.popupContent;
+		}
+
+		layer.bindPopup(popupContent);
+	}
+
   //TODO: Place specific code from here
-  createMap(container, data, engine, options) {
+  createMap(container) {
+    if (!L) return;
+    //Sample code
+    let mymap = L.map(container).setView([25.793, -108.977], 12);
+    L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+    }).addTo(mymap);
+    
+    return mymap;
+  }
+
+  addGeoJSONLayer(map, data) {
+    L.geoJSON(data, {
+      onEachFeature: this._onEachFeature
+    }).addTo(map);
+  }
+
+  /*createMap(container, data, engine, options) {
     if (!L) return;
     //Sample code
     let mymap = L.map(container).setView([25.793, -108.977], 12);
@@ -37,5 +66,7 @@ class MapsFactory {
             .openOn(mymap);
     }
    mymap.on('click', onMapClick);
-  }
+
+   return mymap;
+ }*/
 }
