@@ -5,7 +5,7 @@ Se requiere un servidor de MongoDB.
 
 ### Clonar el repositorio
 ````sh
-git clone https://github.com/FST2015PM/SWBForms2.git
+git clone https://github.com/FST2015PM/Plataforma.git
 cd SWBForms2
 ````
 
@@ -17,7 +17,7 @@ mvn clean && mvn package
 ### Desplegar la aplicación usando webapp-runner (sólo desarrollo)
 
 ````sh
-java -jar target/dependency/webapp-runner.jar target/SWBForms2-1.0-SNAPSHOT.war
+java -jar target/dependency/webapp-runner.jar target/Plataforma-1.0-SNAPSHOT.war
 ````
 
 ### Abrir la aplicación
