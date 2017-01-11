@@ -2,6 +2,11 @@ var counter=0;
 
 eng.validators["email"] = {type:"regexp", expression:"^([a-zA-Z0-9_.\\-+])+@(([a-zA-Z0-9\\-])+\\.)+[a-zA-Z0-9]{2,4}$",errorMessage:"No es un correo electrónico válido"};
 
+var sec={
+    roles:["director","gerente"],
+    groups:["dads"],
+    users:[{email:"softjei2@gmail.com"}]
+};
 
 eng.dataSources["Clientes"] = {
     scls: "Clientes",
@@ -17,7 +22,23 @@ eng.dataSources["Clientes"] = {
         {name: "rfc", title: "RFC", required: false, type: "string"},
         {name: "sexo", title: "Sexo", stype: "select", 
             valueMap:{male:"Hombre",female:"Mujer"}},
-    ]
+    ],
+    security:{
+        fetch_:{
+            roles:["director","gerente"],
+            groups:["dac","dads"],
+            users:[{sex:"male"}]    //OR
+        },
+        add:{
+            roles:["director","gerente"],
+            groups:["dac","dads"],
+            users:[{email:"softjei@gmail.com"}]    //OR
+        },
+        remove:{
+            roles:["director"],
+        },
+        update:sec        
+    }    
 };
 
 eng.dataSources["Notas"] = {
@@ -184,8 +205,11 @@ eng.dataSources["Direcciones"] = {
         {name: "calle", title: "Calle", required: true, type: "string"},
         {name: "colonia", title: "Colonia", required: true, type: "string"},
         {name: "delegacion", title: "Delegacion/Municipio", type: "text"},
-        {name: "pais", title: "Pais", stype: "select", dataSource:"Paises", dependentSelect:"estado"},
-        {name: "estado", title: "Estado", stype: "select", dataSource:"Estados"},
+        {name: "pais", title: "Pais", stype: "select", dataSource:"Paises", changed:"form.clearValue('estado');", dependentSelect_:"estado"},
+        {name: "estado", title: "Estado", stype: "select", dataSource:"Estados", getPickListFilterCriteria : function () {
+            var pais = this.form.getValue("pais");
+            return {pais:pais};
+         }},
         {name: "cp", title: "Codigo Postal", type: "int"},
     ]
 };

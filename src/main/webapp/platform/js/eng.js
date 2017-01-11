@@ -1017,8 +1017,8 @@ var eng = {
         
         formBase.autoDraw=false;
 
-        var form = isc.DynamicForm.create(formBase);        
-
+        var form = isc.DynamicForm.create(formBase);   
+        
         var butts=[];
         
         if(!(form.canPrint===false))
@@ -1110,7 +1110,10 @@ var eng = {
             eng.fetchForm(form, {_id: fetchId});
         }
         
-        eng.resize(form);
+        if(base.onLoad)base.onLoad(form);
+        
+        eng.resize(form);        
+        
         return form;
     },
     
@@ -1925,15 +1928,9 @@ var eng = {
                 eng.utils.loadJS(file,false,cache);     
             }else if (Array.isArray(file))
             {
+                eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+file;
                 for(var i=0;i<file.length;i++)
                 {
-                    if(file[i].charAt(0)!='/')
-                    {
-                        eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+file[i];
-                    }else
-                    {
-                        eng.dataSourceScriptPath=file[i];
-                    }
                     eng.utils.loadJS(file[i],false,cache);                       
                 }
             }
