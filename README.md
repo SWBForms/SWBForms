@@ -6,7 +6,7 @@ Se requiere un servidor de MongoDB.
 ### Clonar el repositorio
 ````sh
 git clone https://github.com/FST2015PM/Plataforma.git
-cd SWBForms2
+cd Plataforma
 ````
 
 ### Construir y empaquetar la aplicación
