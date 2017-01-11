@@ -329,7 +329,7 @@ field=
 //*****************************************************************//
 //default values
 
-eng.createForm({title: "Forma", width: "99%", height: "50%",
+eng.createForm({title: "Forma", width: "99%", height: "50%", onLoad:function(form){alert(form)},
 
     fields: [
         {name: "titulo"},
@@ -337,7 +337,7 @@ eng.createForm({title: "Forma", width: "99%", height: "50%",
         {name: "fecha"},
         {name: "autor"},
         {name: "revisor"},
-        {name: "direccion", winEdit_: {title:"Hola",        //Propiedades de la ventana
+        {name: "direccion", winEdit_: {title:"Hola",onLoad:function(form){alert(form)},        //Propiedades de la ventana
             fields: [
                 {name: "calle"},
                 {name: "numero"},
