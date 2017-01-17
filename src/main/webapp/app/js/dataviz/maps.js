@@ -21,6 +21,7 @@ class MapsFactory {
       case ENGINE_GOOGLEMAPS:
 
         var self = this;
+        var map;
 
         //add api key
         GoogleMapsLoader.KEY = 'AIzaSyC2hy80dZpGaH4_ivGjqYS1f_UDJZrgyBI';
@@ -41,10 +42,7 @@ class MapsFactory {
 
         });
 
-        console.log("mapa");
-        console.log(this.map);
-
-        return this.map;
+        return self.map;
 
       break;
       case ENGINE_LEAFLET:
@@ -97,9 +95,7 @@ class MapsFactory {
         case ENGINE_GOOGLEMAPS:
 
           if (map) {
-            console.log("if");
             GoogleMapsLoader.load(function(google, map, origin, destination, type) {
-              console.log("entro");
               directionsDisplay = new google.maps.DirectionsRenderer({
                 map: map
               });
@@ -134,6 +130,30 @@ class MapsFactory {
       }
 
       return;
+  }
+
+  addMarket(map, market, title, engine) {
+
+    switch(engine) {
+        case ENGINE_GOOGLEMAPS:
+          if (map) {
+            GoogleMapsLoader.load(function(google, map, market, title) {
+              var marker2 = new google.maps.Marker({
+                  map: map,
+                  position: market,
+                  title: title
+              });
+            });
+          };
+        break;
+        case ENGINE_LEAFLET:
+        break;
+        case ENGINE_D3:
+        break;
+        default:
+      }
+
+    return;
   }
 
   /*createMap(container, data, engine, options) {
