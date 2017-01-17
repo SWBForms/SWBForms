@@ -13,24 +13,59 @@ class MapsFactory {
 		layer.bindPopup(popupContent);
 	}
 
-  //TODO: Place specific code from here
-  createMap(container) {
-    if (!L) return;
-    //Sample code
-    let mymap = L.map(container).setView([25.793, -108.977], 12);
-    L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 18,
-    }).addTo(mymap);
-    
-    return mymap;
-  }
-
   addGeoJSONLayer(map, data) {
     L.geoJSON(data, {
       onEachFeature: this._onEachFeature
     }).addTo(map);
   }
+
+  addMarker(map, data){
+    L.marker([data[0], data[1]]).addTo(map);
+  }
+
+  addPopUp(marker, text, isOpen){
+    let makeMarkerPopUp = marker.bindPopup("<b> "+text+" </b>");
+    if (isOpen == true){
+      makeMarkerPopUp = makeMarkerPopUp.openPopup();
+    }
+  }
+
+  makePolygon(map, data){
+    let polygon = L.polygon([
+      data
+    ]).addTo(map);
+  }
+
+
+  createMap(container, engine) {
+    switch(engine){
+
+      case ENGINE_LEAFLET:
+              if (!L) return;
+              //Sample code
+              let mymap = L.map(container).setView([25.793, -108.977], 12);
+              L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                maxZoom: 18,
+              }).addTo(mymap);
+              return mymap;
+              break;
+
+      case ENGINE_D3:
+
+
+           break;
+      case ENGINE_GOOGLEMAPS:
+           break;
+    }//switch
+  }//createMap
+
+
+}//maps
+
+
+
+
 
   /*createMap(container, data, engine, options) {
     if (!L) return;
@@ -69,4 +104,3 @@ class MapsFactory {
 
    return mymap;
  }*/
-}
