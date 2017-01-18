@@ -1,4 +1,3 @@
-var counter=0;
 
 eng.validators["email"] = {type:"regexp", expression:"^([a-zA-Z0-9_.\\-+])+@(([a-zA-Z0-9\\-])+\\.)+[a-zA-Z0-9]{2,4}$",errorMessage:"No es un correo electrónico válido"};
 
@@ -29,7 +28,7 @@ eng.dataSources["Clientes"] = {
             groups:["dac","dads"],
             users:[{sex:"male"}]    //OR
         },
-        add:{
+        add_:{
             roles:["director","gerente"],
             groups:["dac","dads"],
             users:[{email:"softjei@gmail.com"}]    //OR
@@ -37,7 +36,11 @@ eng.dataSources["Clientes"] = {
         remove:{
             roles:["director"],
         },
-        update:sec        
+        update:{
+            roles:["director"],
+            groups_:["dads"],
+            users_:[{email:"softjei2@gmail.com"}]
+        }        
     }    
 };
 
@@ -79,12 +82,25 @@ eng.dataProcessors["NotasProcessor"] = {
     actions:["add"],
     request: function(request, dataSource, action)
     {
-        request.data.folio="2016_"+counter;
-        counter++;        
+        var Counter = Java.type('demo.Counter');        
+        
+        /*
+        var obj=this.getDataSource("Variables").fetch({data:{nombre:"notas"}}).response.data[0];
+        var n=parseInt(obj.valor)+1;
+        obj.valor=""+n;
+        this.getDataSource("Variables").updateObj(obj);
+        */
+       
+        request.data.folio="2017_"+Counter.count(this); 
+        
+        print(this.getContextData("cliente"));
+        this.setContextData("folio",request.data.folio);
+        
         return request;
     },
     response_: function(response, dataSource, action)
     {
+        //response.data.folio+="Hola";
         return response;
     }
 };
@@ -233,5 +249,16 @@ eng.dataSources["Paises"] = {
     fields: [
         {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "abre", title: "Abre", required: true, type: "string"},
+    ]
+};
+
+eng.dataSources["Variables"] = {
+    scls: "Variables",
+    modelid: "SWBF2",
+    dataStore: "mongodb",    
+    displayField: "nombre",
+    fields: [
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
+        {name: "valor", title: "valor", required: true, type: "string"},
     ]
 };
