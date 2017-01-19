@@ -9,4 +9,11 @@ class DataTablesFactory {
         data: data
     } );
   }
+
+  alinearColumna(container, data, alinear )
+  $('#'+container).grid({
+    dataSource: data
+    columns: [ align: 'center'  ]
+});
+
 }
