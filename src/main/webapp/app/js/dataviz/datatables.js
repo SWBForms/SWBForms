@@ -9,11 +9,22 @@ class DataTablesFactory {
         data: data
     } );
   }
-
-  alinearColumna(container, data, alinear )
+ //Gijgo
+  alinearTabla(container, data, alinear )
   $('#'+container).grid({
     dataSource: data
-    columns: [ align: 'center'  ]
+    columns: [ align: alinear  ]
 });
+
+  ordenarTabla(container, data, ordenar)
+$('#'+container).grid({
+    dataSource: data,
+    columns: [sortable: ordenar ]
+  });
+
+  
+
+
+
 
 }
