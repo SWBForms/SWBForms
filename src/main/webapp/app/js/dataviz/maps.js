@@ -1,40 +1,91 @@
 /** Class to encapsulate maps creation */
 class MapsFactory {
+	
+let geojsonMarkerOptionsBlue = {
+    radius: 8,
+    fillColor: "#5882FA",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+}	
+
+let geojsonMarkerOptionsGreen = {
+    radius: 20,
+    fillColor: "#A9F5A9",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+}	
+
+var greenIcon = L.icon({
+    iconUrl: 'leaf-green.png',
+    shadowUrl: 'leaf-shadow.png',
+
+    iconSize:     [38, 95], // size of the icon
+    shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
   constructor() { }
 
   _onEachFeature(feature, layer) {
-		var popupContent = "<p>I started out as a GeoJSON " +
-				feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
-
-		if (feature.properties && feature.properties.popupContent) {
-			popupContent += feature.properties.popupContent;
-		}
-
-		layer.bindPopup(popupContent);
+	if (feature.properties && feature.properties.popupContent) {
+		layer.bindPopup(feature.properties.popupContent);
 	}
+	/*
+	if(feature.geometry.type == "Point"){
+	  switch(feature.properties.geografico){
+		  case "Plaza":
+		  break;
+	          case "Mercado":
+		  break;
+		  case "Escuela":
+		  break;
+	  }
+		
+	}*/  
+}
+	
+_onEachStyle(feature){
+    if(feature.properties.color){
+     return {color: feature.properties.color};
+    }
+}
 
   addGeoJSONLayer(map, data) {
     L.geoJSON(data, {
-      onEachFeature: this._onEachFeature
+      onEachFeature: this._onEachFeature,
+      style: this._onEachStyle	    
     }).addTo(map);
   }
 
-  addMarker(map, data){
-    L.marker([data[0], data[1]]).addTo(map);
-  }
+ addGeoJSONCircle(map, data, MarkerOptions){
+	 L.geoJSON(data, {
+	    pointToLayer: function (feature, latlng) {
+		return L.circleMarker(latlng, MarkerOptions);
+	    }
+	}).addTo(map);
+	 
+ }
 
-  addPopUp(marker, text, isOpen){
-    let makeMarkerPopUp = marker.bindPopup("<b> "+text+" </b>");
-    if (isOpen == true){
-      makeMarkerPopUp = makeMarkerPopUp.openPopup();
-    }
-  }
+ addGeoJSONMarkers(map, data){
+	 L.geoJSON(data, {
+	    pointToLayer: function (feature, latlng) {
+		return L.marker(latlng, {icon: greenIcon});
+	    }
+	}).addTo(map);	 
+ }
 
+
+ /* geoJSON agrewga diferentes tipos de poligonos y puntos
   makePolygon(map, data){
     let polygon = L.polygon([
       data
     ]).addTo(map);
-  }
+  }*/
 
 
   createMap(container, engine) {
