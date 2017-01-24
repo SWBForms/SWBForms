@@ -22,9 +22,15 @@
         url: "/app/mockdata/geo/PM_15_puntos_complem.geojson",
         method: "GET"
       }).then((res) => {
-        dataviz.mapsFactory.addGeoJSONLayer(mp, res.data);
+        dataviz.mapsFactory.addGeoJSONCircle(mp, res.data);
       });
 
+      $http({
+        url: "/app/mockdata/geo/PM_15_puntos_complem.geojson",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONMarkers(mp, res.data);
+      });
       //dataviz.mapsFactory.addGeoJSONLayer(mp, data);
 
       //console.log(dataviz.maps.createMap(););

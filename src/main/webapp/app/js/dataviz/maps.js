@@ -1,35 +1,6 @@
 /** Class to encapsulate maps creation */
 class MapsFactory {
-	
-let geojsonMarkerOptionsBlue = {
-    radius: 8,
-    fillColor: "#5882FA",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-}	
-
-let geojsonMarkerOptionsGreen = {
-    radius: 20,
-    fillColor: "#A9F5A9",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-}	
-
-var greenIcon = L.icon({
-    iconUrl: 'leaf-green.png',
-    shadowUrl: 'leaf-shadow.png',
-
-    iconSize:     [38, 95], // size of the icon
-    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-});
-  constructor() { }
+constructor() { }
 
   _onEachFeature(feature, layer) {
 	if (feature.properties && feature.properties.popupContent) {
@@ -45,48 +16,57 @@ var greenIcon = L.icon({
 		  case "Escuela":
 		  break;
 	  }
-		
-	}*/  
+
+	}*/
 }
-	
+
 _onEachStyle(feature){
     if(feature.properties.color){
-     return {color: feature.properties.color};
+      return {color: feature.properties.color};
     }
 }
 
   addGeoJSONLayer(map, data) {
     L.geoJSON(data, {
       onEachFeature: this._onEachFeature,
-      style: this._onEachStyle	    
+      style: this._onEachStyle
     }).addTo(map);
   }
 
- addGeoJSONCircle(map, data, MarkerOptions){
-	 L.geoJSON(data, {
-	    pointToLayer: function (feature, latlng) {
-		return L.circleMarker(latlng, MarkerOptions);
-	    }
-	}).addTo(map);
-	 
- }
+	addGeoJSONCircle(map, data){
+    var geojsonMarkerOptionsBlue = {
+        radius: 8,
+        fillColor: "#5882FA",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+ 	 L.geoJSON(data, {
+ 	    pointToLayer: function (feature, latlng) {
+ 		     return L.circleMarker(latlng, geojsonMarkerOptionsBlue);
+ 	    }
+ 	}).addTo(map);
+  }
 
- addGeoJSONMarkers(map, data){
-	 L.geoJSON(data, {
-	    pointToLayer: function (feature, latlng) {
-		return L.marker(latlng, {icon: greenIcon});
-	    }
-	}).addTo(map);	 
- }
 
+  addGeoJSONMarkers(map, data){
+    var greenIcon = L.icon({
+        iconUrl: './img/icons/leaf-green.png',
+        shadowUrl: './img/icons/leaf-shadow.png',
 
- /* geoJSON agrewga diferentes tipos de poligonos y puntos
-  makePolygon(map, data){
-    let polygon = L.polygon([
-      data
-    ]).addTo(map);
-  }*/
-
+        iconSize:     [38, 95], // size of the icon
+        shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+	 	 L.geoJSON(data, {
+	 	    pointToLayer: function (feature, latlng) {
+	 		    return L.marker(latlng, {icon: greenIcon});
+	 	    }
+	 	}).addTo(map);
+  }
 
   createMap(container, engine) {
     switch(engine){
