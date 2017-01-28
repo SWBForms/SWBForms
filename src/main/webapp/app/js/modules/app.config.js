@@ -166,6 +166,39 @@
           }
         }
       })
+      .state('admin.pmcatalog', {
+        url: "/pmcatalog",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/pmcatalog.html',
+            controller: "PMCatalog as PM"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
       .state('admin.datasources', {
         url: "/datasources",
         views: {
@@ -245,6 +278,11 @@
         label: "DataSources",
         link: "#",
         stateLink: 'admin.datasources'
+      },
+      {
+        label: "Catálogo de PM",
+        link: "#",
+        stateLink: 'admin.pmcatalog'
       },
       {
         label: "APIs",
