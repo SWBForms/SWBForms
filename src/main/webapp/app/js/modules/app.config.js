@@ -194,8 +194,8 @@
                     'js/dataviz/datatables.js',
                     'js/dataviz/dataviz.js',
                     'js/controllers/pmcatalog.controller.js',
-                    'js/services/pmcatalog.service.js'
-                    //'../platform/js/eng.js'
+                    'js/services/pmcatalog.service.js',
+                    'lib/bootbox/bootbox.js'
                   ]
               }
             ]);
