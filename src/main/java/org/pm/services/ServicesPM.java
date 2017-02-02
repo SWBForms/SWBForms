@@ -5,9 +5,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
-import javax.json.Json;
-import javax.json.stream.JsonParser;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -84,8 +81,6 @@ public class ServicesPM extends HttpServlet {
                 }
                 break;
             case ACTION_LIST:
-                DataObject obj = new DataObject();
-                obj.addParam("sortBy", "-nombre");
                 DataObject dsFetch = ds.fetch();
                 out.print(dsFetch.getDataObject("response"));
                 break;
@@ -121,9 +116,6 @@ public class ServicesPM extends HttpServlet {
             pm.addParam("nombre", jsonPM.getString("nombre"));
             if (jsonPM.has("descripcion")) {
                 pm.addParam("descripcion", jsonPM.getString("descripcion"));
-            }
-            if (jsonPM.has("imagen")) {
-                pm.addParam("imagen", jsonPM.getString("imagen"));
             }
             if (jsonPM.has("claveEstado")) {
                 pm.addParam("claveEstado", jsonPM.getString("claveEstado"));

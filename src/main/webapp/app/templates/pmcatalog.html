@@ -1,14 +1,14 @@
 <div ng-if="show == 'all'">
     <a  ng-click="configAdd()">
-     <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i></span>
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i></span>
         Agregar pueblo m&aacute;gico
     </a>
-    
+
     <div >
         <div class="col-xs-12 col-md-6 col-lg-4" ng-repeat="pm in listPMCatalog" >
             <div class="card" style="width: 20rem;">
-                <img class="card-img-top" ng-if="pm.imagen" src="../{{pm.imagen}}" >
-                <img class="card-img-top" ng-if="pm.imagen == null" src="../default.jpg" >
+                <img class="card-img-top" ng-if="pm.imagen" src="../images/pm/{{pm.path}}/{{pm.imagen}}" style="max-width: 100%">
+                <img class="card-img-top" ng-if="pm.imagen == null" src="../app/img/no-imagen.jpg" style="max-width: 100%">
                 <div class="card-block">
                     <h4 class="card-title">{{pm.nombre}}</h4>
                     <p class="card-text">{{pm.descripcion}}</p>
@@ -21,20 +21,33 @@
 </div>
 <div ng-if="show == 'add' || show == 'update'">
     <form name="pmForm">
+        <label>Nombre (*):</label>
+        <input id="nombre" name="nombre" type="text" class="form-control" required ng-model="dbPM.nombre"/>
+        <label>Descripci&oacute;n (*):</label>
+        <textarea  required class="form-control" name="descripcion"  type="text" ng-model="dbPM.descripcion" /></textarea>
         <label>Clave estado: </label>
         <input id="claveEstado" class="form-control" name="claveEstado" type="text" ng-model="dbPM.claveEstado"/>
         <label>Clave municipio: </label>
         <input id="claveMunicipio" class="form-control" name="claveMunicipio" type="text" ng-model="dbPM.claveMunicipio"/>
         <label>Clave Geo: </label>
         <input id="claveGeo" name="claveGeo" class="form-control" type="text" ng-model="dbPM.claveGeo"/>
-        <label>Nombre:</label>
-        <input id="nombre" name="nombre" type="text" class="form-control" required ng-model="dbPM.nombre"/>
-        <label>Descripci&oacute;n:</label>
-        <textarea  required class="form-control" name="descripcion"  type="text" ng-model="dbPM.descripcion" /></textarea>
         <label>Incorporado: </label>
         <input type="checkbox" class="form-control" ng-model="dbPM.incorporado" id="incorporado" name="incorporado" >
         <label>Imagen:</label>
-        <input id="imagen" class="form-control" name="imagen" type="text" ng-model="dbPM.imagen"/>
-        <button id="btnCtSearch" ng-disabled="pmForm.descripcion.$invalid || pmForm.nombre.$invalid" type="button" class="btn" ng-click="formPM()">Guardar</button>
+        <input type="file" ngf-select ng-model="picFile" name="file"    
+               accept="image/*" ngf-max-size="2MB" required
+               ngf-model-invalid="errorFile">
+        <!--i ng-show="pmForm.file.$error.required">*required</i><br-->
+        <i ng-show="pmForm.file.$error.maxSize">File too large 
+            {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+        <img ng-show="pmForm.file.$valid" ngf-thumbnail="picFile" class="thumb" style="height: 100px"> <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+        <span class="progress" ng-show="picFile.progress >= 0">
+        <div style="width:{{picFile.progress}}%" 
+            ng-bind="picFile.progress + '%'"></div>
+      </span>
+      <span ng-show="picFile.result">Upload Successful</span>
+      <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+      <button id="btnCtSearch" ng-disabled="pmForm.descripcion.$invalid || pmForm.nombre.$invalid" type="button" class="btn" ng-click="formPM(picFile)">Guardar</button>
+      <button ng-click="cancel()" class="btn btn-default ng-scope" type="button">Cancel</button>
     </form>
 </div>
