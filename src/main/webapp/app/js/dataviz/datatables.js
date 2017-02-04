@@ -3,12 +3,42 @@ class DataTablesFactory {
   constructor() { }
 
   //TODO: Place specific code from here
+  //DATATABLES DE JQUERY
   createDataTable(container, data, engine, options) {
     //Sample code
     $('#'+container).DataTable( {
         data: data
     } );
   }
+
+  habilitarOpciones(container,data,paginacion,ordenar,informacion){
+  $('#'+container).DataTable( {
+      data: data
+        "paging":   paginacion,
+        "ordering": ordenar,
+        "info":     informacion
+    } );
+  }
+
+  scrollvertical(container,data){
+  $('#'+container).DataTable( {
+        data: data
+    scrollY:        '50vh',
+    scrollCollapse: true,
+    paging:         false
+} );
+  }
+
+  scrollhorizontal(container,data){
+  $('#'+container).DataTable( {
+        data: data
+    "scrollX": true
+} );
+  }
+
+
+
+
  //Gijgo
   alinearTabla(container, data, alinear ){
   $('#'+container).grid({
