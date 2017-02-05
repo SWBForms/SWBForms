@@ -66,6 +66,7 @@
                 $scope.dbPM._id = pm._id;
                 $scope.dbPM.nombre = pm.nombre;
                 $scope.dbPM.descripcion = pm.descripcion;
+                $scope.picFile = null;
                 if (pm.imagen) {
                     $scope.picFile = "/images/pm/" + pm._id.substring(pm._id.lastIndexOf(":") + 1) + "/" + pm.imagen;
                 }
