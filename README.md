@@ -11,6 +11,7 @@ cd Plataforma
 
 ### Construir y empaquetar la aplicación
 ````sh
+bower install
 mvn clean && mvn package
 ````
 

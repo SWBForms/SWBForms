@@ -1,5 +1,4 @@
-
-eng.dataSources["Direccion"] = {
+/*eng.dataSources["Direccion"] = {
     scls: "Direccion",
     modelid: "SWBF2",
     dataStore: "mongodb",
@@ -25,19 +24,7 @@ eng.dataSources["Pais"] = {
         {name: "abre", title: "Clave", required: true, type: "string"},
         {name: "ext", title: "Ext", required: false, type: "string"},
     ]
-};
-
-eng.dataSources["Estado"] = {
-    scls: "Estado",
-    modelid: "SWBF2",
-    dataStore: "mongodb",
-    displayField: "nombre",
-    fields: [
-        {name: "nombre", title: "Estado", required: true, type: "string"},
-        {name: "pais", title: "Pais", required: true, stype: "select", dataSource:"Pais"},
-        {name: "bandera", title: "Bandera", required: false, stype: "file"},
-    ]
-};
+};*/
 
 /*
 //dataService
@@ -54,7 +41,7 @@ eng.dataServices["EstadoService"] = {
 */
 
 //dataProcessor
-eng.dataProcessors["EstadoProcessor"] = {
+/*eng.dataProcessors["EstadoProcessor"] = {
     dataSources: ["Estado"],
     actions: ["add",],
     request: function(request, dataSource, action)
@@ -79,4 +66,53 @@ eng.dataProcessors["EstadoProcessor"] = {
 
         return response;
     },
+};*/
+eng.dataSources["PMCatalog"] = {
+    scls: "PMCatalog",
+    modelid: "PueblosMagicos",
+    dataStore: "mongodb",
+    displayField: "titulo",
+    fields: [
+        {name:"claveEstado", title:"Clave de Estado", type:"string"},
+        {name:"claveMunicipio", title:"Clave de Municipio", type:"string"},
+        {name:"claveGeo", title:"Clave Geo", type:"string"},
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
+        {name: "descripcion", title: "Descripción", type: "string"},
+        {name:"incorporado", title:"Incorporado", type:"boolean"},
+        {name:"fechaIncorporacion", title:"Fecha de incorporación", type: "date"},
+        {name: "imagen", title: "Imagen", type: "string"}
+    ]
+};
+eng.dataSources["Estado"] = {
+    scls: "Estado",
+    modelid: "PueblosMagicos",
+    dataStore: "mongodb",
+    displayField: "nombre",
+    fields: [
+        {name: "nombre", title: "Estado", required: true, type: "string"},
+        {name: "clave", title: "Clave", required: true, type: "string"},
+        {name: "abreviatura", title: "Nombre abreviatura", required: false, type: "string"}
+    ]
+};
+eng.dataSources["Municipio"] = {
+    scls: "Municipio",
+    modelid: "PueblosMagicos",
+    dataStore: "mongodb",
+    displayField: "nombre",
+    fields: [
+        {name: "nombre", title: "Municipio", required: true, type: "string"},
+        {name: "clave", title: "Clave", required: true, type: "string"},
+        {name: "estado", title: "Estado", required: true, stype: "select", dataSource:"Estado"}
+    ]
+};
+eng.dataSources["Geo"] = {
+    scls: "Geo",
+    modelid: "PueblosMagicos",
+    dataStore: "mongodb",
+    displayField: "nombre",
+    fields: [
+        {name: "nombre", title: "Geo", required: true, type: "string"},
+        {name: "clave", title: "Clave", required: true, type: "string"},
+        {name: "ambito", title: "Ambito", required: false, type: "string"}
+    ]
 };
