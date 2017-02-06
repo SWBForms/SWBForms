@@ -1,4 +1,5 @@
 //******* DataStores ***************
+var DBModel = "FST2015PM";
 
 eng.config={
     baseDatasource:"/WEB-INF/global.js",
@@ -29,12 +30,11 @@ eng.dataStores["ts_leveldb"]={
 //******* DataSorices ************
 eng.dataSources["User"]={
     scls: "User",
-    modelid: "SWBForms",
+    modelid: DBModel,
     dataStore: "mongodb",
     displayField: "fullname",
     fields:[
         {name:"fullname",title:"Nombre",type:"string"},
-        //{name:"username",title:"Usuario",type:"string"},
         {name:"password",title:"Contraseña",type:"password"},
         {name:"email",title:"Correo electrónico",type:"string", validators: [{type:"isUnique"}]},
         {name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
@@ -48,7 +48,7 @@ eng.dataProcessors["UserProcessor"]={
     actions:["fetch","add","update"],
     request: function(request, dataSource, action)
     {
-        if(request.data.password)
+        if(request.data && request.data.password)
         {
             request.data.password=this.utils.encodeSHA(request.data.password);
         }
@@ -62,7 +62,6 @@ eng.routes["global"]={
     routeList:[
         { routePath: "login", forwardTo: "/work/config/login.jsp", isRestricted: "false", zindex:1 },
         { routePath: "register", forwardTo: "/work/config/register.jsp", isRestricted: "false" },
-        { routePath: "", forwardTo: "/work/config/login.jsp", isRestricted: "false"},
         { routePath: "work", isRestricted: "true"},
         { routePath: "work/*", jspMapTo: "/work/jsp/", isRestricted: "true" },
         { routePath: "ds", forwardTo: "/platform/jsp/datasource.jsp", isRestricted: "true" },

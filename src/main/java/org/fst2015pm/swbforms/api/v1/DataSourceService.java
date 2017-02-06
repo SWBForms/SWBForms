@@ -32,13 +32,12 @@ public class DataSourceService {
   boolean checkSession = false;
 
   @GET
-  @Path("/")
   @Produces("application/json")
   public Response getDataSourceList() throws IOException {
     HttpSession session = httpRequest.getSession();
     engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 
-    if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
+    if (null != session.getAttribute("_USER_")) {
       Set<String> dataSources = engine.getDataSourceNames();
       JSONArray ret;
 
@@ -62,7 +61,11 @@ public class DataSourceService {
   @Produces("application/json")
   public Response getDataSource(@PathParam("dsname") String dataSourceId) throws IOException {
     HttpSession session = httpRequest.getSession();
-    engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+    if ("User".equals(dataSourceId)) {
+      engine = DataMgr.initPlatform(session);
+    } else {
+      engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+    }
 
     if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
       SWBDataSource ds = engine.getDataSource(dataSourceId);
@@ -70,7 +73,11 @@ public class DataSourceService {
       if(null == ds) return Response.status(400).build();
       DataObject dsFetch = ds.fetch();
 
-      return Response.status(200).entity(dsFetch.getDataObject("response")).build();
+      if (null != dsFetch) {
+        return Response.status(200).entity(dsFetch.getDataObject("response")).build();
+      } else {
+          return Response.status(500).build();
+      }
     }
 
     return Response.status(403).entity("forbidden").build();

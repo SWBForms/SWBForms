@@ -19,7 +19,7 @@ if(email!=null && password!=null)
   if(!rdata.isEmpty())
   {
     session.setAttribute("_USER_", rdata.get(0));
-    response.sendRedirect("/");
+    response.sendRedirect("/app");
     return;
   }
 }

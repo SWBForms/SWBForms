@@ -1,0 +1,24 @@
+<div class="animate fadeIn">
+  <div class="row text-right">
+    <a ui-sref="admin.addrole" class="btn btn-default">Agregar rol</a>
+  </div>
+  <hr>
+  <div class="row">
+    <table class="table" id="rolesTable">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="role in roles">
+          <td>{{role.title}}</td>
+          <td>
+            <a><span class="fa fa-pencil"></span></a>
+            <a><span class="fa fa-trash-o"></span></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
