@@ -121,8 +121,8 @@
                   serie: true,
                   files: [
                     'lib/datatables.net/js/jquery.dataTables.min.js',
-                    'lib/gijgo/dist/combined/js/gijgo.min.js'
-                    'lib/gijgo/dist/combined/js/gijgo.js'
+                    'lib/gijgo/dist/combined/js/gijgo.min.js',
+                    'lib/gijgo/dist/combined/js/gijgo.js',
                     'js/dataviz/constants.js',
                     'js/dataviz/charts.js',
                     'js/dataviz/maps.js',
@@ -280,7 +280,16 @@
     var adminMenuItems = [
       {
         label: "Usuarios y permisos",
-        link: "#"
+        menuItems: [
+          {
+            label:"Usuarios",
+            stateLink: 'admin.users'
+          },
+          {
+            label:"Roles",
+            stateLink: 'admin.roles'
+          }
+        ]
       },
       {
         label: "DataSources",

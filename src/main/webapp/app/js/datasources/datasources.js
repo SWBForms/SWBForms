@@ -73,9 +73,9 @@ eng.dataSources["PMCatalog"] = {
     dataStore: "mongodb",
     displayField: "titulo",
     fields: [
-        {name:"claveEstado", title:"Clave de Estado", type:"string"},
-        {name:"claveMunicipio", title:"Clave de Municipio", type:"string"},
-        {name:"claveGeo", title:"Clave Geo", type:"string"},
+        {name:"claveEstado", title:"Clave de Estado", type:"string", required: true},
+        {name:"claveMunicipio", title:"Clave de Municipio", type:"string", required: true},
+        {name:"claveGeo", title:"Clave Geo", type:"string", required: true},
         {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "descripcion", title: "Descripción", type: "string"},
         {name:"incorporado", title:"Incorporado", type:"boolean"},
