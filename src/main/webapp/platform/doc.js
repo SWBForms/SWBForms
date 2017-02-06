@@ -533,3 +533,42 @@ form.tabs.getTab(1).enable()
 
 
 //Date formulas:  formula: { text: "DateAdd(new Date(),'d',shipDays)"} 
+
+
+//textMatchStyle
+//  exact
+//  substring
+// startsWith
+/*
+var ds=eng.getDataSource("Variables");
+undefined
+ds.fetch()
+Object {startRow: 0, data: Array[100001], endRow: 100001, totalRows: 100001, status: 0}data: Array[100001][0 … 9999][10000 … 19999][20000 … 29999][30000 … 39999][40000 … 49999][50000 … 59999][60000 … 69999][70000 … 79999][80000 … 89999][90000 … 99999]100000: Objectlength: 100001__proto__: Array[0]endRow: 100001startRow: 0status: 0totalRows: 100001__proto__: Object
+ds.fetch({starRow:0,endRow:1000})
+Object {startRow: 0, data: Array[1000], endRow: 1000, totalRows: 100001, status: 0}
+ds.fetch({starRow:0,endRow:1000,data:{"nombre":"var5000"}})
+Object {startRow: 0, data: Array[1], endRow: 1, totalRows: 1, status: 0}
+ds.fetch({starRow:0,endRow:1000,textMatchStyle:"substring",data:{"nombre":"var5000"}})
+Object {startRow: 0, data: Array[11], endRow: 11, totalRows: 11, status: 0}data: Array[11]0: Object_id: "_suri:SWBF2:Variables:5876c48e77c86679292a0aa8"nombre: "var5000"valor: "5000"__proto__: Object1: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba70"nombre: "var50000"valor: "50000"__proto__: Object2: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba71"nombre: "var50001"valor: "50001"__proto__: Object3: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba72"nombre: "var50002"valor: "50002"__proto__: Object4: Object5: Object6: Object7: Object8: Object9: Object10: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba79"nombre: "var50009"valor: "50009"__proto__: Objectlength: 11__proto__: Array[0]endRow: 11startRow: 0status: 0totalRows: 11__proto__: Object
+ds.fetch({starRow:0,endRow:1000,textMatchStyle:"startsWith",data:{"nombre":"var5000"}})
+Object {startRow: 0, data: Array[11], endRow: 11, totalRows: 11, status: 0}data: Array[11]0: Object_id: "_suri:SWBF2:Variables:5876c48e77c86679292a0aa8"nombre: "var5000"valor: "5000"__proto__: Object1: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba70"nombre: "var50000"valor: "50000"__proto__: Object2: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba71"nombre: "var50001"valor: "50001"__proto__: Object3: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba72"nombre: "var50002"valor: "50002"__proto__: Object4: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba73"nombre: "var50003"valor: "50003"__proto__: Object5: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba74"nombre: "var50004"valor: "50004"__proto__: Object6: Object7: Object8: Object9: Object10: Objectlength: 11__proto__: Array[0]endRow: 11startRow: 0status: 0totalRows: 11__proto__: Object
+ds.fetch({sortBy:["nombre"],starRow:0,endRow:1000,textMatchStyle:"startsWith",data:{"nombre":"var5000"}})
+Object {startRow: 0, data: Array[11], endRow: 11, totalRows: 11, status: 0}data: Array[11]0: Object_id: "_suri:SWBF2:Variables:5876c48e77c86679292a0aa8"nombre: "var5000"valor: "5000"__proto__: Object1: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba70"nombre: "var50000"valor: "50000"__proto__: Object2: Object_id: "_suri:SWBF2:Variables:5876c49277c86679292aba71"nombre: "var50001"valor: "50001"__proto__: Object3: Object4: Object5: Object6: Object7: Object8: Object9: Object10: Objectlength: 11__proto__: Array[0]endRow: 11startRow: 0status: 0totalRows: 11__proto__: Object
+ds.fetch({sortBy:["-nombre"],starRow:0,endRow:1000,textMatchStyle:"startsWith",data:{"nombre":"var5000"}})
+Object {startRow: 0, data: Array[11], endRow: 11, totalRows: 11, status: 0}
+
+
+
+ds.fetch({"sortBy":["nombre"],data:{edad:{ "$lt" : 40 , "$gt" : 20}}})
+Object {startRow: 0, data: Array[2], endRow: 2, totalRows: 2, status: 0}
+ds.fetch({"sortBy":["nombre"],data:{nacimiento:{ "$lt" : "1990" , "$gt" : "1980"}}})
+Object {startRow: 0, data: Array[2], endRow: 2, totalRows: 2, status: 0}
+ds.fetch({"sortBy":["nombre"],data:{nacimiento:{ "$lt" : "1985" , "$gt" : "1980"}}})
+Object {startRow: 0, data: Array[1], endRow: 1, totalRows: 1, status: 0}
+ds.fetch({"sortBy":["nombre"],data:{nacimiento:{ "$lt" : "1985" , "$gt" : "1970"}}})
+Object {startRow: 0, data: Array[2], endRow: 2, totalRows: 2, status: 0}data: Array[2]0: Object_id: "_suri:User1:Clientes:582ca7e48d6a46a9ee86a419"direccion: "asdf"edad: 35email: "softjei@gmail.com"nacimiento: "1984-11-13"nombre: "Aldo"password: "jsolis"rfc: "asdf"__proto__: Object1: Object_id: "_suri:User1:Clientes:582ca1a88d6a46a9ee86a40e"_selection_1: truedireccion: "ssfasf"edad: 42email: "asdfaf@sdaf.com"nacimiento: "1974-11-13"nombre: "Javier"pais_code: "mx"rfc: "asdfafds"telefono: "321412"__proto__: Objectlength: 2__proto__: Array[0]endRow: 2startRow: 0status: 0totalRows: 2__proto__: Object
+ds.fetch({"sortBy":["nacimiento"]})
+Object {startRow: 0, data: Array[3], endRow: 3, totalRows: 3, status: 0}data: Array[3]0: Object_id: "_suri:User1:Clientes:582ca1a88d6a46a9ee86a40e"_selection_1: truedireccion: "ssfasf"edad: 42email: "asdfaf@sdaf.com"nacimiento: "1974-11-13"nombre: "Javier"pais_code: "mx"rfc: "asdfafds"telefono: "321412"__proto__: Object1: Object_id: "_suri:User1:Clientes:582ca7e48d6a46a9ee86a419"direccion: "asdf"edad: 35email: "softjei@gmail.com"nacimiento: "1984-11-13"nombre: "Aldo"password: "jsolis"rfc: "asdf"__proto__: Object2: Object_id: "_suri:User1:Clientes:582ca7db8d6a46a9ee86a418"direccion: "asdf"edad: 28email: "asdasd"nacimiento: "1988-11-15"nombre: "Vanne"rfc: "asfd"telefono: "234234"__proto__: Objectlength: 3__proto__: Array[0]endRow: 3startRow: 0status: 0totalRows: 3__proto__: Object
+ds.fetch({"sortBy":["-nacimiento"]})
+
+ **/
