@@ -1,0 +1,15 @@
+<toaster-container></toaster-container>
+<div class="animated fadeIn">
+  <div class="panel panel-default codemirror-panel">
+    <div class="panel-heading text-right">
+      <p class="codemirror-panel-heading text-muted">{{fileName}}</p>
+      <div class="btn-group">
+        <a ng-click="save()" class="btn btn-default"><span class="fa fa-save"></span></a>
+        <a ui-sref="admin.datasources" class="btn btn-default"><span class="fa fa-close"></span></a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div ui-codemirror ui-codemirror-opts="editorOptions" ng-model="fileContent"></div>
+    </div>
+  </div>
+</div>
