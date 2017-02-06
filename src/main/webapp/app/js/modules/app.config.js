@@ -175,7 +175,7 @@
           },
           'content': {
             templateUrl: 'templates/pmcatalog.html',
-            controller: "PMCatalog as PM"
+            controller: "PMCatalog"//as PM
           }
         },
         resolve: {
@@ -192,7 +192,12 @@
                     'js/dataviz/charts.js',
                     'js/dataviz/maps.js',
                     'js/dataviz/datatables.js',
-                    'js/dataviz/dataviz.js'
+                    'js/dataviz/dataviz.js',
+                    'js/controllers/pmcatalog.controller.js',
+                    'js/services/pmcatalog.service.js',
+                    'lib/bootbox/bootbox.js',
+                    'lib/ng-file-upload/ng-file-upload-shim.min.js',
+                    'lib/ng-file-upload/ng-file-upload.min.js'
                   ]
               }
             ]);
