@@ -1,0 +1,42 @@
+
+/**Top Navbar*/
+.navbar-brand {
+  img {
+    width: auto;
+    height:30px;
+    margin-top: -6px;
+  }
+}
+
+/* Side navbar */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+  padding: 0px;
+
+  @media (min-width: 768px) {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding-top: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+
+    #side-menu ul a {
+      padding-left: 20px;
+    }
+  }
+
+  .active {
+    border-left: 4px solid #ccc;
+  }
+}

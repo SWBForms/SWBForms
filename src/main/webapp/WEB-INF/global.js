@@ -30,7 +30,7 @@ eng.dataStores["ts_leveldb"]={
 eng.dataSources["User"]={
     scls: "User",
     modelid: "SWBForms",
-    dataStore: "mongodb",   
+    dataStore: "mongodb",
     displayField: "fullname",
     fields:[
         {name:"fullname",title:"Nombre",type:"string"},
@@ -53,7 +53,7 @@ eng.dataProcessors["UserProcessor"]={
             request.data.password=this.utils.encodeSHA(request.data.password);
         }
         return request;
-    }          
+    }
 };
 
 
@@ -62,7 +62,7 @@ eng.routes["global"]={
     routeList:[
         { routePath: "login", forwardTo: "/work/config/login.jsp", isRestricted: "false", zindex:1 },
         { routePath: "register", forwardTo: "/work/config/register.jsp", isRestricted: "false" },
-        { routePath: "", forwardTo: "/index.jsp", isRestricted: "false"},
+        { routePath: "", forwardTo: "/work/config/login.jsp", isRestricted: "false"},
         { routePath: "work", isRestricted: "true"},
         { routePath: "work/*", jspMapTo: "/work/jsp/", isRestricted: "true" },
         { routePath: "ds", forwardTo: "/platform/jsp/datasource.jsp", isRestricted: "true" },
