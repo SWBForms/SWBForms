@@ -1,35 +1,159 @@
 /** Class to encapsulate maps creation */
 class MapsFactory {
+
   constructor() { }
 
   _onEachFeature(feature, layer) {
-		var popupContent = "<p>I started out as a GeoJSON " +
-				feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
+    var popupContent = "<p>I started out as a GeoJSON " +
+        feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
 
-		if (feature.properties && feature.properties.popupContent) {
-			popupContent += feature.properties.popupContent;
-		}
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
 
-		layer.bindPopup(popupContent);
-	}
-
-  //TODO: Place specific code from here
-  createMap(container) {
-    if (!L) return;
-    //Sample code
-    let mymap = L.map(container).setView([25.793, -108.977], 12);
-    L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 18,
-    }).addTo(mymap);
-    
-    return mymap;
+    layer.bindPopup(popupContent);
   }
 
-  addGeoJSONLayer(map, data) {
-    L.geoJSON(data, {
-      onEachFeature: this._onEachFeature
-    }).addTo(map);
+  //TODO: Place specific code from here
+  createMap(container, engine) {
+
+    switch(engine) {
+      case ENGINE_GOOGLEMAPS:
+
+        var self = this;
+        var map;
+
+        //add api key
+        GoogleMapsLoader.KEY = 'AIzaSyC2hy80dZpGaH4_ivGjqYS1f_UDJZrgyBI';
+
+        //load service
+        GoogleMapsLoader.onLoad(function(google) {
+          console.log('I just loaded google maps api');
+        });
+
+        //load map
+        GoogleMapsLoader.load(function(google) {
+
+          self.map = new google.maps.Map(document.getElementById(container), {
+            center: {lat: 19.509071897736277, lng: -99.1387152671814},
+            scrollwheel: true,
+            zoom: 15
+          });
+
+        });
+
+        return self.map;
+
+      break;
+      case ENGINE_LEAFLET:
+        if (!L) return;
+        let mymap = L.map(container).setView([25.793, -108.977], 12);
+          
+        L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          maxZoom: 18,
+        }).addTo(mymap);    
+          
+        return mymap;
+      break;
+      case ENGINE_D3:
+      break;
+      default:
+
+    }
+    
+  }
+
+  addGeoJSONLayer(map, data, engine) {
+    switch(engine) {
+      case ENGINE_GOOGLEMAPS:
+
+        if (map) {
+          map.data.loadGeoJson(data);
+        };
+
+      break;
+      case ENGINE_LEAFLET:
+
+        if (L) {
+          L.geoJSON(data, {
+            onEachFeature: this._onEachFeature
+          }).addTo(map);
+        };
+
+      break;
+      case ENGINE_D3:
+      break;
+      default:
+    }
+
+    return;
+  }
+
+  addRoute(map, origin, destination, type, engine) {
+      switch(engine) {
+        case ENGINE_GOOGLEMAPS:
+
+          if (map) {
+            GoogleMapsLoader.load(function(google, map, origin, destination, type) {
+              directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map
+              });
+
+              //formar el request con la ruta
+              var request = {
+                  destination: destination,
+                  origin: origin,
+                  travelMode: type
+              };
+
+              //ejecutar la direccion del servicio
+              var directionsService = new google.maps.DirectionsService();
+              directionsService.route(request, function(response, status) {
+                  if (status == 'OK') {
+                      //si se realizo correctamente la consulta se establece la dirección
+                      directionsDisplay.setDirections(response);
+                  }
+              });
+
+            });
+
+          };
+
+        break;
+        case ENGINE_LEAFLET:
+
+        break;
+        case ENGINE_D3:
+        break;
+        default:
+      }
+
+      return;
+  }
+
+  addMarket(map, market, title, engine) {
+
+    switch(engine) {
+        case ENGINE_GOOGLEMAPS:
+          if (map) {
+            GoogleMapsLoader.load(function(google, map, market, title) {
+              var marker2 = new google.maps.Marker({
+                  map: map,
+                  position: market,
+                  title: title
+              });
+            });
+          };
+        break;
+        case ENGINE_LEAFLET:
+        break;
+        case ENGINE_D3:
+        break;
+        default:
+      }
+
+    return;
   }
 
   /*createMap(container, data, engine, options) {
