@@ -22,6 +22,11 @@
 
   <dependencies>
     <dependency>
+       <groupId>com.opencsv</groupId>
+       <artifactId>opencsv</artifactId>
+       <version>3.9</version>
+    </dependency>
+    <dependency>
       <groupId>com.github.FST2015PM</groupId>
       <artifactId>SWBFormsCore</artifactId>
       <version>master-SNAPSHOT</version>

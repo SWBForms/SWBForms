@@ -64,9 +64,25 @@ eng.dataSources["DSEndpoint"] = {
     scls: "DSEndpoint",
     modelid: DBModel,
     dataStore: "mongodb",
-    displayField: "nombre",
+    displayField: "name",
     fields: [
         {name: "name", title: "Nombre", required: true, type: "string"},
-        {name:"public", title:"Público", type:"boolean", required: true}
+        {name:"resourceName", title:"Recurso", type:"String", required: true},
+        {name:"datasourceName", title:"DataSource", type:"String", required: true},
+        {name:"enabled", title:"Habilitado", type:"boolean", required: true}
     ]
+};
+
+eng.dataExtractors["EstadosExtractor"] = {
+  timer: { time: 10, unit: "m" },
+  dataSource: "Estado",
+  filePath: "/app/mockdata/Estados.zip",
+  zipped: true,
+  zipPath: "/datos/Estados.csv",
+  class: "org.fst2015pm.swbforms.extractors.CSVExtractor",
+  columnMapping: {
+    CVE_ENT:"clave",
+    NOM_ENT:"nombre",
+    NOM_ABR:"abreviatura"
+  }
 };
