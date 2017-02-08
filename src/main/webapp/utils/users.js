@@ -1,7 +1,8 @@
+var DBModel = "FST2015PM";
 //******* DataSorices ************
 eng.dataSources["User"]={
     scls: "User",
-    modelid: "SWBForms",
+    modelid: DBModel,
     dataStore: "mongodb",  
     displayField: "fullname",
     fields:[

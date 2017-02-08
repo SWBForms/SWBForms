@@ -249,7 +249,8 @@
                   files: [
                     'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/AngularJS-Toaster/toaster.min.js',
-                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
                   ]
               }
             ]);
@@ -296,6 +297,36 @@
           },
           'content': {
             templateUrl: 'templates/usersAdd.html',
+            controller: 'UsersCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      }).state('admin.edituser', {
+        url: '/users/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/usersEdit.html',
             controller: 'UsersCtrl'
           }
         },

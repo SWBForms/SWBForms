@@ -6,6 +6,7 @@
 package org.pm.services;
 
 import java.io.*;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.ServletException;
@@ -25,7 +26,7 @@ import org.semanticwb.datamanager.SWBScriptEngine;
 @MultipartConfig
 public class FileUpload extends HttpServlet {
 
-    private final String USERS_PATH = "/images/pm";
+    private final String IMAGES_PATH = "/images/pm";
 
 
     @Override
@@ -36,15 +37,18 @@ public class FileUpload extends HttpServlet {
         SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
         SWBDataSource ds = engine.getDataSource("PMCatalog");
 
-        //String _id = "";
+        String _oldImage = "";
         String filename = "";
-        String userPath = "";
+        String imagePath = "";
         String strParameter = request.getParameter("_id");
         DataObject pm = new DataObject();
         if (strParameter != null) {
             pm = saveData(request);
             pm.addParam("_id", strParameter);
-
+            DataObject objOld = ds.fetchObjById(strParameter);
+            if(objOld.getString("imagen") != null) {
+                _oldImage = objOld.getString("imagen");
+            }
         } else {
             DataObject data = saveData(request);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -57,9 +61,14 @@ public class FileUpload extends HttpServlet {
         Part filePart = request.getPart("file");
         if (filePart != null && filePart.getSize() > 0) {
             filename = getFileName(filePart);
-            userPath = getUserPath(strParameter);
-            inputStreamToFile(filePart.getInputStream(), request.getServletContext().getRealPath(userPath), filename);
+            filename = Normalizer.normalize(filename, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ", "_");
+            imagePath = getImagePath(strParameter);
+            inputStreamToFile(filePart.getInputStream(), request.getServletContext().getRealPath(imagePath), filename);
             pm.addParam("imagen", filename);
+            if(_oldImage != "") {
+                File oldImage = new File(request.getServletContext().getRealPath(imagePath) + "/" + _oldImage);
+                oldImage.delete();
+            }
         } else {
             System.out.println("error file");
         }
@@ -113,8 +122,8 @@ public class FileUpload extends HttpServlet {
         return filepath;
     }
 
-    private String getUserPath(String id) {
-        StringBuffer path = new StringBuffer(USERS_PATH);
+    private String getImagePath(String id) {
+        StringBuffer path = new StringBuffer(IMAGES_PATH);
         if (id != null && !id.isEmpty() && id.lastIndexOf(":") > 0) {
             path.append("/");
             path.append(id.substring(id.lastIndexOf(":") + 1));
