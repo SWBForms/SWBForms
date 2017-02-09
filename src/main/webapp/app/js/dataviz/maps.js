@@ -160,20 +160,44 @@ _onEachStyle(feature){
           };
         break;
         case ENGINE_LEAFLET:
-            let greenIcon = L.icon({
-                iconUrl: './img/icons/leaf-green.png',
-                shadowUrl: './img/icons/leaf-shadow.png',
-                iconSize:     [38, 95], // size of the icon
-                shadowSize:   [50, 64], // size of the shadow
-                iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-                shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-            });
-             L.geoJSON(data, {
-                pointToLayer: function (feature, latlng) {
+        let greenIcon = L.icon({
+            iconUrl: './img/icons/leaf-green.png',
+            shadowUrl: './img/icons/leaf-shadow.png',
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        let escuela = L.icon({
+            iconUrl: './img/icons/bandera.png',
+            iconSize:     [38, 80], // size of the icon
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        let templo = L.icon({
+            iconUrl: './img/icons/blanco.png',
+            iconSize:     [38, 70], // size of the icon
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+       L.geoJSON(data, {
+          pointToLayer: function (feature, latlng) {
+              switch(feature.properties.geografico){
+                case "Escuela":
+                  return L.marker(latlng, {icon: escuela});
+                break;
+                case "Templo":
+                  return L.marker(latlng, {icon: templo});
+                break;
+                default:
                   return L.marker(latlng, {icon: greenIcon});
-                }
-            }).addTo(map);
+                break;
+              }
+          }
+      }).addTo(map);
         break;
         case ENGINE_D3:
         break;
@@ -184,43 +208,3 @@ _onEachStyle(feature){
 
 
 }//maps
-
-
-
-
-
-  /*createMap(container, data, engine, options) {
-    if (!L) return;
-    //Sample code
-    let mymap = L.map(container).setView([25.793, -108.977], 12);
-    L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 18,
-    }).addTo(mymap);
-   let marker1 = L.marker([25.789, -109.004]).addTo(mymap);
-   let marker2 = L.marker([25.761, -108.967]).addTo(mymap);
-   let circle = L.circle([25.744, -108.993], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 1000
-    }).addTo(mymap);
-    let polygon = L.polygon([
-      [25.782, -109.029],
-      [25.772, -108.984],
-      [25.757, -109.011]
-    ]).addTo(mymap);
-    marker1.bindPopup("<b>Parque</b>").openPopup();
-    marker2.bindPopup("<b>Estaci&oacute;n de Trenes</b>");
-    circle.bindPopup("&Aacute;rea uno");
-    polygon.bindPopup("&Aacute;rea dos");
-    let popup = L.popup();
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent("Coordenadas seleccionadas  " + e.latlng.toString())
-            .openOn(mymap);
-    }
-   mymap.on('click', onMapClick);
-   return mymap;
- }*/
