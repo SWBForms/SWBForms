@@ -76,9 +76,11 @@ eng.dataSources["DSEndpoint"] = {
 eng.dataExtractors["EstadosExtractor"] = {
   timer: { time: 10, unit: "m" },
   dataSource: "Estado",
-  filePath: "/app/mockdata/Estados.zip",
+  fileLocation: "/app/mockdata/Estados.zip",
+  //fileLocation: "https://www.dropbox.com/s/1pd23rsa7rkojzy/tempFile.zip?dl=1",
   zipped: true,
   zipPath: "/datos/Estados.csv",
+  //zipPath: "/cat_entidad_ENE2016.dbf",
   class: "org.fst2015pm.swbforms.extractors.CSVExtractor",
   columnMapping: {
     CVE_ENT:"clave",
