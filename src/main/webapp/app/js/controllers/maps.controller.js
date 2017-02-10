@@ -44,7 +44,6 @@
       TRANSIT
       WALKING
     */
-
     let cu = {lat: 19.3216466, lng: -99.202668};
     let ipnTurismo = {lat: 19.514384, lng: -99.140244};
 

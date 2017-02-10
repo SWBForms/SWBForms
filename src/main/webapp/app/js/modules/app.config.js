@@ -117,8 +117,7 @@
           },
           loadDependencies: function($ocLazyLoad, $stateParams) {
             return $ocLazyLoad.load([
-              {
-                  serie: true,
+              {   serie: true,
                   files: [
                     'lib/datatables.net/js/jquery.dataTables.min.js',
                     'lib/gijgo/dist/combined/js/gijgo.min.js',
