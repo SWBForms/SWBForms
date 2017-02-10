@@ -281,7 +281,8 @@
                   files: [
                     'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/AngularJS-Toaster/toaster.min.js',
-                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
                   ]
               }
             ]);
@@ -289,7 +290,7 @@
         }
       })
       .state('admin.adduser', {
-        url: '/users/add',
+        url: '/users/add/:action',
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
@@ -328,6 +329,67 @@
           'content': {
             templateUrl: 'templates/usersEdit.html',
             controller: 'UsersCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.addrole', {
+        url: '/role/add/:action',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/roleAdd.html',
+            controller: 'RolesCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      }).state('admin.editrole', {
+        url: '/role/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/roleEdit.html',
+            controller: 'RolesCtrl'
           }
         },
         resolve: {

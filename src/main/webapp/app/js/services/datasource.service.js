@@ -15,6 +15,7 @@
     service.updateObject = updateObject;
     service.getObject = getObject;
     service.removeObject = removeObject;
+    service.getListObjByProp = getListObjByProp;
 
     return service;
 
@@ -138,7 +139,34 @@
 
       return deferred.promise;
     }
+    
+    /**
+    Gets an object with given ID from a datasource
+    */
+    function getListObjByProp(objId, prop, dsName) {
+      var deferred = $q.defer();
+      if (dsName && dsName.length) {
+        if (objId && objId.length) {
+          let theUrl = `/api/datasources/${dsName}/${prop}/${objId}`;
+          $http({
+            url: theUrl,
+            method: "GET"
+          }).then((response) => {
+            deferred.resolve(response);
+          })
+          .catch((error) => {
+            deferred.reject(error);
+          });
+        } else {
+          deferred.reject("No object ID provided");
+        }
+      } else {
+        deferred.reject("No datasource name provided");
+      }
 
+      return deferred.promise;
+    }
+    
     /**
     Removes an object from a given datasource
     */

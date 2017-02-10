@@ -60,6 +60,17 @@ eng.dataSources["Role"] = {
     ]
 };
 
+eng.dataSources["UserRole"] = {
+    scls: "UserRole",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "title",
+    fields: [
+        {name: "user", title: "Usuario", stype: "select", dataSource:"User"},
+        {name: "role", title: "Rol", stype: "select", multiple:true , dataSource:"Role"}
+    ]
+};
+
 eng.dataSources["DSEndpoint"] = {
     scls: "DSEndpoint",
     modelid: DBModel,
