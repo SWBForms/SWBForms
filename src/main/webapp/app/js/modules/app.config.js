@@ -478,9 +478,21 @@
         ]
       },
       {
-        label: "DataSources",
-        link: "#",
-        stateLink: 'admin.datasources'
+        label: "Fuentes de datos",
+        menuItems: [
+          {
+            label:"Extractores",
+            stateLink: 'admin.dataextractors'
+          },
+          {
+            label:"Catálogos",
+            stateLink: 'admin.catalogs'
+          },
+          {
+            label:"DataSources",
+            stateLink: 'admin.datasources'
+          }
+        ]
       },
       {
         label: "Catálogo de PM",
