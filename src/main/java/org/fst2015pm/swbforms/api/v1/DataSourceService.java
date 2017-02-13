@@ -69,7 +69,7 @@ public class DataSourceService {
 	@GET
 	@Path("/{dsname}")
 	@Produces("application/json")
-	public Response getDataSource(@PathParam("dsname") String dataSourceId, @Context UriInfo info) {
+	public Response getDataSourceObjects(@PathParam("dsname") String dataSourceId, @Context UriInfo info) {
 		HttpSession session = httpRequest.getSession();
 		MultivaluedMap<String, String> params = info.getQueryParameters();
 		DataObject queryObj = new DataObject();
@@ -229,7 +229,7 @@ public class DataSourceService {
 				}
 
 				if (validateObject(obj)) {
-					System.out.println(obj);
+					//System.out.println(obj);
 					updateObj = ds.updateObj(obj);
 				}
 			}
@@ -272,7 +272,7 @@ public class DataSourceService {
 		return true;
 	}
         
-	@GET
+	/*@GET
 	@Path("/{dsname}/{prop}/{objId}")
 	@Produces("application/json")
 	public Response getListObjectByProperty(@PathParam("dsname") String dataSourceId, @PathParam("prop") String prop,  @PathParam("objId") String oId)
@@ -298,5 +298,5 @@ public class DataSourceService {
 		}
 
 		return Response.status(403).entity("forbidden").build();
-	} 
+	} */
 }
