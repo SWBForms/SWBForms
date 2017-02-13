@@ -15,16 +15,11 @@ import org.semanticwb.datamanager.DataExtractorBase;
 import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.script.ScriptObject;
 
-/**
- * CSV Extractor implementation.
- * @author Hasdai Pacheco
- *
- */
-public class CSVExtractor extends PMExtractorBase {
+public class DBFExtractor extends PMExtractorBase {
 	/**
-	 * Constructor. Creates a new Instance of CSVExtractor.
+	 * Constructor. Creates a new instance of a DBFExtractor.
 	 */
-	public CSVExtractor () {
+	public DBFExtractor() {
 		super();
 	}
 	
@@ -39,6 +34,7 @@ public class CSVExtractor extends PMExtractorBase {
 		if (null == charset || charset.isEmpty()) charset = "UTF-8";
 		
 		tblName = tblName.substring(0, tblName.lastIndexOf("."));
+		props.put("fileExtension", ".dbf");
 		props.put("charset", charset);
 		
 		//Get column mapping

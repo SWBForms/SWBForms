@@ -3,8 +3,14 @@ package org.fst2015pm.swbforms.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.Enumeration;
+import java.util.SortedMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -13,9 +19,76 @@ import java.util.zip.ZipFile;
  * @author Hasdai Pacheco
  *
  */
-public class FileUtils {
+public class FSTUtils {
 	/** Buffer size */
 	static int BUFFER = 2048;
+	
+	public static class DATA {
+		public static Object toDataType(String val, String type) {
+			switch (type.toLowerCase()) {
+			case "string":
+				return new String(val);
+			case "float":
+				return Float.parseFloat(val);
+			case "double":
+				return Double.parseDouble(val);
+			case "int":
+			case "integer":
+				return Integer.parseInt(val);
+			case "boolean":
+				return Boolean.parseBoolean(val);
+			}
+			
+			return null;
+		}
+	}
+	
+	public static class FILE {
+		//public static File f = new File();
+		private static final SortedMap<String, Charset> charsets = Charset.availableCharsets();
+		public Charset findCharset(File file) {
+			Charset ret = null;
+			for (String charsetName : charsets.keySet()) {
+				ret = testCharset(file, charsets.get(charsetName));
+			}
+			
+			return ret;
+		}
+		
+		private static Charset testCharset (File f, Charset cs) {
+			try {
+	            BufferedInputStream input = new BufferedInputStream(new FileInputStream(f));
+
+	            CharsetDecoder decoder = cs.newDecoder();
+	            decoder.reset();
+
+	            byte[] buffer = new byte[512];
+	            boolean identified = false;
+	            while ((input.read(buffer) != -1) && (!identified)) {
+	                identified = testBytes(buffer, decoder);
+	            }
+
+	            input.close();
+
+	            if (identified) {
+	                return cs;
+	            } else {
+	                return null;
+	            }
+	        } catch (Exception ex) {
+	            return null;
+	        }
+		}
+		
+		private static boolean testBytes (byte[] bytes, CharsetDecoder csd) {
+			try {
+	            csd.decode(ByteBuffer.wrap(bytes));
+	        } catch (CharacterCodingException cee) {
+	            return false;
+	        }
+	        return true;
+		}
+	}
 	
 	public static class ZIP {
 		/**

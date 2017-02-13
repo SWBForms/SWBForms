@@ -1,52 +1,67 @@
 var DBModel = "FST2015PM";
 
-eng.dataSources["PMCatalog"] = {
-    scls: "PMCatalog",
+eng.dataSources["MagicTown"] = {
+    scls: "MagicTown",
     modelid: DBModel,
     dataStore: "mongodb",
-    displayField: "titulo",
+    displayField: "name",
     fields: [
-        {name:"claveEstado", title:"Clave de Estado", type:"string", required: true},
-        {name:"claveMunicipio", title:"Clave de Municipio", type:"string", required: true},
-        {name:"claveGeo", title:"Clave Geo", type:"string", required: true},
-        {name: "nombre", title: "Nombre", required: true, type: "string"},
-        {name: "descripcion", title: "Descripción", type: "string"},
-        {name:"incorporado", title:"Incorporado", type:"boolean"},
-        {name:"fechaIncorporacion", title:"Fecha de incorporación", type: "date"},
-        {name: "imagen", title: "Imagen", type: "string"}
+        {name:"CVE_ENT", title:"Clave de Estado", type:"string", required: true},
+        {name:"CVE_MUN", title:"Clave de Municipio", type:"string", required: true},
+        {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
+        {name:"NAME", title: "Nombre", required: true, type: "string"},
+        {name:"DESCRIPTION", title: "Descripción", type: "string"},
+        {name:"ACCEPTED", title:"Incorporado", type:"boolean"},
+        {name:"INCLUSION_DATE", title:"Fecha de incorporación", type: "date"},
+        {name:"ORIGIN", title: "Imagen", type: "string"},
+        {name:"PICTURE", title: "Imagen", type: "string"}
     ]
 };
-eng.dataSources["Estado"] = {
-    scls: "Estado",
+eng.dataSources["State"] = {
+    scls: "State",
     modelid: DBModel,
     dataStore: "mongodb",
-    displayField: "nombre",
+    displayField: "NOM_ENT",
     fields: [
-        {name: "nombre", title: "Estado", required: true, type: "string"},
-        {name: "clave", title: "Clave", required: true, type: "string"},
-        {name: "abreviatura", title: "Nombre abreviatura", required: false, type: "string"}
+        {name: "NOM_ENT", title: "Estado", required: true, type: "string"},
+        {name: "CVE_ENT", title: "Clave", required: true, type: "string"},
+        {name: "NOM_ABR", title: "Nombre abreviatura", required: true, type: "string"},
+        {name: "PTOT", title: "Población total", required: false, type: "int"},
+        {name: "PMAS", title: "Población masculina", required: false, type: "int"},
+        {name: "PFEM", title: "Población femenina", required: false, type: "int"}
     ]
 };
-eng.dataSources["Municipio"] = {
-    scls: "Municipio",
+eng.dataSources["Municipality"] = {
+    scls: "Municipality",
     modelid: DBModel,
     dataStore: "mongodb",
-    displayField: "nombre",
+    displayField: "NOM_MUN",
     fields: [
-        {name: "nombre", title: "Municipio", required: true, type: "string"},
-        {name: "clave", title: "Clave", required: true, type: "string"},
-        {name: "estado", title: "Estado", required: true, stype: "select", dataSource:"Estado"}
+        {name: "NOM_MUN", title: "Municipio", required: true, type: "string"},
+        {name: "CVE_MUN", title: "Clave", required: true, type: "string"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "PTOT", title: "Población total", required: false, type: "int"},
+        {name: "PMAS", title: "Población masculina", required: false, type: "int"},
+        {name: "PFEM", title: "Población femenina", required: false, type: "int"}
     ]
 };
-eng.dataSources["Geo"] = {
-    scls: "Geo",
+
+eng.dataSources["Locality"] = {
+    scls: "Locality",
     modelid: DBModel,
     dataStore: "mongodb",
-    displayField: "nombre",
+    displayField: "NOM_LOC",
     fields: [
-        {name: "nombre", title: "Geo", required: true, type: "string"},
-        {name: "clave", title: "Clave", required: true, type: "string"},
-        {name: "ambito", title: "Ambito", required: false, type: "string"}
+        {name: "NOM_LOC", title: "Municipio", required: true, type: "string"},
+        {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+        {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "LATITUD", title: "Latitud", required: true, type: "double"},
+        {name: "LONGITUD", title: "Longitud", required: true, type: "double"},
+        {name: "ALTITUD", title: "Altitud", required: false, type: "double"},
+        {name: "PTOT", title: "Población total", required: false, type: "int"},
+        {name: "PMAS", title: "Población masculina", required: false, type: "int"},
+        {name: "PFEM", title: "Población femenina", required: false, type: "int"}
     ]
 };
 
@@ -60,6 +75,16 @@ eng.dataSources["Role"] = {
     ]
 };
 
+/*eng.dataSources["Widget"] = {
+    scls: "Widget",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "title",
+    fields: [
+        {name: "title", title: "Nombre", required: true, type: "string"}
+    ]
+};*/
+
 eng.dataSources["DSEndpoint"] = {
     scls: "DSEndpoint",
     modelid: DBModel,
@@ -69,22 +94,54 @@ eng.dataSources["DSEndpoint"] = {
         {name: "name", title: "Nombre", required: true, type: "string"},
         {name:"resourceName", title:"Recurso", type:"String", required: true},
         {name:"datasourceName", title:"DataSource", type:"String", required: true},
-        {name:"enabled", title:"Habilitado", type:"boolean", required: true}
+        {name:"enabled", title:"Habilitado", type:"boolean", required: false}
     ]
 };
 
-eng.dataExtractors["EstadosExtractor"] = {
-  timer: { time: 10, unit: "m" },
-  dataSource: "Estado",
-  fileLocation: "/app/mockdata/Estados.zip",
-  //fileLocation: "https://www.dropbox.com/s/1pd23rsa7rkojzy/tempFile.zip?dl=1",
+/*eng.dataExtractors["MunicipalityExtractor"] = {
+  timer: { time: 1, unit: "m" },
+  dataSource: "Municipality",
+  fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_entidad_ENE2016.zip",
   zipped: true,
-  zipPath: "/datos/Estados.csv",
+  zipPath: "/cat_entidad_ENE2016.dbf",
   //zipPath: "/cat_entidad_ENE2016.dbf",
-  class: "org.fst2015pm.swbforms.extractors.CSVExtractor",
-  columnMapping: {
-    CVE_ENT:"clave",
-    NOM_ENT:"nombre",
-    NOM_ABR:"abreviatura"
-  }
+  class: "org.fst2015pm.swbforms.extractors.DBFExtractor"
+};*/
+
+eng.dataExtractors["StateExtractor"] = {
+  timer: { time: 10, unit: "m" },
+  dataSource: "State",
+  fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_entidad_ENE2016.zip",
+  zipped: true,
+  zipPath: "/cat_entidad_ENE2016.dbf",
+  charset: "ISO-8859-1",
+  class: "org.fst2015pm.swbforms.extractors.DBFExtractor",
+  columns: [
+    { src:"NOM_ENT", type:"string" },
+    { src:"CVE_ENT", type:"string" },
+    { src:"NOM_ABR", type:"string" },
+    { src:"PTOT", type:"int" },
+    { src:"PMAS", type:"int" },
+    { src:"PFEM", type:"int" }
+  ]
 };
+
+/*eng.dataExtractors["LocalityExtractor"] = {
+  timer: { time: 1, unit: "m" },
+  dataSource: "Locality",
+  fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_localidad_DIC2016.zip",
+  zipped: true,
+  zipPath: "/cat_localidad_DIC2016.dbf",
+  class: "org.fst2015pm.swbforms.extractors.DBFExtractor",
+  columns: [
+    {src:"NOM_LOC"},
+    {src:"CVE_LOC"},
+    {src:"CVE_MUN"},
+    {src:"CVE_ENT"},
+    {src:"LATITUD", dest:"LAT"},
+    {src:"LONGITUD", dest: "LON"},
+    {src:"PTOT"},
+    {src:"PMAS"},
+    {src:"PFEM"}
+  ]
+};*/
