@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.pm.services;
+package org.fst2015pm.swbforms.api.v1;
 
 import java.io.*;
 import java.text.Normalizer;
@@ -35,7 +35,7 @@ public class FileUpload extends HttpServlet {
         //PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
         SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
-        SWBDataSource ds = engine.getDataSource("PMCatalog");
+        SWBDataSource ds = engine.getDataSource("MagicTown");
 
         String _oldImage = "";
         String filename = "";
@@ -46,25 +46,25 @@ public class FileUpload extends HttpServlet {
             pm = saveData(request);
             pm.addParam("_id", strParameter);
             DataObject objOld = ds.fetchObjById(strParameter);
-            if(objOld.getString("imagen") != null) {
-                _oldImage = objOld.getString("imagen");
+            if(objOld.getString("PICTURE") != null) {
+                _oldImage = objOld.getString("PICTURE");
             }
         } else {
             DataObject data = saveData(request);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String date = sdf.format(new Date());
-            data.addParam("fechaIncorporacion", date);
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            //String date = sdf.format(new Date());
+            //data.addParam("fechaIncorporacion", date);
             pm = ds.addObj(data).getDataObject("response").getDataObject("data");
             strParameter = pm.getString("_id");
-
         }
+        
         Part filePart = request.getPart("file");
         if (filePart != null && filePart.getSize() > 0) {
             filename = getFileName(filePart);
             filename = Normalizer.normalize(filename, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ", "_");
             imagePath = getImagePath(strParameter);
             inputStreamToFile(filePart.getInputStream(), request.getServletContext().getRealPath(imagePath), filename);
-            pm.addParam("imagen", filename);
+            pm.addParam("PICTURE", filename);
             if(_oldImage != "") {
                 File oldImage = new File(request.getServletContext().getRealPath(imagePath) + "/" + _oldImage);
                 oldImage.delete();
@@ -77,22 +77,22 @@ public class FileUpload extends HttpServlet {
 
     private DataObject saveData(HttpServletRequest request) {
         DataObject pm = new DataObject();
-        if (request.getParameter("nombre") != null && !request.getParameter("nombre").isEmpty()) {
-            pm.addParam("nombre", request.getParameter("nombre"));
-            if (request.getParameter("descripcion") != null && !request.getParameter("descripcion").isEmpty()) {
-                pm.addParam("descripcion", request.getParameter("descripcion"));
+        if (request.getParameter("NAME") != null && !request.getParameter("NAME").isEmpty()) {
+            pm.addParam("NAME", request.getParameter("NAME"));
+            if (request.getParameter("DESCRIPTION") != null && !request.getParameter("DESCRIPTION").isEmpty()) {
+                pm.addParam("DESCRIPTION", request.getParameter("DESCRIPTION"));
             }
-            if (request.getParameter("claveEstado") != null && !request.getParameter("claveEstado").isEmpty()) {
-                pm.addParam("claveEstado", request.getParameter("claveEstado"));
+            if (request.getParameter("CVE_ENT") != null && !request.getParameter("CVE_ENT").isEmpty()) {
+                pm.addParam("CVE_ENT", request.getParameter("CVE_ENT"));
             }
-            if (request.getParameter("claveMunicipio") != null && !request.getParameter("claveMunicipio").isEmpty()) {
-                pm.addParam("claveMunicipio", request.getParameter("claveMunicipio"));
+            if (request.getParameter("CVE_MUN") != null && !request.getParameter("CVE_MUN").isEmpty()) {
+                pm.addParam("CVE_MUN", request.getParameter("CVE_MUN"));
             }
-            if (request.getParameter("claveGeo") != null && !request.getParameter("claveGeo").isEmpty()) {
-                pm.addParam("claveGeo", request.getParameter("claveGeo"));
+            if (request.getParameter("CVE_MTW") != null && !request.getParameter("CVE_MTW").isEmpty()) {
+                pm.addParam("CVE_MTW", request.getParameter("CVE_MTW"));
             }
-            if (request.getParameter("incorporado") != null && !request.getParameter("incorporado").isEmpty()) {
-                pm.addParam("incorporado", Boolean.parseBoolean(request.getParameter("incorporado")));
+            if (request.getParameter("ACCEPTED") != null && !request.getParameter("ACCEPTED").isEmpty()) {
+                pm.addParam("ACCEPTED", Boolean.parseBoolean(request.getParameter("ACCEPTED")));
             }
 
         }
