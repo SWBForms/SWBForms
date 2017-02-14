@@ -3,22 +3,23 @@ class MapsFactory {
 constructor() { }
 
   _onEachFeature(feature, layer) {
-	if (feature.properties && feature.properties.popupContent) {
-		layer.bindPopup(feature.properties.popupContent);
-	}
-
-}
+	  if (feature.properties.popupContent) {
+		  layer.bindPopup(feature.properties.popupContent);
+	  }
+  }
 
 _onEachStyle(feature){
     if(feature.properties.color){
-      return {color: feature.properties.color};
+      return {color:feature.properties.color,
+              weight: 5,
+              opacity: 0.65};
     }
 }
 
 /*
 
 */
-  createMap(container, engine) {
+  createMap(container, engine, firstPoint, setZoom) {
     switch(engine){
 
       case ENGINE_LEAFLET:
@@ -33,8 +34,8 @@ _onEachStyle(feature){
               streets     = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 
           let mymap = L.map(container,{
-            center: [25.793, -108.977],
-            zoom: 10,
+            center: [firstPoint[0], firstPoint[1]],
+            zoom: setZoom,
             layers: [grayscale, streets]
           });
 
@@ -59,9 +60,9 @@ _onEachStyle(feature){
             //load map
             GoogleMapsLoader.load(function(google) {
               let map = new google.maps.Map(document.getElementById(container), {
-                center: {lat: 19.509071897736277, lng: -99.1387152671814},
+                center: {lat: firstPoint[0], lng: firstPoint[1]},
                 scrollwheel: true,
-                zoom: 15
+                zoom: setZoom
               });
               return map;
             });
@@ -129,7 +130,9 @@ _onEachStyle(feature){
         default:
       }//switch
   }//route
-
+  addSimpleMarker(data, map){
+      return L.marker([data[0], data[1]]).addTo(map);
+  }
 	addCircleMarker(map, data){
     let geojsonMarkerOptionsBlue = {
         radius: 8,
@@ -139,9 +142,22 @@ _onEachStyle(feature){
         opacity: 1,
         fillOpacity: 0.8
     };
+
+    let geojsonMarkerOptionsGreen = {
+        radius: 8,
+        fillColor: "#04B431",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
  	 L.geoJSON(data, {
  	    pointToLayer: function (feature, latlng) {
- 		     return L.circleMarker(latlng, geojsonMarkerOptionsBlue);
+        if (feature.properties.popupContent)
+ 		      return L.circleMarker(latlng, geojsonMarkerOptionsBlue)
+        else
+          return L.circleMarker(latlng, geojsonMarkerOptionsGreen)
  	    }
  	}).addTo(map);
   }
