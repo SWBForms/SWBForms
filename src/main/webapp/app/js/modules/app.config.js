@@ -121,8 +121,8 @@
                   serie: true,
                   files: [
                     'lib/datatables.net/js/jquery.dataTables.min.js',
-                    'lib/gijgo/dist/combined/js/gijgo.min.js'
-                    'lib/gijgo/dist/combined/js/gijgo.js'
+                    'lib/gijgo/dist/combined/js/gijgo.min.js',
+                    'lib/gijgo/dist/combined/js/gijgo.js',
                     'js/dataviz/constants.js',
                     'js/dataviz/charts.js',
                     'js/dataviz/maps.js',
@@ -144,6 +144,35 @@
           'content': {
             templateUrl: 'templates/gridster.html',
             controller: "GridsterCtrl as gridster"
+          }
+        }
+      })
+      .state('dashboard.gridsterAngular', {
+        url: "/gridsterAngular",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/gridsterAngular.html',
+            controller: "GridsterAngularCtrl as gristerAngular"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/angular-gridster/dist/angular-gridster.min.css',
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                  ]
+              }
+            ]);
           }
         }
       })
