@@ -8,6 +8,7 @@ eng.dataSources["MagicTown"] = {
     fields: [
         {name:"CVE_ENT", title:"Clave de Estado", type:"string", required: true},
         {name:"CVE_MUN", title:"Clave de Municipio", type:"string", required: true},
+        {name:"CVE_LOC", title:"Clave de Localidad", type:"string", required: true},
         {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
         {name:"NAME", title: "Nombre", required: true, type: "string"},
         {name:"DESCRIPTION", title: "Descripción", type: "string"},
@@ -71,7 +72,8 @@ eng.dataSources["Role"] = {
     dataStore: "mongodb",
     displayField: "title",
     fields: [
-        {name: "title", title: "Nombre", required: true, type: "string"}
+        {name: "title", title: "Nombre", required: true, type: "string"},
+        {name: "desription", title: "Descripción", required: true, type: "string"}
     ]
 };
 
@@ -98,23 +100,14 @@ eng.dataSources["DSEndpoint"] = {
     ]
 };
 
-/*eng.dataExtractors["MunicipalityExtractor"] = {
-  timer: { time: 1, unit: "m" },
-  dataSource: "Municipality",
-  fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_entidad_ENE2016.zip",
-  zipped: true,
-  zipPath: "/cat_entidad_ENE2016.dbf",
-  //zipPath: "/cat_entidad_ENE2016.dbf",
-  class: "org.fst2015pm.swbforms.extractors.DBFExtractor"
-};*/
-
 eng.dataExtractors["StateExtractor"] = {
-  timer: { time: 10, unit: "m" },
+  timer: { time: 30, unit: "d" },
   dataSource: "State",
   fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_entidad_ENE2016.zip",
   zipped: true,
   zipPath: "/cat_entidad_ENE2016.dbf",
   charset: "ISO-8859-1",
+  overwrite: true,
   class: "org.fst2015pm.swbforms.extractors.DBFExtractor",
   columns: [
     { src:"NOM_ENT", type:"string" },
@@ -126,22 +119,43 @@ eng.dataExtractors["StateExtractor"] = {
   ]
 };
 
-/*eng.dataExtractors["LocalityExtractor"] = {
-  timer: { time: 1, unit: "m" },
+eng.dataExtractors["MunicipalityExtractor"] = {
+  timer: { time: 30, unit: "d" },
+  dataSource: "Municipality",
+  fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_municipio_OCT2016.zip",
+  zipped: true,
+  zipPath: "/cat_municipio_OCT2016.dbf",
+  charset: "ISO-8859-1",
+  overwrite: true,
+  class: "org.fst2015pm.swbforms.extractors.DBFExtractor",
+  columns: [
+    { src:"NOM_MUN", type:"string" },
+    { src:"CVE_MUN", type:"string" },
+    { src:"CVE_ENT", type:"string" },
+    { src:"PTOT", type:"int" },
+    { src:"PMAS", type:"int" },
+    { src:"PFEM", type:"int" }
+  ]
+};
+
+eng.dataExtractors["LocalityExtractor"] = {
+  timer: { time: 30, unit: "d" },
   dataSource: "Locality",
   fileLocation: "http://geoweb.inegi.org.mx/mgn2kData/catalogos/cat_localidad_DIC2016.zip",
   zipped: true,
   zipPath: "/cat_localidad_DIC2016.dbf",
+  charset: "ISO-8859-1",
+  overwrite: true,
   class: "org.fst2015pm.swbforms.extractors.DBFExtractor",
   columns: [
-    {src:"NOM_LOC"},
-    {src:"CVE_LOC"},
-    {src:"CVE_MUN"},
-    {src:"CVE_ENT"},
-    {src:"LATITUD", dest:"LAT"},
-    {src:"LONGITUD", dest: "LON"},
-    {src:"PTOT"},
-    {src:"PMAS"},
-    {src:"PFEM"}
+    {src:"NOM_LOC", type:"string"},
+    {src:"CVE_LOC", type:"string"},
+    {src:"CVE_MUN", type:"string"},
+    {src:"CVE_ENT", type:"string"},
+    {src:"LATITUD", dest:"LAT", type:"double"},
+    {src:"LONGITUD", dest: "LON", type:"double"},
+    {src:"PTOT", type:"int"},
+    {src:"PMAS", type:"int"},
+    {src:"PFEM", type:"int"}
   ]
-};*/
+};
