@@ -31,6 +31,7 @@ public class DBFExtractor extends PMExtractorBase {
 		String dbPath = filePAth.substring(0, filePAth.lastIndexOf("/"));
 		String tblName = filePAth.substring(filePAth.lastIndexOf("/")+1, filePAth.length());
 		String charset = extractorDef.getString("charset");
+		boolean clearDS= Boolean.valueOf(extractorDef.getString("overwrite"));
 		if (null == charset || charset.isEmpty()) charset = "UTF-8";
 		
 		tblName = tblName.substring(0, tblName.lastIndexOf("."));
@@ -60,6 +61,14 @@ public class DBFExtractor extends PMExtractorBase {
 			conn = DriverManager.getConnection("jdbc:relique:csv:" + dbPath, props);
 		    Statement stmt = conn.createStatement();
 		    ResultSet results = stmt.executeQuery("SELECT * FROM "+tblName);
+		    
+		    //Clear datasource
+		    if (clearDS) {
+		    	DataObject q = new DataObject();
+		    	q.addParam("removeByID", false);
+		    	q.addParam("data", new DataObject());
+		    	base.getDataSource().remove(q);
+		    }
 		    
 		    while(results.next()) {
 		    	DataObject obj = new DataObject(); 

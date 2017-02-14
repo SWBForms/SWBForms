@@ -59,7 +59,7 @@ public class PMExtractorBase implements PMExtractor {
 		if (remote) {
 			System.out.println("Downloading resource "+ url +"...");
 			destDir = new File(destPath,"tempFile");
-			org.apache.commons.io.FileUtils.copyURLToFile(url, destDir);
+			org.apache.commons.io.FileUtils.copyURLToFile(url, destDir, 5000, 5000);
 			fileUrl = destPath + "/tempFile";
 		}
 		
