@@ -37,16 +37,30 @@
         widgets: [{
             col: 0,
             row: 0,
-            sizeY: 1,
+            sizeY: 4,
             sizeX: 1,
             content: '<div class="gridster-angular-content-item">Chars</div>'
           },
           {
-            col: 2,
-            row: 1,
-            sizeY: 1,
+            col: 4,
+            row: 0,
+            sizeY: 2,
             sizeX: 1,
+            content: '<div class="gridster-angular-content-item">Chars 2</div>'
+          },
+          {
+            col: 1,
+            row: 1,
+            sizeY: 2,
+            sizeX: 3,
             content: '<div class="gridster-angular-content-item">Geo map</div>'
+          },
+          {
+            col: 1,
+            row: 3,
+            sizeY: 4,
+            sizeX: 4,
+            content: '<div class="gridster-angular-content-item">Item</div>'
           }
         ]
       },
