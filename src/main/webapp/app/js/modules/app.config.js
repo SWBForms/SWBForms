@@ -117,7 +117,8 @@
           },
           loadDependencies: function($ocLazyLoad, $stateParams) {
             return $ocLazyLoad.load([
-              {   serie: true,
+              {
+                  serie: true,
                   files: [
                     'lib/datatables.net/js/jquery.dataTables.min.js',
                     'lib/gijgo/dist/combined/js/gijgo.min.js',
@@ -143,6 +144,35 @@
           'content': {
             templateUrl: 'templates/gridster.html',
             controller: "GridsterCtrl as gridster"
+          }
+        }
+      })
+      .state('dashboard.gridsterAngular', {
+        url: "/gridsterAngular",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/gridsterAngular.html',
+            controller: "GridsterAngularCtrl as gristerAngular"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/angular-gridster/dist/angular-gridster.min.css',
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                  ]
+              }
+            ]);
           }
         }
       })
@@ -224,6 +254,192 @@
           }
         }
       })
+      .state('admin.users', {
+        url: '/users',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/users.html',
+            controller: 'UsersCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.roles', {
+        url: '/roles',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/roles.html',
+            controller: 'RolesCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.adduser', {
+        url: '/users/add/:action',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/usersAdd.html',
+            controller: 'UsersCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      }).state('admin.edituser', {
+        url: '/users/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/usersEdit.html',
+            controller: 'UsersCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.addrole', {
+        url: '/role/add/:action',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/roleAdd.html',
+            controller: 'RolesCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      }).state('admin.editrole', {
+        url: '/role/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/roleEdit.html',
+            controller: 'RolesCtrl'
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
       .state('admin.datasourceedit', {
         url: '/datasources/:id',
         views: {
@@ -279,12 +495,33 @@
     var adminMenuItems = [
       {
         label: "Usuarios y permisos",
-        link: "#"
+        menuItems: [
+          {
+            label:"Usuarios",
+            stateLink: 'admin.users'
+          },
+          {
+            label:"Roles",
+            stateLink: 'admin.roles'
+          }
+        ]
       },
       {
-        label: "DataSources",
-        link: "#",
-        stateLink: 'admin.datasources'
+        label: "Fuentes de datos",
+        menuItems: [
+          {
+            label:"Extractores",
+            stateLink: 'admin.dataextractors'
+          },
+          {
+            label:"Catálogos",
+            stateLink: 'admin.catalogs'
+          },
+          {
+            label:"DataSources",
+            stateLink: 'admin.datasources'
+          }
+        ]
       },
       {
         label: "Catálogo de PM",
