@@ -3,22 +3,23 @@ class MapsFactory {
 constructor() { }
 
   _onEachFeature(feature, layer) {
-	if (feature.properties && feature.properties.popupContent) {
-		layer.bindPopup(feature.properties.popupContent);
-	}
-
-}
+	  if (feature.properties.popupContent) {
+		  layer.bindPopup(feature.properties.popupContent);
+	  }
+  }
 
 _onEachStyle(feature){
     if(feature.properties.color){
-      return {color: feature.properties.color};
+      return {color:feature.properties.color,
+              weight: 5,
+              opacity: 0.65};
     }
 }
 
 /*
 
 */
-  createMap(container, engine) {
+  createMap(container, engine, firstPoint, setZoom) {
     switch(engine){
 
       case ENGINE_LEAFLET:
@@ -33,8 +34,8 @@ _onEachStyle(feature){
               streets     = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 
           let mymap = L.map(container,{
-            center: [25.793, -108.977],
-            zoom: 10,
+            center: [firstPoint[0], firstPoint[1]],
+            zoom: setZoom,
             layers: [grayscale, streets]
           });
 
@@ -59,9 +60,9 @@ _onEachStyle(feature){
             //load map
             GoogleMapsLoader.load(function(google) {
               let map = new google.maps.Map(document.getElementById(container), {
-                center: {lat: 19.509071897736277, lng: -99.1387152671814},
+                center: {lat: firstPoint[0], lng: firstPoint[1]},
                 scrollwheel: true,
-                zoom: 15
+                zoom: setZoom
               });
               return map;
             });
@@ -129,7 +130,9 @@ _onEachStyle(feature){
         default:
       }//switch
   }//route
-
+  addSimpleMarker(data, map){
+      return L.marker([data[0], data[1]]).addTo(map);
+  }
 	addCircleMarker(map, data){
     let geojsonMarkerOptionsBlue = {
         radius: 8,
@@ -139,9 +142,22 @@ _onEachStyle(feature){
         opacity: 1,
         fillOpacity: 0.8
     };
+
+    let geojsonMarkerOptionsGreen = {
+        radius: 8,
+        fillColor: "#04B431",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
  	 L.geoJSON(data, {
  	    pointToLayer: function (feature, latlng) {
- 		     return L.circleMarker(latlng, geojsonMarkerOptionsBlue);
+        if (feature.properties.popupContent)
+ 		      return L.circleMarker(latlng, geojsonMarkerOptionsBlue)
+        else
+          return L.circleMarker(latlng, geojsonMarkerOptionsGreen)
  	    }
  	}).addTo(map);
   }
@@ -160,20 +176,42 @@ _onEachStyle(feature){
           };
         break;
         case ENGINE_LEAFLET:
-            let greenIcon = L.icon({
-                iconUrl: './img/icons/leaf-green.png',
-                shadowUrl: './img/icons/leaf-shadow.png',
-                iconSize:     [38, 95], // size of the icon
-                shadowSize:   [50, 64], // size of the shadow
-                iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-                shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-            });
-             L.geoJSON(data, {
-                pointToLayer: function (feature, latlng) {
+        let greenIcon = L.icon({
+            iconUrl: './img/icon/leaf-green.png',
+            shadowUrl: './img/icon/leaf-shadow.png',
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+        let escuela = L.icon({
+            iconUrl: './img/icon/bandera.png',
+            iconSize:     [38, 80], // size of the icon
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+        let templo = L.icon({
+            iconUrl: './img/icon/blanco.png',
+            iconSize:     [38, 70], // size of the icon
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+       L.geoJSON(data, {
+          pointToLayer: function (feature, latlng) {
+              switch(feature.properties.geografico){
+                case "Escuela":
+                  return L.marker(latlng, {icon: escuela});
+                break;
+                case "Templo":
+                  return L.marker(latlng, {icon: templo});
+                break;
+                default:
                   return L.marker(latlng, {icon: greenIcon});
-                }
-            }).addTo(map);
+                break;
+              }
+          }
+      }).addTo(map);
         break;
         case ENGINE_D3:
         break;
@@ -184,43 +222,3 @@ _onEachStyle(feature){
 
 
 }//maps
-
-
-
-
-
-  /*createMap(container, data, engine, options) {
-    if (!L) return;
-    //Sample code
-    let mymap = L.map(container).setView([25.793, -108.977], 12);
-    L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 18,
-    }).addTo(mymap);
-   let marker1 = L.marker([25.789, -109.004]).addTo(mymap);
-   let marker2 = L.marker([25.761, -108.967]).addTo(mymap);
-   let circle = L.circle([25.744, -108.993], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 1000
-    }).addTo(mymap);
-    let polygon = L.polygon([
-      [25.782, -109.029],
-      [25.772, -108.984],
-      [25.757, -109.011]
-    ]).addTo(mymap);
-    marker1.bindPopup("<b>Parque</b>").openPopup();
-    marker2.bindPopup("<b>Estaci&oacute;n de Trenes</b>");
-    circle.bindPopup("&Aacute;rea uno");
-    polygon.bindPopup("&Aacute;rea dos");
-    let popup = L.popup();
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent("Coordenadas seleccionadas  " + e.latlng.toString())
-            .openOn(mymap);
-    }
-   mymap.on('click', onMapClick);
-   return mymap;
- }*/
