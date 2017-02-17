@@ -12,8 +12,10 @@
   </div>
   <div data-gridster>
     <ul>
-      <li gridster-item="item" ng-repeat="item in dashboard.widgets">   
-        <div class="gridster-angular-content-item" ng-bind-html="item.content"></div>
+      <li gridster-item="item" ng-repeat="item in dashboard.widgets">
+        <button id="{{item.id}}" class="glyphicon glyphicon-trash" removable></button>
+        <div class="gridster-angular-content-item" ng-bind-html="item.content">
+        </div>
       </li>
     </ul>
   </div>
