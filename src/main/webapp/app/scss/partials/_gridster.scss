@@ -4,3 +4,16 @@
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+div.gridster-desktop {
+    li.gridster-item {
+      background-color: #61A9CF;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
+      div.gridster-angular-content-item {
+        width: 100%;
+        height: 100%;
+      }
+    }
+}
