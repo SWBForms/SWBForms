@@ -20,14 +20,15 @@ _onEachStyle(feature){
 
 */
   createMap(container, engine, firstPoint, setZoom) {
+    let mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                        'Imagery © <a href="http://mapbox.com">Mapbox</a>';
     switch(engine){
 
-      case ENGINE_LEAFLET:
+      case ENGINE_LEAFLET_DUAL:
         if (!L) return;
-          let mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                              '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                              'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-          mbUrl ='https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA',
+
+          let mbUrl ='https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA',
           mbUrl2='https://api.mapbox.com/styles/v1/ismene93/ciwd28yeq000h2pnafgwqprhz/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA';
 
           let grayscale   = L.tileLayer(mbUrl2, {id: 'mapbox.light', attribution: mbAttr}),
@@ -68,9 +69,15 @@ _onEachStyle(feature){
             });
 
       break;
-      case ENGINE_D3:
+      case ENGINE_LEAFLET:
+        if (!L) return;
+          let mymap = L.map(container).setView([firstPoint[0], firstPoint[1]], setZoom);
+          L.tileLayer('https://api.mapbox.com/styles/v1/ismene93/ciwcwzju6000f2plkb4k1qk38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA', {
+            attribution: mbAttr,
+            maxZoom: setZoom,
+          }).addTo(mymap);
 
-
+        return mymap;
       break;
     }//switch
   }//createMap
