@@ -73,7 +73,7 @@ public class CSVExtractor extends PMExtractorBase {
 		    		String dataType = null != entry.getString("type") ? entry.getString("type") : "string";
 		    		
 		    		int colIdx = results.findColumn(key);
-		    		Object val = FSTUtils.DATA.toDataType(results.getString(colIdx), dataType);
+		    		Object val = FSTUtils.DATA.getTypedObject(results.getString(colIdx), dataType);
 		    		//System.out.println("Key: "+key+", finalName: "+finalField+", colIndex: "+colIdx);
 		    		if (null != val) {
 		    			obj.put(finalField, val);

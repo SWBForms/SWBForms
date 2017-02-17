@@ -24,19 +24,35 @@ public class FSTUtils {
 	static int BUFFER = 2048;
 	
 	public static class DATA {
-		public static Object toDataType(String val, String type) {
+		public static Object getTypedObject(String val, String type) {
 			switch (type.toLowerCase()) {
 			case "string":
 				return new String(val);
 			case "float":
-				return Float.parseFloat(val);
+				try {
+					return Float.parseFloat(val);
+				} catch (NumberFormatException nfe) {
+					return null;
+				}
 			case "double":
-				return Double.parseDouble(val);
+				try {
+					return Double.parseDouble(val);
+				} catch (NumberFormatException nfe) {
+					return null;
+				}
 			case "int":
 			case "integer":
-				return Integer.parseInt(val);
+				try {
+					return Integer.parseInt(val);
+				} catch (NumberFormatException bfe) {
+					return null;
+				}
 			case "boolean":
-				return Boolean.parseBoolean(val);
+			case "bool":
+				if ("true".equalsIgnoreCase(val) || "false".equalsIgnoreCase(val)) {
+					return Boolean.parseBoolean(val);
+				}
+				return null;
 			}
 			
 			return null;
