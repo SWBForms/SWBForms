@@ -46,18 +46,19 @@ function PMCatalog($scope, $Datasource, Upload, $timeout) {
   $scope.listPM = function () {
     //$PMCatalogService.list('/servicespm?action=list')
     $Datasource.listObjects("MagicTown")
-      .then((response) => {
-        let pmc = [];
-        if (response.data.data && response.data.data.length) {
-          pmc = response.data.data;
-          pmc.forEach((item) => {
-            if (item.PICTURE) {
-              item.PICTURE = "../images/pm/"+item._id.substring(item._id.lastIndexOf(":") + 1) + "/" + item.PICTURE;
-            } else {
-              item.PICTURE = "../app/img/no-imagen.jpg";
-            }
-          });
+    .then((response) => {
+      let pmc = [];
+      if (response.data.data && response.data.data.length) {
+        pmc = response.data.data;
+        pmc.forEach((item) => {
+          if (item.PICTURE) {
+            item.PICTURE = "../images/pm/"+item._id.substring(item._id.lastIndexOf(":") + 1) + "/" + item.PICTURE;
+          } else {
+            item.PICTURE = "../app/img/no-imagen.jpg";
+          }
+        });
         $scope.listPMCatalog = pm;
+      }
     });
   };
 
@@ -95,7 +96,7 @@ function PMCatalog($scope, $Datasource, Upload, $timeout) {
         });
       }
     }
-  }
+  };
 
   $scope.configAdd = function () {
     $scope.dbPM = {nombre: "", descripcion: "", imagen: "", claveEstado: "", claveMunicipio: "", claveGeo: "", incorporado: false};
