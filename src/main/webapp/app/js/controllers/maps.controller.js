@@ -10,8 +10,8 @@
       //LEAFLET
       let mochis = [25.793, -108.977];
       let df = [ 40.46, -100.715 ]
-      let leaf = dataviz.mapsFactory.createMap("map1",ENGINE_LEAFLET, mochis, 10);
-      let mp2 = dataviz.mapsFactory.createMap("map3",ENGINE_LEAFLET, df,5 );
+      let leaf = dataviz.mapsFactory.createMap("map1",ENGINE_LEAFLET_DUAL, mochis, 10);
+      let mp2 = dataviz.mapsFactory.createMap("map3",ENGINE_LEAFLET_DUAL, df,5 );
       let googleMap = dataviz.mapsFactory.createMap("map", ENGINE_GOOGLEMAPS, df,10);
 
       dataviz.mapsFactory.addSimpleMarker(df, mp2);
@@ -40,6 +40,7 @@
         dataviz.mapsFactory.addMarker(leaf, res.data, ENGINE_LEAFLET);
       });
 
+      let leaf = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
 
       //Google Maps
       /*
