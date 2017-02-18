@@ -60,7 +60,7 @@ function PMCatalog($scope, $Datasource, Upload, $timeout) {
         $scope.listPMCatalog = pm;
       }
     });
-  }
+  };
 
   $scope.formPM = function (file) {
     if (file != null || file != undefined) {
