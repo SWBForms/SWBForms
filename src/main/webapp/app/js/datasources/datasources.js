@@ -97,6 +97,7 @@ eng.dataSources["DSEndpoint"] = {
     ]
 };
 
+/*
 eng.dataExtractors["StateExtractor"] = {
   timer: { time: 30, unit: "d" },
   dataSource: "State",
@@ -155,4 +156,4 @@ eng.dataExtractors["LocalityExtractor"] = {
     {src:"PMAS", type:"int"},
     {src:"PFEM", type:"int"}
   ]
-};
+};*/
