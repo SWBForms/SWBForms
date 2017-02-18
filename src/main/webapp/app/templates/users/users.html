@@ -1,0 +1,31 @@
+<div class="animate fadeIn">
+  <h3>Usuarios</h3>
+  <div class="row text-right">
+    <a ui-sref="admin.adduser({action: 'add'})" class="btn btn-primary btn-minw">Agregar usuario</a>
+  </div>
+  <div class="row">
+    <div class="panel panel-default box-panel">
+      <div class="panel-body">
+        <table class="table" id="usersTable">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>E-mail</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="user in users.users">
+              <td>{{user.fullname}}</td>
+              <td>{{user.email}}</td>
+              <td class="text-right">
+                <a class="btn btn-sm btn-primary" ui-sref="admin.edituser({id: '{{user._id}}'})"><span class="fa fa-pencil"></span></a>
+                <a class="btn btn-sm btn-primary" ng-click="users.deleteUsr(user._id)"><span class="fa fa-trash-o"></span></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

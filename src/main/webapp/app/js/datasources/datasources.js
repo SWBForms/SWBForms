@@ -64,26 +64,6 @@ eng.dataSources["Locality"] = {
         {name: "PFEM", title: "Población femenina", required: false, type: "int"}
     ]
 };
-eng.dataSources["Role"] = {
-    scls: "Role",
-    modelid: DBModel,
-    dataStore: "mongodb",
-    displayField: "title",
-    fields: [
-        {name: "title", title: "Nombre", required: true, type: "string"},
-        {name: "desription", title: "Descripción", required: true, type: "string"}
-    ]
-};
-eng.dataSources["UserRole"] = {
-    scls: "UserRole",
-    modelid: DBModel,
-    dataStore: "mongodb",
-    displayField: "user",
-    fields: [
-        {name: "user", title: "Usuario", stype: "select", dataSource:"User"},
-        {name: "role", title: "Rol", stype: "select", multiple:true , dataSource:"Role"}
-    ]
-};
 eng.dataSources["DSEndpoint"] = {
     scls: "DSEndpoint",
     modelid: DBModel,

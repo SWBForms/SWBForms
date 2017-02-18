@@ -1,0 +1,53 @@
+<div class="animate fadeIn">
+  <h3>{{users.formTitle}}</h3>
+  <div class="row">
+    <div class="panel panel-default box-panel">
+      <div class="panel-body">
+        <div class="col-sm-8 col-sm-offset-2">
+          <form name="userEditForm" novalidate class="form-horizontal" ng-submit="users.submitForm(userEditForm)">
+            <div class="form-group" ng-class="{ 'has-error' : (userEditForm.$submitted || userEditForm.fullName.$touched) && userEditForm.fullName.$invalid }">
+              <label class="col-sm-2 control-label">Nombre</label>
+              <div class="col-sm-10">
+                <input type="text" name="fullName" required class="form-control" ng-model="users.userData.fullname"/>
+                <span ng-show="(userEditForm.$submitted || userEditForm.fullName.$touched) && userEditForm.fullName.$invalid" class="help-block">El nombre es requerido</span>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : (userEditForm.$submitted || userEditForm.email.$touched) && userEditForm.email.$invalid }">
+              <label class="col-sm-2 control-label">Correo electrónico:</label>
+              <div class="col-sm-10">
+                <input type="email" required ng-model="users.userData.email" name="email" class="form-control">
+                <span ng-show="(userEditForm.$submitted || userEditForm.email.$touched) && userEditForm.email.$error.email" class="help-block">Escriba una dirección válida</span>
+                <span ng-show="(userEditForm.$submitted || userEditForm.email.$touched) && userEditForm.email.$error.required" class="help-block">El correo electrónico es requerido</span>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : (userEditForm.$submitted || userEditForm.password.$touched) && userEditForm.password.$invalid || !users.isPasswordEqual() }">
+              <label class="col-sm-2 control-label">Password</label>
+              <div class="col-sm-10">
+                <input type="password" name="password" required class="form-control" ng-model="users.password1" ng-blur="users.isPasswordEqual()"/>
+                <span ng-show="(userEditForm.$submitted || userEditForm.password.$touched) && !userEditForm.password.$error.required && !users.isPasswordEqual()" class="help-block">El password no coincide</span>
+                <span ng-show="(userEditForm.$submitted || userEditForm.password.$touched) && userEditForm.password.$error.required" class="help-block">El password es requerido</span>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : (userEditForm.$submitted || userEditForm.password2.$touched) && userEditForm.password2.$invalid || !users.isPasswordEqual() }">
+              <label class="col-sm-2 control-label">Repetir password</label>
+              <div class="col-sm-10">
+                <input type="password" name="password2" class="form-control" ng-model="users.password2" ng-blur="users.isPasswordEqual()"/>
+                <span ng-show="!users.isPasswordEqual()" class="help-block">El password no coincide</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Roles</label>
+              <div class="col-sm-10">
+                <select multiple name="role" ng-model="users.selectedRoles" ng-options="item._id as item.title for item in users.userRoles | orderBy : 'title'" class="form-control" size="5"></select>
+              </div>
+            </div>
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-minw">Guardar</button>
+              <button ui-sref="admin.users" class="btn btn-default btn-minw">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

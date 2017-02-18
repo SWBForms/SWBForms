@@ -310,8 +310,9 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/users.html',
-            controller: 'UsersCtrl'
+            templateUrl: 'templates/users/users.html',
+            controller: 'UsersCtrl',
+            controllerAs: "users"
           }
         },
         resolve: {
@@ -335,15 +336,16 @@
         }
       })
       .state('admin.adduser', {
-        url: '/users/add/:action',
+        url: '/users/add',
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/usersAdd.html',
-            controller: 'UsersCtrl'
+            templateUrl: 'templates/users/userEdit.html',
+            controller: 'UsersEditCtrl',
+            controllerAs: 'users'
           }
         },
         resolve: {
@@ -372,8 +374,9 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/usersEdit.html',
-            controller: 'UsersCtrl'
+            templateUrl: 'templates/users/userEdit.html',
+            controller: 'UsersEditCtrl',
+            controllerAs: 'users'
           }
         },
         resolve: {
@@ -403,7 +406,7 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/roles.html',
+            templateUrl: 'templates/roles/roles.html',
             controller: 'RolesCtrl',
             controllerAs: "roles"
           }
@@ -429,14 +432,14 @@
         }
       })
       .state('admin.addrole', {
-        url: '/role/add/:action',
+        url: '/roles/add',
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/roleAdd.html',
+            templateUrl: 'templates/roles/roleEdit.html',
             controller: 'RolesEditCtrl',
             controllerAs: "roles"
           }
@@ -460,14 +463,14 @@
           }
         }
       }).state('admin.editrole', {
-        url: '/role/edit/:id',
+        url: '/roles/edit/:id',
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/roleAdd.html',
+            templateUrl: 'templates/roles/roleEdit.html',
             controller: 'RolesEditCtrl',
             controllerAs: "roles"
           }

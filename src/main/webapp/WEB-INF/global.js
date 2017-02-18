@@ -37,9 +37,20 @@ eng.dataSources["User"]={
         {name:"fullname",title:"Nombre",type:"string"},
         {name:"password",title:"Contraseña",type:"password"},
         {name:"email",title:"Correo electrónico",type:"string", validators: [{type:"isUnique"}]},
-        {name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
-        {name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
+        {name: "roles", title: "Roles", stype: "select", multiple:true , dataSource:"Role"}
+        //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
+        //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
     ],
+};
+eng.dataSources["Role"] = {
+    scls: "Role",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "title",
+    fields: [
+        {name: "title", title: "Nombre", required: true, type: "string"},
+        {name: "desription", title: "Descripción", required: true, type: "string"}
+    ]
 };
 
 /******* DataProcessors ************/
