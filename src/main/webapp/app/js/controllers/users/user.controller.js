@@ -21,7 +21,7 @@
       bootbox.confirm("<h3>Este usuario será eliminado permanentemente. \n ¿Deseas continuar?</h3>", result => {
         if (result) {
           $Datasource.removeObject(_id, "User")
-          .then((response) => {
+          .then(response => {
             cnt.users.filter((elem, i) => {
               if (elem._id === _id) {
                 cnt.users.splice(i, 1);

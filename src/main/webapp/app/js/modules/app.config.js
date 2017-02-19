@@ -198,15 +198,16 @@
         }
       })
       .state('admin.pmcatalog', {
-        url: "/pmcatalog",
+        url: "/pm",
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/pmcatalog.html',
-            controller: "PMCatalog"//as PM
+            templateUrl: 'templates/magictowns/pmcatalog.html',
+            controller: "PMCatalog",
+            controllerAs: "mtown"
           }
         },
         resolve: {
@@ -218,14 +219,91 @@
               {
                   serie: true,
                   files: [
-                    'lib/datatables.net/js/jquery.dataTables.min.js',
-                    'js/dataviz/constants.js',
-                    'js/dataviz/charts.js',
-                    'js/dataviz/maps.js',
-                    'js/dataviz/datatables.js',
-                    'js/dataviz/dataviz.js',
-                    'js/controllers/pmcatalog.controller.js',
-                    'js/services/pmcatalog.service.js',
+                    //'js/dataviz/constants.js',
+                    //'js/dataviz/charts.js',
+                    //'js/dataviz/maps.js',
+                    //'js/dataviz/datatables.js',
+                    //'js/dataviz/dataviz.js',
+                    'lib/bootbox/bootbox.js',
+                    'lib/ng-file-upload/ng-file-upload-shim.min.js',
+                    'lib/ng-file-upload/ng-file-upload.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.addpm', {
+        url: "/pm/add",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/magictowns/pmEdit.html',
+            controller: "PMEditCatalog",
+            controllerAs: "mtown"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    //'lib/datatables.net/js/jquery.dataTables.min.js',
+                    //'js/dataviz/constants.js',
+                    //'js/dataviz/charts.js',
+                    //'js/dataviz/maps.js',
+                    //'js/dataviz/datatables.js',
+                    //'js/dataviz/dataviz.js',
+                    'lib/moment/moment.js',
+                    'lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+                    'lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                    'lib/bootbox/bootbox.js',
+                    'lib/ng-file-upload/ng-file-upload-shim.min.js',
+                    'lib/ng-file-upload/ng-file-upload.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.editpm', {
+        url: "/pm/edit/:id",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/magictowns/pmEdit.html',
+            controller: "PMEditCatalog",
+            controllerAs: "mtown"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    //'lib/datatables.net/js/jquery.dataTables.min.js',
+                    //'js/dataviz/constants.js',
+                    //'js/dataviz/charts.js',
+                    //'js/dataviz/maps.js',
+                    //'js/dataviz/datatables.js',
+                    //'js/dataviz/dataviz.js',
+                    'lib/moment/moment.js',
+                    'lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+                    'lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
                     'lib/bootbox/bootbox.js',
                     'lib/ng-file-upload/ng-file-upload-shim.min.js',
                     'lib/ng-file-upload/ng-file-upload.min.js'

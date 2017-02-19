@@ -10,12 +10,12 @@ eng.dataSources["MagicTown"] = {
         {name:"CVE_MUN", title:"Clave de Municipio", type:"string", required: true},
         {name:"CVE_LOC", title:"Clave de Localidad", type:"string", required: true},
         {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
-        {name:"NAME", title: "Nombre", required: true, type: "string"},
-        {name:"DESCRIPTION", title: "Descripción", type: "string"},
-        {name:"ACCEPTED", title:"Incorporado", type:"boolean"},
-        {name:"INCLUSION_DATE", title:"Fecha de incorporación", type: "date"},
-        {name:"ORIGIN", title: "Imagen", type: "string"},
-        {name:"PICTURE", title: "Imagen", type: "string"}
+        {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"description", title: "Descripción", type: "string"},
+        {name:"accepted", title:"Incorporado", type:"boolean"},
+        {name:"inclusion_date", title:"Fecha de incorporación", type: "date"},
+        {name:"origin", title: "Imagen", type: "string"},
+        {name:"picture", title: "Imagen", type: "string"}
     ]
 };
 eng.dataSources["State"] = {
@@ -40,7 +40,7 @@ eng.dataSources["Municipality"] = {
     fields: [
         {name: "NOM_MUN", title: "Municipio", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave", required: true, type: "string"},
-        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
         {name: "PTOT", title: "Población total", required: false, type: "int"},
         {name: "PMAS", title: "Población masculina", required: false, type: "int"},
         {name: "PFEM", title: "Población femenina", required: false, type: "int"}
@@ -55,7 +55,7 @@ eng.dataSources["Locality"] = {
         {name: "NOM_LOC", title: "Municipio", required: true, type: "string"},
         {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
-        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
         {name: "LATITUD", title: "Latitud", required: true, type: "double"},
         {name: "LONGITUD", title: "Longitud", required: true, type: "double"},
         {name: "ALTITUD", title: "Altitud", required: false, type: "double"},
