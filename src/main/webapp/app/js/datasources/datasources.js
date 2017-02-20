@@ -76,6 +76,16 @@ eng.dataSources["DSEndpoint"] = {
         {name:"enabled", title:"Habilitado", type:"boolean", required: false}
     ]
 };
+eng.dataSources["GeoLayer"] = {
+    scls: "GeoLayer",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "name",
+    fields: [
+        {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"file", title:"Archivo", type:"String", required: true}
+    ]
+};
 
 /*
 eng.dataExtractors["StateExtractor"] = {

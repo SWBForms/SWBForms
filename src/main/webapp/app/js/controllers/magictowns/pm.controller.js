@@ -25,7 +25,6 @@
     });
 
     cnt.deletePM = function (_id) {
-      console.log("deleting");
       bootbox.confirm("<h3>Este pueblo mágico será eliminado permanentemente. \n ¿Deseas continuar?</h3>", result => {
         if (result) {
           $Datasource.removeObject(_id, "MagicTown")
