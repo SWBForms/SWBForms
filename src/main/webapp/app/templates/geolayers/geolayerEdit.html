@@ -14,6 +14,18 @@
                 <span ng-show="(editForm.$submitted || editForm.name.$touched) && editForm.name.$invalid" class="help-block">El nombre es requerido</span>
               </div>
             </div>
+            <div class="form-group" ng-class="{ 'has-error' : (editForm.$submitted || editForm.type.$touched) && editForm.type.$invalid }">
+              <label class="col-sm-2 control-label">Tipo</label>
+              <div class="col-sm-10">
+                <select name="type" required class="form-control" ng-model="geo.layerData.type">
+                  <option value="">Seleccione un tipo</option>
+                  <option value="geoJSON">GeoJSON</option>
+                  <option value="kml">KML</option>
+                  <option value="shapeFile">ShapeFile</option>
+                </select>
+                <span ng-show="(editForm.$submitted || editForm.type.$touched) && editForm.type.$invalid" class="help-block">El tipo es requerido</span>
+              </div>
+            </div>
             <div class="form-group" ng-class="{ 'has-error' : (editForm.$submitted || editForm.file.$touched) && editForm.file.$invalid }">
               <label class="col-sm-2 control-label">Archivo</label>
               <div class="col-sm-10">

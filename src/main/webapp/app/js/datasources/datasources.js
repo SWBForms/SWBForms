@@ -83,6 +83,7 @@ eng.dataSources["GeoLayer"] = {
     displayField: "name",
     fields: [
         {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"type", title: "Tipo", required: true, type: "string"},
         {name:"file", title:"Archivo", type:"String", required: true}
     ]
 };

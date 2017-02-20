@@ -790,14 +790,18 @@
           loadDependencies: function($ocLazyLoad, $stateParams) {
             return $ocLazyLoad.load([
               {
-                  serie: true,
-                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
-                  files: [
-                    'lib/AngularJS-Toaster/toaster.min.css',
-                    'lib/AngularJS-Toaster/toaster.min.js',
-                    //'lib/datatables.net/js/jquery.dataTables.min.js',
-                    'lib/bootbox/bootbox.js'
-                  ]
+                serie: true,
+                //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                files: [
+                  'lib/leaflet/dist/leaflet.css',
+                  'lib/leaflet/dist/leaflet.js',
+                  'lib/google-maps/lib/Google.min.js',
+                  'js/dataviz/constants.js',
+                  'js/dataviz/charts.js',
+                  'js/dataviz/maps.js',
+                  'js/dataviz/datatables.js',
+                  'js/dataviz/dataviz.js',
+                ]
               }
             ]);
           }
