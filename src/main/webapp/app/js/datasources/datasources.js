@@ -103,7 +103,6 @@ eng.dataSources["Widget"] = {
     dataStore: "mongodb",
     displayField: "name",
     fields: [
-      content: '<div class="gridster-angular-content-item">Mapa</div>'
         {name:"name", title: "Nombre", required: true, type: "string"},
         {name:"type", title: "Tipo", required: true, type: "string"},
         {name:"col", title: "Columna", required: true, type: "int"},
