@@ -96,6 +96,17 @@ _onEachStyle(feature){
     }//switch
   }//Layer
 
+
+  addControls(map, pos, idInForm, nameButt){
+    let command = L.control({position: pos});
+    command.onAdd = function(map){
+       let div = L.DomUtil.create('div', 'btn  btn-default checkbox');
+       div.innerHTML = '<div><form> <input id="'+idInForm+'" type="checkbox"/>'+nameButt+'</form></div>';
+       return div;
+    }
+    command.addTo(map);
+  }
+
   addRoute(map, origin, destination, type, engine) {
       switch(engine) {
         case ENGINE_GOOGLEMAPS:
