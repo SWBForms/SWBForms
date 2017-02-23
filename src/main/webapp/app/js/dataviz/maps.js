@@ -3,9 +3,20 @@ class MapsFactory {
 constructor() { }
 
   _onEachFeature(feature, layer) {
-	  if (feature.properties.popupContent) {
+	 /* if (feature.properties.popupContent) {
 		  layer.bindPopup(feature.properties.popupContent);
-	  }
+	  }*/
+
+    let totProp, data, value ;
+    totProp = "<table style = \"border: 1px solid black;\"><tr> <th style=\"width:50%\">Caracter&iacute;stica</th> <th style=\"width:50%\">Valor</th></tr>";
+    for (data in feature.properties) {
+         value = String(feature.properties[data]);
+         totProp += "<tr><td>"+ data + "</td><td>" + value +"</td></tr>" ;
+    }
+    totProp += "</table";
+    if (feature.properties) {
+       layer.bindPopup( totProp);
+     }
   }
 
 _onEachStyle(feature){
@@ -77,6 +88,9 @@ _onEachStyle(feature){
  /*
  Load Json data
  */
+ quitGeoJson(layer){
+   layer.clearLayers();
+ }
   addGeoJSONLayer(map, data, engine) {
     switch(engine) {
       case ENGINE_GOOGLEMAPS:
@@ -85,10 +99,12 @@ _onEachStyle(feature){
         };
       break;
       case ENGINE_LEAFLET:
-        L.geoJSON(data, {
+       let dataOnMap = L.geoJSON(data, {
           onEachFeature: this._onEachFeature,
           style: this._onEachStyle
         }).addTo(map);
+
+        return dataOnMap;
       break;
       case ENGINE_D3:
       break;
@@ -107,6 +123,14 @@ _onEachStyle(feature){
     command.addTo(map);
   }
 
+  handleControl() {
+     if (this.checked){
+       alert("si");
+     }else{
+       alert("no");
+     }
+
+  }
   addRoute(map, origin, destination, type, engine) {
       switch(engine) {
         case ENGINE_GOOGLEMAPS:
