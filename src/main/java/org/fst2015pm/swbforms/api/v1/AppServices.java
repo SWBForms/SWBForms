@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONException;
@@ -32,6 +35,7 @@ public class AppServices {
 	private int expireMinutes = 30;
 	SWBScriptEngine engine;
 	@Context HttpServletRequest httpRequest;
+	private boolean useCookies = false;
 	
 	/**
 	 * Creates a session token for a user
@@ -41,27 +45,35 @@ public class AppServices {
 	 */
 	@POST
 	@Path("/login")
+	@Consumes("application/json")
 	@Produces("application/json")
 	public Response loginUser(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		DataObject res = new DataObject();
-		engine = DataMgr.initPlatform(session);
 		boolean create = false;
-				
+		Response ret;
+		
+		//Init platform with global configuration
+		engine = DataMgr.initPlatform(session);
+		
+		//Get request body
 		JSONObject objData;
 		try {
 			objData = new JSONObject(content);
 		} catch (JSONException jspex) {
-			return Response.status(500).build();
+			ret = Response.status(400).entity("Malformed request body").build();
+			return ret;
 		}
 		
 		//Find user in User datasource
 		DataObject user = findUser(engine.getDataSource("User"), objData.optString("email"), objData.optString("password")); 
 		if (null == user) {
-			res.put("msg", "Bad credentials");
-			return Response.status(403).entity(res).build();
+			//res.put("msg", "Bad credentials");
+			ret = Response.status(403).entity("Bad credentials").build();
+			return ret;
 		}
 		
+		//Find user session
 		SWBDataSource ds = engine.getDataSource("UserSession");
 		String token = UUID.randomUUID().toString();
 		
@@ -75,16 +87,32 @@ public class AppServices {
 		sessData.put("token", token);
 		sessData.put("expiration", new Date().getTime() + (1000 * 60 * expireMinutes));
 		
+		//Update session object
 		if (create) {
 			ds.addObj(sessData);
 		} else {
 			ds.updateObj(sessData);
 		}
 		
-		res.put("fullname", user.getString("fullname"));
-		res.put("email", user.getString("email"));
-		res.put("token", token);
-		return Response.status(200).entity(res).build();
+		//Build response
+		DataObject respSessData = new DataObject();
+		respSessData.put("sessionId", "APPSESSIONID");
+		respSessData.put("value", token);
+		
+		DataObject respUserData = new DataObject();
+		respUserData.put("fullname", user.getString("fullname"));
+		respUserData.put("email", user.getString("email"));
+		
+		res.put("user", respUserData);
+		res.put("session", respSessData);
+		
+		if (useCookies) {
+			ret = Response.status(200).entity(res).cookie(new NewCookie("APPSESSIONID", token, null, null, null, (60 * expireMinutes), false, true)).build();
+		} else {
+			ret = Response.status(200).entity(res).build();
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -94,17 +122,19 @@ public class AppServices {
 	 */
 	@POST
 	@Path("/logout")
+	@Consumes("application/json")
 	@Produces("application/json")
 	public Response logoutUser(@Context HttpHeaders headers) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		DataObject res = new DataObject();
-		String authorization = headers.getRequestHeader("Authorization").get(0);
+		
+		String authorization = getAuthCredentials(httpRequest, useCookies);
 		if (null == authorization || authorization.isEmpty()) {
 			res.put("msg", "Unauthorized");
 			return Response.status(401).entity(res).build();
 		}
 		
-		authorization = authorization.replace("Token token=", "");
+		//authorization = authorization.replace("Token token=", "");
 		engine = DataMgr.initPlatform(session);
 		
 		SWBDataSource ds = engine.getDataSource("UserSession");
@@ -117,7 +147,35 @@ public class AppServices {
 			return Response.status(400).entity(res).build();
 		}
 		
-		return Response.status(200).build();
+		if (useCookies) {
+			return Response.status(200).cookie(new NewCookie("APPSESSIONID", null, null, null, null, 0, false, true)).build();
+		} else {
+			return Response.status(200).build();
+		}
+	}
+	
+	/**
+	 * Gets user session token from authorization headers or session cookie
+	 * @param request Request object
+	 * @param checkCookies whether to check session cookie
+	 * @return
+	 */
+	private String getAuthCredentials(HttpServletRequest request, boolean checkCookies) {
+		//Find session token in authorization headers
+		String ret = request.getHeader("authorization"); 
+		if (null != ret) {
+			ret = ret.replace("Token token=", "");
+		} else if (checkCookies && null != request.getCookies()) {
+			Cookie cookies [] = request.getCookies();
+			for (Cookie c : cookies) {
+				if ("APPSESSIONID".equals(c.getName()) && !c.getValue().isEmpty()) {
+					//TODO: check cookie maxAge or check session expiration time to invalid cookie
+					ret = c.getValue();
+				}
+			}
+		}
+		
+		return ret;
 	}
 	
 	/**
