@@ -53,6 +53,20 @@ eng.dataSources["Role"] = {
     ]
 };
 
+eng.dataSources["UserSession"]={
+    scls: "UserSession",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "user",
+    fields:[
+        {name:"user",title:"Usuario",type:"string"},
+        {name:"token",title:"Token",type:"string"},
+        {name:"expiration",title:"Expiración",type:"long"}
+        //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
+        //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
+    ],
+};
+
 /******* DataProcessors ************/
 eng.dataProcessors["UserProcessor"]={
     dataSources: ["User"],
