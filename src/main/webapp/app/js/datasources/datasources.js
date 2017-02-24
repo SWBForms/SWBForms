@@ -73,7 +73,8 @@ eng.dataSources["DSEndpoint"] = {
         {name: "name", title: "Nombre", required: true, type: "string"},
         {name:"resourceName", title:"Recurso", type:"String", required: true},
         {name:"datasourceName", title:"DataSource", type:"String", required: true},
-        {name:"enabled", title:"Habilitado", type:"boolean", required: false}
+        {name:"enabled", title:"Habilitado", type:"boolean", required: false},
+        {name:"restrictionType", title:"Restricción", type:"string", required: true}
     ]
 };
 eng.dataSources["GeoLayer"] = {

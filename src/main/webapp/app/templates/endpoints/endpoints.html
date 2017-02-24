@@ -12,13 +12,15 @@
           <thead>
             <tr>
               <th>DataSource</th>
+              <th>Restricción</th>
               <th>Activo</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="ds in endpoint.dsList">
+            <tr ng-repeat="ds in endpoint.dsList | orderBy:'ds.dataSourceName'">
               <td>{{ds.dataSourceName}}</td>
+              <td>{{ds.restrictionType === "1" ? "Ninguna" : ds.restrictionType === "2" ? "Session token" : ""}}</td>
               <td>
                 <span ng-show="{{ds.enabled}}" class="fa fa-check"></span>
               </td>
