@@ -6,6 +6,14 @@
     </div>
   </div>
   <div class="row">
+    <div class="form-group has-feedback pull-right">
+      <input type="text" class="form-control" ng-model="ds.searchText">
+      <span class="form-control-feedback" aria-hidden="true">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+  </div>
+  <div class="row">
     <div class="panel panel-default box-panel">
       <div class="panel-body">
         <table class="table">
@@ -18,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="ds in endpoint.dsList | orderBy:'ds.dataSourceName'">
+            <tr ng-repeat="ds in endpoint.dsList | filter:ds.searchText | orderBy:'ds.dataSourceName'">
               <td>{{ds.dataSourceName}}</td>
               <td>{{ds.restrictionType === "1" ? "Ninguna" : ds.restrictionType === "2" ? "Session token" : ""}}</td>
               <td>

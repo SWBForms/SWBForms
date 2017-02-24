@@ -6,6 +6,14 @@
     </div>
   </div>
   <div class="row">
+    <div class="form-group has-feedback pull-right">
+      <input type="text" class="form-control" ng-model="roles.searchText">
+      <span class="form-control-feedback" aria-hidden="true">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+  </div>
+  <div class="row">
     <div class="panel panel-default box-panel">
       <div class="panel-body">
         <table class="table" id="rolesTable">
@@ -16,7 +24,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="role in roles.roles">
+            <tr ng-repeat="role in roles.roles | filter:roles.searchText | orderBy:'role.title'">
               <td>{{role.title}}</td>
               <td class="text-right">
                 <a class="btn btn-sm btn-primary" ui-sref="admin.editrole({id: '{{role._id}}'})"><span class="fa fa-pencil"></span></a>

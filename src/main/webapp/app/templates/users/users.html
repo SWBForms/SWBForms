@@ -6,6 +6,14 @@
     </div>
   </div>
   <div class="row">
+    <div class="form-group has-feedback pull-right">
+      <input type="text" class="form-control" ng-model="users.searchText">
+      <span class="form-control-feedback" aria-hidden="true">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+  </div>
+  <div class="row">
     <div class="panel panel-default box-panel">
       <div class="panel-body">
         <table class="table" id="usersTable">
@@ -17,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="user in users.users">
+            <tr ng-repeat="user in users.users | filter:users.searchText | orderBy:'user.fullname'">
               <td>{{user.fullname}}</td>
               <td>{{user.email}}</td>
               <td class="text-right">

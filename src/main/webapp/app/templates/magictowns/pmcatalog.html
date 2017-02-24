@@ -5,9 +5,17 @@
       <a ui-sref="admin.addpm" class="btn btn-primary btn-minw">Agregar pueblo mágico</a>
     </div>
   </div>
+  <!--div class="row">
+    <div class="form-group has-feedback pull-right">
+      <input type="text" class="form-control" ng-model="pm.searchText">
+      <span class="form-control-feedback" aria-hidden="true">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+  </div-->
   <div class="row">
     <div class="col-lg-12">
-      <div class="pm-card-container" ng-repeat="pm in mtown.pmList | orderBy: 'name'">
+      <div class="pm-card-container" ng-repeat="pm in mtown.pmList | filter:pm.searchText | orderBy: 'name'">
         <div class="pm-card">
           <div class="image">
             <img class="img-responsive" ng-src="{{pm.PICTURE}}">
