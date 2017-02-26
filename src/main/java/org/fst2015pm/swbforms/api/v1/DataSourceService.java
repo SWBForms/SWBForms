@@ -1,6 +1,8 @@
 package org.fst2015pm.swbforms.api.v1;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
