@@ -118,15 +118,13 @@
 
     $scope.save = function() {
       let dashboard = {};
-      dashboard.id = $scope.dashboard.id;
-      dashboard.name = $scope.dashboard.name;
-      let widgets = {};
+      dashboard.name = $scope.dashboardName;
+      let widgets = [];
 
       for(var i=0 ; i < $scope.dashboard.widgets.length; i++) {
-          widgets[i] = {
-            id: $scope.dashboard.widgets[i].id,
-            name: $scope.dashboard.widgets[i].name
-          };
+          widgets.push(
+            { "id": $scope.dashboard.widgets[i].id, "name": $scope.dashboard.widgets[i].name }
+          );  
       }
 
       dashboard.widgets = widgets;
