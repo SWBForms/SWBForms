@@ -175,6 +175,132 @@
           }
         }
       })*/
+      .state('dashboard.dashboards', {
+        url: '/dashboards',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/dashboard/dashboards.html',
+            controller: 'DashboardListCtrl',
+            controllerAs: "dashboards"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                    'lib/angular-bootstrap/ui-bootstrap.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('dashboard.addDashboard', {
+        url: '/add/dashboard',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/dashboard/editDashboard.html',
+            controller: 'editDashboardCtrl',
+            controllerAs: "editdashboard"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/bootbox/bootbox.js',
+                    'lib/angular-gridster/dist/angular-gridster.min.css',
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('dashboard.editdasboard', {
+        url: '/edit/dashboard/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/dashboard/editDashboard.html',
+            controller: 'editDashboardCtrl',
+            controllerAs: "editdashboard"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/bootbox/bootbox.js',
+                    'lib/angular-gridster/dist/angular-gridster.min.css',
+                    'lib/angular-gridster/dist/angular-gridster.min.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.endpoints', {
+        url: '/endpoints',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/endpoints/endpoints.html',
+            controller: 'EndpointCtrl',
+            controllerAs: "endpoint"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return dashboardMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
       .state('admin', {
         abstract: true,
         url: "/admin",
@@ -451,7 +577,7 @@
             templateUrl: 'templates/includes/sidenav.html',
             controller: 'SideNavCtrl'
           },
-          'content': {
+            'content': {
             templateUrl: 'templates/users/userEdit.html',
             controller: 'UsersEditCtrl',
             controllerAs: 'users'
@@ -566,39 +692,6 @@
                     'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/AngularJS-Toaster/toaster.min.js',
                     'lib/datatables.net/js/jquery.dataTables.min.js'
-                  ]
-              }
-            ]);
-          }
-        }
-      })
-      .state('admin.endpoints', {
-        url: '/endpoints',
-        views: {
-          'sidenav': {
-            templateUrl: 'templates/includes/sidenav.html',
-            controller: 'SideNavCtrl'
-          },
-          'content': {
-            templateUrl: 'templates/endpoints/endpoints.html',
-            controller: 'EndpointCtrl',
-            controllerAs: "endpoint"
-          }
-        },
-        resolve: {
-          menuItems: function() {
-            return adminMenuItems;
-          },
-          loadDependencies: function($ocLazyLoad, $stateParams) {
-            return $ocLazyLoad.load([
-              {
-                  serie: true,
-                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
-                  files: [
-                    'lib/AngularJS-Toaster/toaster.min.css',
-                    'lib/AngularJS-Toaster/toaster.min.js',
-                    //'lib/datatables.net/js/jquery.dataTables.min.js',
-                    'lib/bootbox/bootbox.js'
                   ]
               }
             ]);
@@ -877,6 +970,10 @@
           {
             label: "Gráficas dinámicas",
             stateLink: 'dashboard.charts'
+          },
+          {
+            label: "Dashboards",
+            stateLink: "dashboard.dashboards"
           }
         ]
       },

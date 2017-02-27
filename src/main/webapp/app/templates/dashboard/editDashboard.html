@@ -1,0 +1,29 @@
+<link id="grid-styles" href="css/_gridster.css" rel="stylesheet">
+<div class="animated fadeIn">
+  <h1 class="page-header">{{ pageTitle }}</h1>
+  <div class="text-left">
+    <a class="pull-right btn btn-primary" ng-click="addWidget()"><i class="glyphicon glyphicon-plus"></i> Add Widget</a>
+    <a class="pull-right btn btn-warning" ng-click="clear()"><i class="glyphicon glyphicon-trash"></i> Clear</a>
+    <div ng-show="formVisible" class="form-group">
+      <label for="dashboardName">Titulo</label>
+      <input id="dashboardName" type="text" ng-model="dashboardName">
+    </div>
+    <h1 style="display: inline-block;">{{ dashboardName }}</h1>
+  </div>
+  <div gridster>
+    <ul>
+      <li gridster-item="item" ng-repeat="item in dashboard.widgets">
+        <div class="actions">
+          <h5>{{item.name}}</h5>
+          <button name="{{item.id}}" class="glyphicon glyphicon-trash" ng-click="deleteWidget($event)"></button>
+          <button name="{{item.id}}" class="glyphicon glyphicon-cog" ng-click="editWidget($event)"></button>
+        </div>
+        <div class="gridster-angular-content-item" ng-bind-html="item.content">
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="text-lef">
+    <a class="pull-right btn btn-success" ng-click="save()"><i class="glyphicon glyphicon-floppy-saved"></i> Save </a>
+  </div>
+</div>
