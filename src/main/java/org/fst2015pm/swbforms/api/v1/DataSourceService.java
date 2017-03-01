@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -32,6 +33,8 @@ import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 import org.semanticwb.datamanager.script.ScriptObject;
 
+import com.mongodb.BasicDBObject;
+
 /**
  * REST service to manage datasources from inside app.
  **/
@@ -44,7 +47,7 @@ public class DataSourceService {
 	boolean checkSession = false;
 
 	@GET
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataSourceList() throws IOException {
 		HttpSession session = httpRequest.getSession();
 		engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
@@ -70,7 +73,7 @@ public class DataSourceService {
 
 	@GET
 	@Path("/{dsname}")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataSourceObjects(@PathParam("dsname") String dataSourceId, @Context UriInfo info) {
 		HttpSession session = httpRequest.getSession();
 		MultivaluedMap<String, String> params = info.getQueryParameters();
@@ -129,8 +132,8 @@ public class DataSourceService {
 
 	@POST
 	@Path("/{dsname}")
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addDataSourceObject(@PathParam("dsname") String dataSourceId, String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		if ("User".equals(dataSourceId)) {
@@ -152,12 +155,8 @@ public class DataSourceService {
 			
 			if (null != objData) {
 				objData.remove("_id");
-				DataObject obj = new DataObject();
-
-				for (String key : objData.keySet()) {
-					Object val = objData.get(key);
-					obj.addParam(key, val);
-				}
+				//Transform JSON to dataobject to avoid fail
+				DataObject obj = (DataObject) DataObject.parseJSON(content);
 
 				if (validateObject(obj)) {
 					DataObject objNew = ds.addObj(obj);
@@ -173,7 +172,7 @@ public class DataSourceService {
 
 	@GET
 	@Path("/{dsname}/{objId}")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataSourceObject(@PathParam("dsname") String dataSourceId, @PathParam("objId") String oId)
 			throws IOException {
 		HttpSession session = httpRequest.getSession();
@@ -199,8 +198,8 @@ public class DataSourceService {
 
 	@PUT
 	@Path("/{dsname}/{objId}")
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateDataSourceObject(@PathParam("dsname") String dataSourceId, @PathParam("objId") String oId,
 			String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
@@ -244,7 +243,7 @@ public class DataSourceService {
 
 	@DELETE
 	@Path("/{dsname}/{objId}")
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeDataSourceObject(@PathParam("dsname") String dataSourceId, @PathParam("objId") String oId)
 			throws IOException {
 		HttpSession session = httpRequest.getSession();
