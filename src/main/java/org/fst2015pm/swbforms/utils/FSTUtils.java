@@ -9,10 +9,16 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.SortedMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Class to group utilities related to File Management
@@ -150,6 +156,27 @@ public class FSTUtils {
 		    } catch (Exception e)  {
 		        e.printStackTrace();
 		    }
+		}
+	}
+	
+	public static class API {
+		public static SecretKey generateSecretKey(String base64Key) throws NoSuchAlgorithmException {
+			if (null != base64Key && !base64Key.isEmpty()) {
+				byte[] decoded = Base64.getDecoder().decode(base64Key);
+				return new SecretKeySpec(decoded, 0, decoded.length, "HmacSHA256"); 
+			}
+			return KeyGenerator.getInstance("HmacSHA256").generateKey();
+		}
+		
+		public static String generateAPIKey() {
+			String ret = null;
+			try {
+				ret = Base64.getEncoder().encodeToString(generateSecretKey(null).getEncoded());
+			} catch (NoSuchAlgorithmException nsaex) {
+				System.out.print("Bad generator algorithm name");
+			}
+			
+			return ret;
 		}
 	}
 }

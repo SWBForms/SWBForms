@@ -40,7 +40,7 @@ eng.dataSources["User"]={
         {name: "roles", title: "Roles", stype: "select", multiple:true , dataSource:"Role"}
         //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
         //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
-    ],
+    ]
 };
 eng.dataSources["Role"] = {
     scls: "Role",
@@ -64,7 +64,21 @@ eng.dataSources["UserSession"]={
         {name:"expiration",title:"Expiración",type:"long"}
         //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
         //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
-    ],
+    ]
+};
+eng.dataSources["APIKey"] = {
+    scls: "APIKey",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "appName",
+    fields:[
+        {name:"appName",title:"Aplicación",type:"string"},
+        {name:"appKey",title:"Token",type:"string"},
+        {name:"appSecret",title:"Secret",type:"string"},
+        {name:"enabled",title:"Activo",type:"boolean"}
+        //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
+        //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
+    ]
 };
 
 /******* DataProcessors ************/
@@ -92,6 +106,6 @@ eng.routes["global"]={
         { routePath: "work", isRestricted: "true"},
         { routePath: "app/*", forwardTo: "/app/", isRestricted: "true" },
         { routePath: "work/*", jspMapTo: "/work/jsp/", isRestricted: "true" },
-        { routePath: "ds", forwardTo: "/platform/jsp/datasource.jsp", isRestricted: "true" },
-    ],
+        { routePath: "ds", forwardTo: "/platform/jsp/datasource.jsp", isRestricted: "true" }
+    ]
 };

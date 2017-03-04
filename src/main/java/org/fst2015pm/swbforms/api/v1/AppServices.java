@@ -13,9 +13,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
+import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.semanticwb.datamanager.DataList;
@@ -45,8 +47,8 @@ public class AppServices {
 	 */
 	@POST
 	@Path("/login")
-	@Consumes("application/json")
-	@Produces("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response loginUser(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		DataObject res = new DataObject();
@@ -115,6 +117,61 @@ public class AppServices {
 		return ret;
 	}
 	
+	@POST
+	@Path("/apikey")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addApiKey(String content) throws IOException {
+		HttpSession session = httpRequest.getSession();
+		DataObject res = new DataObject();
+		Response ret;
+		
+		if (null == session.getAttribute("_USER_")) {
+			ret = Response.status(403).build();
+		} else {
+			//Init platform with global configuration
+			engine = DataMgr.initPlatform(session);
+			
+			//Get request body
+			DataObject objData = null;
+			try {
+				JSONObject payload = new JSONObject(content);
+				objData = new DataObject();
+				
+				if (!payload.optString("appName").isEmpty()) {
+					objData.put("appName", payload.getString("appName"));
+					//objData.put("enabled", payload.optBoolean("enabled"));
+				}
+			} catch (JSONException jspex) {
+				ret = Response.status(400).entity("Malformed request body").build();
+			}
+			
+			if (null == objData) {
+				ret = Response.status(400).entity("Bad request").build();
+			} else {
+				//Generate app Key and Secret
+				String apiKey = FSTUtils.API.generateAPIKey();
+				String apiSecret = FSTUtils.API.generateAPIKey();
+				 
+				objData.put("appKey", apiKey);
+				objData.put("appSecret", apiSecret);
+				
+				System.out.println(objData.toString());
+				
+				//Add api key object
+				SWBDataSource ds = engine.getDataSource("APIKey");
+				ds.addObj(objData);//TODO: Check errors from SWBForms API
+				
+				//Build response
+				res.put("key", apiKey);
+				res.put("secret", apiSecret);
+				ret = Response.status(200).entity(res).build();
+			}
+		}
+		
+		return ret;
+	}
+	
 	/**
 	 * Destroys a user session
 	 * @return Status code 200 on success
@@ -122,8 +179,8 @@ public class AppServices {
 	 */
 	@POST
 	@Path("/logout")
-	@Consumes("application/json")
-	@Produces("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response logoutUser(@Context HttpHeaders headers) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		DataObject res = new DataObject();

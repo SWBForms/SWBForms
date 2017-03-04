@@ -94,8 +94,8 @@ eng.dataSources["Dashboard"] = {
     dataStore: "mongodb",
     displayField: "name",
     fields: [
-        {name:"name", title: "Nombre", required: true, type: "string"},
-        {name:"widgets", title:"Widgets", type:"String", required: false}
+        {name:"name", title: "Nombre", required: true, type: "string"}
+        //{name:"widgets", title:"Widgets", type:"boolean", required: false}
     ]
 };
 eng.dataSources["Widget"] = {
