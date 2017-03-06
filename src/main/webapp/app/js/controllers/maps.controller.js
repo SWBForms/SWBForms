@@ -16,6 +16,20 @@
       let mp2 = dataviz.mapsFactory.createMap("map3",ENGINE_LEAFLET_DUAL, df,5 );
       let googleMap = dataviz.mapsFactory.createMap("map", ENGINE_GOOGLEMAPS, mochis,10);
       let leaf2 = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
+      let Hmap = dataviz.mapsFactory.createMap("hMap",ENGINE_LEAFLET, df, 10);
+
+      $http({
+        url: "/app/mockdata/geo/PM_15_municipio.geojson",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayer(Hmap, res.data,ENGINE_LEAFLET );
+      });
+      $http({
+        url: "/app/mockdata/datMun.csv",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayerCVS(Hmap, res.data );
+      });
 
       dataviz.mapsFactory.addControls(leaf2, 'topright', 'prueba', 'PRUEBAS');
       dataviz.mapsFactory.addSimpleMarker(df, mp2);

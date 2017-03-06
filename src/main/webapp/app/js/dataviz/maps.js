@@ -2,30 +2,45 @@
 class MapsFactory {
 constructor() { }
 
+getColor(d) {
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#FED976' :
+                      '#FFEDA0';
+}
   _onEachFeature(feature, layer) {
-	 /* if (feature.properties.popupContent) {
-		  layer.bindPopup(feature.properties.popupContent);
-	  }*/
+      // en caso de que solo se muestres un popup indicados en el Json
+        if (feature.properties.popupContent) {
+          layer.bindPopup(feature.properties.popupContent);
+        }
+  }
+  _onEachFeatureAll(feature, layer) {
 
-    let totProp, data, value ;
-    totProp = "<table style = \"border: 1px solid black;\"><tr> <th style=\"width:50%\">Caracter&iacute;stica</th> <th style=\"width:50%\">Valor</th></tr>";
-    for (data in feature.properties) {
-         value = String(feature.properties[data]);
-         totProp += "<tr><td>"+ data + "</td><td>" + value +"</td></tr>" ;
-    }
-    totProp += "</table";
-    if (feature.properties) {
-       layer.bindPopup( totProp);
-     }
+      //mostrar todas las propiedades
+        let totProp, data, value ;
+        totProp = "<table style = \"border: 1px solid black;\"><tr> <th style=\"width:50%\">Caracter&iacute;stica</th> <th style=\"width:50%\">Valor</th></tr>";
+        for (data in feature.properties) {
+             value = String(feature.properties[data]);
+             totProp += "<tr><td>"+ data + "</td><td>" + value +"</td></tr>" ;
+        }
+        totProp += "</table";
+        if (feature.properties) {
+           layer.bindPopup( totProp);
+         }
+   }
+
+  _onEachStyleFromJson(feature){
+      if(feature.properties.color){
+        return {color:feature.properties.color,
+                weight: 5,
+                opacity: 0.65};
+      }
   }
 
-_onEachStyle(feature){
-    if(feature.properties.color){
-      return {color:feature.properties.color,
-              weight: 5,
-              opacity: 0.65};
-    }
-}
 
   createMap(container, engine, firstPoint, setZoom) {
     let mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -85,12 +100,24 @@ _onEachStyle(feature){
       break;
     }//switch
   }//createMap
- /*
- Load Json data
- */
- quitGeoJson(layer){
-   layer.clearLayers();
+
+ AddStyle(feature) {
+     return {
+         fillColor: getColor(feature.properties.pob),
+         weight: 2,
+         opacity: 1,
+         color: 'white',
+         dashArray: '3',
+         fillOpacity: 0.7
+     };
  }
+ addGeoJSONLayerCVS(map, data){
+   let geoLayer = L.geoCsv(data, {style: this.AddStyle });                                  });
+    map.addLayer(geoLayer);
+    return geoLayer;
+ }
+
+
   addGeoJSONLayer(map, data, engine) {
     switch(engine) {
       case ENGINE_GOOGLEMAPS:
@@ -100,10 +127,9 @@ _onEachStyle(feature){
       break;
       case ENGINE_LEAFLET:
        let dataOnMap = L.geoJSON(data, {
-          onEachFeature: this._onEachFeature,
+          onEachFeature: this._onEachFeatureAll,
           style: this._onEachStyle
         }).addTo(map);
-
         return dataOnMap;
       break;
       case ENGINE_D3:
@@ -111,7 +137,6 @@ _onEachStyle(feature){
       default:
     }//switch
   }//Layer
-
 
   addControls(map, pos, idInForm, nameButt){
     let command = L.control({position: pos});
@@ -123,14 +148,7 @@ _onEachStyle(feature){
     command.addTo(map);
   }
 
-  handleControl() {
-     if (this.checked){
-       alert("si");
-     }else{
-       alert("no");
-     }
 
-  }
   addRoute(map, origin, destination, type, engine) {
       switch(engine) {
         case ENGINE_GOOGLEMAPS:

@@ -44,7 +44,9 @@
     "slickgrid": "^2.1.0",
     "bootbox": "4.4.0",
     "ng-file-upload": "12.2.13",
-    "angular-gridster": "0.13.14"
+    "angular-gridster": "0.13.14",
+    "leaflet.shapefile": "https://github.com/calvinmetcalf/leaflet.shapefile/tree/gh-pages",
+    "leaflet.geoCSV": "https://github.com/joker-x/Leaflet.geoCSV.git"
   },
   "resolutions": {
     "jquery": "~2.1.4",
