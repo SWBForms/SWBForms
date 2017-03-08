@@ -1,4 +1,4 @@
-var isomorphicDir = "/platform/isomorphic/";
+window.isomorphicDir = "/platform/isomorphic/";
 
 var eng = {
     operationBindings: [
@@ -1906,7 +1906,7 @@ var eng = {
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_Forms.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_DataBinding.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_Calendar.js",false,cache);
-            eng.utils.loadJS(isomorphicDir+"skins/Enterprise/load_skin.js",false,cache);
+            eng.utils.loadJS(isomorphicDir+"skins/Simplicity/load_skin.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"locales/frameworkMessages_es.properties",false,cache);
             eng.utils.loadJS("/platform/plupload/js/plupload.full.min.js",false,cache);
             

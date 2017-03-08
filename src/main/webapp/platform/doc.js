@@ -572,3 +572,13 @@ Object {startRow: 0, data: Array[3], endRow: 3, totalRows: 3, status: 0}data: Ar
 ds.fetch({"sortBy":["-nacimiento"]})
 
  **/
+
+
+//LINKS y Grids
+
+var g=requisitionFrm.linkToForms[0].form.getField("item").grid;
+g.getTotalRows()
+g.getRecord(0)
+
+var g2=requisitionFrm.linkToForms[4].form.getField("focon").grid;
+g2.addData({noPartida:5})
