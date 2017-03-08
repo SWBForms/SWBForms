@@ -177,6 +177,9 @@
       })*/
       .state('dashboard.dashboards', {
         url: '/dashboards',
+        params: {
+          id: null
+        },
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
@@ -206,41 +209,8 @@
           }
         }
       })
-      .state('dashboard.addDashboard', {
-        url: '/add/dashboard',
-        views: {
-          'sidenav': {
-            templateUrl: 'templates/includes/sidenav.html',
-            controller: 'SideNavCtrl'
-          },
-          'content': {
-            templateUrl: 'templates/dashboard/editDashboard.html',
-            controller: 'editDashboardCtrl',
-            controllerAs: "editdashboard"
-          }
-        },
-        resolve: {
-          menuItems: function() {
-            return dashboardMenuItems;
-          },
-          loadDependencies: function($ocLazyLoad, $stateParams) {
-            return $ocLazyLoad.load([
-              {
-                  serie: true,
-                  files: [
-                    'lib/AngularJS-Toaster/toaster.min.css',
-                    'lib/bootbox/bootbox.js',
-                    'lib/angular-gridster/dist/angular-gridster.min.css',
-                    'lib/angular-gridster/dist/angular-gridster.min.js',
-                    'lib/bootbox/bootbox.js'
-                  ]
-              }
-            ]);
-          }
-        }
-      })
-      .state('dashboard.editdasboard', {
-        url: '/edit/dashboard/:id',
+      .state('dashboard.editdashboard', {
+        url: '/:mode/dashboard/:id',
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',

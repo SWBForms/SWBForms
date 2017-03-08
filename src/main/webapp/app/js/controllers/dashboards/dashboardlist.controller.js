@@ -5,19 +5,11 @@
     .module("FST2015PM.controllers")
     .controller("DashboardListCtrl", DashboardListCtrl);
 
-  DashboardListCtrl.$inject = ["$Datasource", "$stateParams", "$state"];
-  function DashboardListCtrl($Datasource, $stateParams, $state) {
+  DashboardListCtrl.$inject = ["$Datasource", "$stateParams", "$state","$scope"];
+  function DashboardListCtrl($Datasource, $stateParams, $state, $scope) {
     let context = this;
     context.formTitle = "Agregar Dashboard";
     context.dashboardList = [];
-    context.dashboardData = {};
-
-    if($stateParams.id && $stateParams.id.length) {
-      context.formTitle = "Editar Dashboard";
-      $Datasource.getObject($stateParams.id, "Dashboard").then(
-        dashboard => { context.dashboardData = dashboard.data; }
-      );
-    }
 
     $Datasource.listDatasources()
     .then(res => {
@@ -28,22 +20,21 @@
       }
     });
 
-    context.submitForm = function(form) {
-      if (form.$valid) {
-        if (!context.dashboardData._id) {
-          $Datasource.addObject(context.dashboardData, "Dashboard")
-          .then(response => {
-            $state.go('dashboard.addDashboard', {});
-          })
-        } else {
-          $Datasource.updateObject(context.dashboardData, "Dashboard")
-          .then(response => {
-            $state.go('dashboard.editDashboard', {});
-          })
-        }
-      }
-    };
-
+    $scope.deleteDashboard = function(dashboardId) {
+      bootbox.confirm("¿está seguro de eliminar el dashboard?", function(result) {
+        if (result) {
+          if (dashboardId) {
+            $Datasource.removeObject(dashboardId,"Dashboard")
+            .then(function(resp) {
+              $state.reload();
+            })
+            .catch(function(error) {
+              console.log(error.message);
+              bootbox.alert("Error al borrar intentelo más tarde");
+            });
+          };
+        };
+      });
+    }
   }
-
 })();
