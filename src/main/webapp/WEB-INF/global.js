@@ -6,10 +6,10 @@ eng.config={
     mail:{
         from:"no-reply@miit.mx",
         fromName:"noreply",
-        host:"localhost"
+        host:"localhost",
         //user:"email.gmail.com",
         //passwd:"password",
-        //port:25,
+        port:25
         //ssl:true,
         //sslPort:465
     }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -226,7 +227,7 @@ public class AppServices {
 	@POST
 	@Path("/resetPassword")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response resetUserPassword(@Context HttpHeaders headers) throws IOException {
+	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context) throws IOException {
 		boolean create = false;
 		
 		String authorization = getAuthCredentials(httpRequest, useCookies);
@@ -288,7 +289,7 @@ public class AppServices {
 			
 			//Send mail with reset link
 			String template = null;
-			FileInputStream inputStream = new FileInputStream("/work/config/resetPasswordMailTemplate.html");
+			FileInputStream inputStream = new FileInputStream(context.getRealPath("/")+"work/config/resetPasswordMailTemplate.html");
 			try {
 			    template = IOUtils.toString(inputStream, "UTF-8");
 			} finally {

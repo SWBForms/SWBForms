@@ -146,7 +146,7 @@ public class DataSourceService {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 			if (null == ds) return Response.status(400).build();
 			
-			JSONObject objData;
+			JSONObject objData = null;
 			try {
 				objData = new JSONObject(content);
 			} catch (JSONException jspex) {
