@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
+import org.fst2015pm.swbforms.utils.SimpleMailSender;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.semanticwb.datamanager.DataList;
@@ -298,7 +299,7 @@ public class AppServices {
 			
 			if (null != template) {
 				template = template.replace("___RESETTOKEN___", resetToken);
-				utils.sendHtmlMail(email, "Reinicio de contraseña", template);
+				SimpleMailSender.getInstance().sendMail("no-reply@mit.mx", email, template);
 			}
 			
 			//Invalidate current session
