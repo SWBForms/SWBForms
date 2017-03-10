@@ -33,6 +33,7 @@ public class SimpleMailSender {
 		properties.setProperty("mail.smtp.host", host);
 	    properties.setProperty("mail.smtp.starttls.enable", "true");
 	    properties.setProperty("mail.smtp.ssl.trust", host);
+	    properties.setProperty("mail.smtp.socketFactory.fallback", "true");
 	}
 	
 	public static SimpleMailSender getInstance() {
