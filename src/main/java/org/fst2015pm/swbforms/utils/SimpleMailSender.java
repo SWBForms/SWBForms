@@ -13,9 +13,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class SimpleMailSender {
-	static Properties properties;
+	static Properties properties = new Properties();
 	static SimpleMailSender instance = null;
-	String host = "localhost";
+	static final String host = "localhost";
 	private static final ExecutorService processor = Executors.newSingleThreadExecutor();
 
 	static {
@@ -41,7 +41,15 @@ public class SimpleMailSender {
 		return instance;
 	}
 	
-	public boolean sendMail(String from, String to, String body) {
+	public boolean sendHTMLMail(String from, String to, String subject, String body) {
+		return sendMail(from, to, subject, body, true);
+	}
+	
+	public boolean sendMail(String from, String to, String subject, String body) {
+		return sendMail(from, to, subject, body, false);
+	}
+	
+	public boolean sendMail(String from, String to, String subject, String body, boolean asHTML) {
 		Session session = Session.getDefaultInstance(properties);
 		
 		processor.submit(() -> {
@@ -56,10 +64,14 @@ public class SimpleMailSender {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
 	       		// Set Subject: header field
-				message.setSubject("This is the Subject Line!");
+				message.setSubject(subject);
 
 				// Now set the actual message
-				message.setText("This is actual message");
+				if (!asHTML) {
+					message.setText(body);
+				} else {
+					message.setContent(body, "text/html; charset=utf-8");
+				}
 
 				// Send message
 				Transport.send(message);

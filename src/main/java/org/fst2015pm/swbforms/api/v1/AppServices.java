@@ -299,7 +299,7 @@ public class AppServices {
 			
 			if (null != template) {
 				template = template.replace("___RESETTOKEN___", resetToken);
-				SimpleMailSender.getInstance().sendMail("no-reply@mit.mx", email, template);
+				SimpleMailSender.getInstance().sendHTMLMail("no-reply@mit.mx", email, "Cambiar password", template);
 			}
 			
 			//Invalidate current session
