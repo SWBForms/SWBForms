@@ -88,6 +88,7 @@ eng.dataSources["GeoLayer"] = {
         {name:"file", title:"Archivo", type:"String", required: true}
     ]
 };
+
 eng.dataSources["Dashboard"] = {
     scls: "Dashboard",
     modelid: DBModel,
@@ -98,6 +99,28 @@ eng.dataSources["Dashboard"] = {
         //{name:"widgets", title:"Widgets", type:"boolean", required: false}
     ]
 };
+
+eng.dataSources["Extractor"] = {
+  scls: "Extractor",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+      {name:"name", title: "Nombre", required: true, type: "string"}, //Nombre descriptivo
+      {name:"class", title: "Tipo", required: true, type: "string"}, //Nombre de la clase a instanciar
+      {name:"periodic", title:"Periodico", type:"boolean"}, //Indica si es periódica su ejecución
+      {name:"timer", title:"Tiempo", type:"int"}, //Tiempo para la ejecución, ej. 30
+      {name:"unit", title:"Unidad de tiempo", type:"string"}, //Unidad de tiempo: h|d|m (horas, días, meses)
+      {name:"dataSource", title:"DataSource", type:"string"}, //Nombre del datasource a escribir
+      {name:"fileLocation", title:"Ubicación", type:"string"}, //Ubicación remota del recurso
+      {name:"zipped", title:"ZIP", type:"boolean"}, //Indica si el recurso está comprimido
+      {name:"zipPath", title:"ruta", type:"string"}, //Ubicación del recurso dentro del ZIP
+      {name:"charset", title:"charset", type:"string"}, //Codificación de caracteres del recurso
+      {name:"columns", title:"mapeo", type:"boolean"}, //Mapeo de columnas del datasource
+      {name:"overwrite", title:"sobreescribir", type:"boolean"} //Indica si se sobreescribirán los datos
+  ]
+};
+
 eng.dataSources["Widget"] = {
     scls: "Widget",
     modelid: DBModel,
