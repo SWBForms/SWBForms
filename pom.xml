@@ -95,21 +95,12 @@
        <version>4.11</version>
        <scope>test</scope>
    </dependency>
-   <dependency>
-       <groupId>org.geotools</groupId>
-       <artifactId>gt-shapefile</artifactId>
-       <version>${geotools.version}</version>
-   </dependency>
-   <dependency>
-       <groupId>org.geotools</groupId>
-       <artifactId>gt-swing</artifactId>
-       <version>${geotools.version}</version>
-   </dependency>
-   <dependency>
-     <groupId>org.geotools</groupId>
-     <artifactId>gt-ogr-jni</artifactId>
-     <version>${geotools.version}</version>
- </dependency>
+   <!-- https://mvnrepository.com/artifact/org.gdal/gdal -->
+  <dependency>
+      <groupId>org.gdal</groupId>
+      <artifactId>gdal</artifactId>
+      <version>2.1.0</version>
+  </dependency>
   </dependencies>
 
   <build>
