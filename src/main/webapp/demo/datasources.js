@@ -52,7 +52,7 @@ eng.dataSources["Notas"] = {
     fields: [
         {name: "folio", title: "Folio", canEdit:false, required: false, type: "string"},
         {name: "fecha", title: "Fecha", type: "date"},
-        {name: "cliente", title: "Cliente", stype: "select", dataSource:"Clientes"},
+        {name: "cliente", title: "Cliente", stype: "select", multiple:true, dataSource:"Clientes"},
         {name: "productos", title: "Productos", stype: "grid", 
             showGridSummary:true,
             dataSource:"DetalleNota"
@@ -112,7 +112,7 @@ eng.dataSources["Marcas"] = {
     dataStore: "mongodb",    
     displayField: "nombre",
     fields: [
-        {name: "nombre", title: "Nonbre", required: true, type: "string"},
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "descripcion", title: "Descripción", type: "text"},
     ]
 };
@@ -123,7 +123,7 @@ eng.dataSources["Productos"] = {
     dataStore: "mongodb",    
     displayField: "nombre",
     fields: [
-        {name: "nombre", title: "Nonbre", required: true, type: "string"},
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "descripcion", title: "Descripción", type: "text"},
         {name: "precio", title: "Precio", type: "float"},
         {name: "iva", title: "IVA", type: "float"},

@@ -7,32 +7,55 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.fst2015pm.swbforms.utils.FSTUtils;
-import org.semanticwb.datamanager.DataExtractorBase;
 import org.semanticwb.datamanager.DataMgr;
-import org.semanticwb.datamanager.script.ScriptObject;
+import org.semanticwb.datamanager.DataObject;
 
 /**
  * Base class for extractors. Implements methods from PMExtractor interface.
  * @author Hasdai Pacheco
- *
  */
 public class PMExtractorBase implements PMExtractor {
 	protected boolean extracting;
+	protected String status;
+	DataObject extractorDef;
 	
 	/**
 	 * Constructor. Creates a new instance of PMExtractorBase.
 	 */
-	public PMExtractorBase() {
+	public PMExtractorBase(DataObject def) {
 		extracting = false;
+		extractorDef = def;
+		status = "";
+	}
+	
+	/**
+	 * Sets extractor definition.
+	 * @param def Extractor definition.
+	 */
+	public void setExtractorDef(DataObject def) {
+		extractorDef = def;
+	}
+	
+	
+	/**
+	 * Gets extractor definition.
+	 */
+	public DataObject getExtractorDef() {
+		return extractorDef;
 	}
 	
 	@Override
-	public void extract(DataExtractorBase base) throws IOException {
+	public String getStatus() {
+		return status;
+	}
+	
+	@Override
+	public void extract() throws IOException {
 		if (this.extracting) return; //Prevent data overwrite
 		
 		this.extracting = true;
 		// Get scriptObject configuration parameters
-		ScriptObject extractorDef = base.getScriptObject();
+		//ScriptObject extractorDef = base.getScriptObject();
 		String fileUrl = extractorDef.getString("fileLocation"); //Local path or URL of remote file
 		boolean zipped = Boolean.valueOf(extractorDef.getString("zipped")); //Zipped flag
 		boolean remote = false;
@@ -77,26 +100,26 @@ public class PMExtractorBase implements PMExtractor {
 		
 		//Store data
 		System.out.println("Storing data...");
-		store(base, destPath);
+		//store(base, destPath);
+		store();
 		System.out.println("Cleaning file system...");
 		org.apache.commons.io.FileUtils.deleteQuietly(new File(destPath).getParentFile());
 		this.extracting = false;
 	}
 
 	@Override
-	public void start(DataExtractorBase base) {
+	public void start() {
 		try {
-			extract(base);
+			extract();
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
 		}
 	}
 
 	@Override
-	public void stop(DataExtractorBase base) { }
+	public void stop() { }
 
-	@Override
-	public void store(DataExtractorBase base, String filePAth) {
+	public void store() {
 		throw new UnsupportedOperationException("Method not implemented");
 	}
 

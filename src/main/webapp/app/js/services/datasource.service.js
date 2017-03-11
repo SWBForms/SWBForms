@@ -7,6 +7,7 @@
 
   DataSource.$inject = ['$http', '$q'];
   function DataSource($http, $q) {
+    let apiVersion = 1; //TODO: Move to app config
     //Service definition
     let service = {};
     service.listDatasources = listDatasources;
@@ -25,7 +26,7 @@
     Gets a list of all datasource names
     */
     function listDatasources() {
-      let theUrl = "/api/datasources"
+      let theUrl = `/api/v${apiVersion}/datasources`;
       let request = $http({
         url: theUrl,
         method: "GET"
@@ -40,7 +41,7 @@
       var deferred = $q.defer();
 
       if (dsName && dsName.length) {
-        let theUrl = `/api/datasources/${dsName}`;
+        let theUrl = `/api/v${apiVersion}/datasources/${dsName}`;
         //Add queryParams to url
         if (queryParams && queryParams.length) {
           queryParams.forEach((param, i) => {
@@ -72,7 +73,7 @@
 
       if (dsName && dsName.length) {
         if (payload) {
-          let theUrl = `/api/datasources/${dsName}`;
+          let theUrl = `/api/v${apiVersion}/datasources/${dsName}`;
           $http({
             url: theUrl,
             method: "POST",
@@ -99,7 +100,7 @@
       var deferred = $q.defer();
       if (dsName && dsName.length) {
         if (payload) {
-          let theUrl = `/api/datasources/${dsName}/${payload._id}`;
+          let theUrl = `/api/v${apiVersion}/datasources/${dsName}/${payload._id}`;
 
           $http({
             url: theUrl,
@@ -128,7 +129,7 @@
       var deferred = $q.defer();
       if (dsName && dsName.length) {
         if (objId && objId.length) {
-          let theUrl = `/api/datasources/${dsName}/${objId}`;
+          let theUrl = `/api/v${apiVersion}/datasources/${dsName}/${objId}`;
           $http({
             url: theUrl,
             method: "GET"
@@ -182,7 +183,7 @@
       var deferred = $q.defer();
       if (dsName && dsName.length) {
         if (objId && objId.length) {
-          let theUrl = `/api/datasources/${dsName}/${objId}`;
+          let theUrl = `/api/v${apiVersion}/datasources/${dsName}/${objId}`;
 
           $http({
             url: theUrl,

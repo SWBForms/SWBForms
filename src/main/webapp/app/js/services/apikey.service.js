@@ -7,6 +7,7 @@
 
   APIKey.$inject = ['$http', '$q'];
   function APIKey($http, $q) {
+    let apiVersion = 1; //TODO: Move to app config
     //Service definition
     let service = {};
     service.createAPIKey = createAPIKey;
@@ -24,7 +25,7 @@
       var deferred = $q.defer();
 
       //TODO: Check for uniqueness in app name
-      let theUrl = "/api/services/apikey"
+      let theUrl = `/api/v${apiVersion}/services/apikey`;
       let request = $http({
         url: theUrl,
         data: appData,
@@ -46,7 +47,7 @@
       var deferred = $q.defer();
 
       if (keyEntryId && keyEntryId.length) {
-        let theUrl = `/api/datasources/${dsName}/${keyEntryId}`;
+        let theUrl = `/api/v${apiVersion}/datasources/${dsName}/${keyEntryId}`;
 
         $http({
           url: theUrl,

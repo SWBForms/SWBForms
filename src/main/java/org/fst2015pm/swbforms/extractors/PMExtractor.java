@@ -1,18 +1,31 @@
 package org.fst2015pm.swbforms.extractors;
 
-import org.semanticwb.datamanager.DataExtractor;
-import org.semanticwb.datamanager.DataExtractorBase;
+import java.io.IOException;
 
 /**
  * Interface that defines store method for extractors.
  * @author Hasdai Pacheco
  *
  */
-public interface PMExtractor extends DataExtractor {
+public interface PMExtractor {
 	/**
-	 * Stores data from file to DataSorce.
-	 * @param base DataExtractor definition.
-	 * @param filePath Path to data file.
+	 * Starts extractor execution
 	 */
-	abstract void store(DataExtractorBase base, String filePath);
+	public void start();
+	
+	/**
+	 * Stops extractor execution
+	 */
+	public void stop();
+	
+	/**
+	 * Extracts data
+	 */
+	public void extract() throws IOException;
+	
+	/**
+	 * Gets extractor status
+	 * @return STARTED | EXTRACTING | STOPPED
+	 */
+	public String getStatus();
 }

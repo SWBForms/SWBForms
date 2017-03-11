@@ -4,14 +4,14 @@ var DBModel = "FST2015PM";
 eng.config={
     baseDatasource:"/WEB-INF/global.js",
     mail:{
-        from:"xxx@gmail.com",
-        fromName:"Name",
-        host:"smtp.gmail.com",
-        user:"email.gmail.com",
-        passwd:"password",
-        port:25,
-        ssl:true,
-        sslPort:465
+        from:"no-reply@miit.mx",
+        fromName:"noreply",
+        host:"localhost",
+        //user:"email.gmail.com",
+        //passwd:"password",
+        port:25
+        //ssl:true,
+        //sslPort:465
     }
 };
 
@@ -66,6 +66,18 @@ eng.dataSources["UserSession"]={
         //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
     ]
 };
+
+eng.dataSources["ResetPasswordToken"]={
+    scls: "ResetPasswordToken",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    fields:[
+        {name:"token",title:"Token",type:"string"},
+        {name:"user",title:"Usuario",type:"string"},
+        {name:"expiration",title:"Expiración",type:"long"}
+    ]
+};
+
 eng.dataSources["APIKey"] = {
     scls: "APIKey",
     modelid: DBModel,
