@@ -95,13 +95,19 @@
        <version>4.11</version>
        <scope>test</scope>
    </dependency>
-   <!-- https://mvnrepository.com/artifact/org.gdal/gdal -->
+     <!-- https://mvnrepository.com/artifact/org.gdal/gdal -->
+   <dependency>
+       <groupId>org.gdal</groupId>
+       <artifactId>gdal</artifactId>
+       <version>2.1.0</version>
+   </dependency>
+   <!-- https://mvnrepository.com/artifact/org.geotools/gt-ogr-jni -->
   <dependency>
-      <groupId>org.gdal</groupId>
-      <artifactId>gdal</artifactId>
-      <version>2.1.0</version>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-ogr-jni</artifactId>
+      <version>13-RC1</version>
   </dependency>
-  </dependencies>
+</dependencies>
 
   <build>
     <plugins>
