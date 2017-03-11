@@ -117,7 +117,8 @@ eng.dataSources["Extractor"] = {
       {name:"zipPath", title:"ruta", type:"string"}, //Ubicación del recurso dentro del ZIP
       {name:"charset", title:"charset", type:"string"}, //Codificación de caracteres del recurso
       {name:"columns", title:"mapeo", type:"boolean"}, //Mapeo de columnas del datasource
-      {name:"overwrite", title:"sobreescribir", type:"boolean"} //Indica si se sobreescribirán los datos
+      {name:"overwrite", title:"sobreescribir", type:"boolean"}, //Indica si se sobreescribirán los datos
+      {name:"lastExecution", title:"Ultima ejecución", type:"string"} //Fecha de última ejecución
   ]
 };
 
