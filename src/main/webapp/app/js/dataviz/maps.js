@@ -112,7 +112,7 @@ getColor(d) {
      };
  }
  addGeoJSONLayerCVS(map, data){
-   let geoLayer = L.geoCsv(data, {style: this.AddStyle });                             });
+   let geoLayer = L.geoCsv(data, {style: this.AddStyle });   
     map.addLayer(geoLayer);
     return geoLayer;
  }

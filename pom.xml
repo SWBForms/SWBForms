@@ -29,7 +29,7 @@
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <geotools.version>15.1</geotools.version>
+    <geotools.version>16.1</geotools.version>
   </properties>
 
   <dependencies>
@@ -101,12 +101,39 @@
        <artifactId>gdal</artifactId>
        <version>2.1.0</version>
    </dependency>
-   <!-- https://mvnrepository.com/artifact/org.geotools/gt-ogr-jni -->
-  <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-ogr-jni</artifactId>
-      <version>13-RC1</version>
-  </dependency>
+		<!-- https://mvnrepository.com/artifact/org.geotools/gt-data -->
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-data</artifactId>
+	    <version>16.1</version>
+	</dependency>
+
+	  <!-- https://mvnrepository.com/artifact/org.geotools/gt-shapefile -->
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-shapefile</artifactId>
+	    <version>16.1</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.geotools.jdbc/gt-jdbc-db2 -->
+	<dependency>
+	    <groupId>org.geotools.jdbc</groupId>
+	    <artifactId>gt-jdbc-db2</artifactId>
+	    <version>16.1</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.geotools/gt-ogr-jni -->
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-ogr-jni</artifactId>
+	    <version>16.1</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.geotools</groupId>
+	  <artifactId>gt-geojson</artifactId>
+	  <version>16.1</version>
+	</dependency>
+	
+	
 </dependencies>
 
   <build>

@@ -18,8 +18,14 @@
       let leaf2 = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
       let Hmap = dataviz.mapsFactory.createMap("hMap",ENGINE_LEAFLET, df, 10);
 
-      $http({
+    /*  $http({
         url: "/app/mockdata/geo/PM_15_municipio.geojson",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayer(Hmap, res.data,ENGINE_LEAFLET );
+      });*/
+      $http({
+        url: "/app/mockdata/shape/uni.geojson",
         method: "GET"
       }).then((res) => {
         dataviz.mapsFactory.addGeoJSONLayer(Hmap, res.data,ENGINE_LEAFLET );
