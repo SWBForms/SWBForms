@@ -226,7 +226,7 @@ public class AppServices {
 	 * @throws IOException
 	 */
 	@POST
-	@Path("/resetPassword")
+	@Path("/resetpassword")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context) throws IOException {
 		boolean create = false;

@@ -45,43 +45,49 @@
 <%
 	SWBScriptEngine engine = DataMgr.initPlatform(session);
 	String token = request.getParameter("resetToken");
-	String fullname = request.getParameter("fullname");
-  String email = request.getParameter("email");
   String password = request.getParameter("password");
   String password2 = request.getParameter("password2");
   
+  //Redirect on token empty
   if (null == token || token.isEmpty()) {
 	  response.sendRedirect("/login");
 	  return;
   }
   
+  //Get token object
   DataObject tokenObj = getTokenObject(engine, token);
+  
+  //Redirect on invalid token
   if (!isTokenValid(engine, tokenObj)) {
 	  response.sendRedirect("/login");
 	  return;
   }
   
-  System.out.println("Token still valid");
- 
-  SWBDataSource ds=engine.getDataSource("User");
-  DataObject obj=new DataObject();
-  
-  
-  if(email!=null && password!=null)
-    {
-        if(password.equals(password2))
-        {
-            ds=engine.getDataSource("User");
-            obj=new DataObject();
-            obj.put("fullname", fullname);
-            obj.put("email", email);
-            obj.put("password", password);
-            ds.addObj(obj);
-            //engine.close();
-            response.sendRedirect("/login");
-            return;
-        }
-    }
+  //Update user if password provided
+  if (null != password && null != password2) {
+		//Get user associated to token
+	  SWBDataSource ds = engine.getDataSource("User");
+	  DataObject userObj = null;
+	  if (null != tokenObj) {
+		  userObj = ds.fetchObjById(tokenObj.getString("user"));
+	  }
+	  
+	  //Update user password
+		if(null != userObj && password.equals(password2)) {
+    	userObj.put("password", password);
+    	ds.updateObj(userObj);
+    	
+    	//Remove reset token
+    	ds = engine.getDataSource("ResetPasswordToken");
+   		try {
+ 				ds.removeObj(tokenObj);	
+   		} catch (IOException ioex) {
+   			ioex.printStackTrace();
+   		}
+	    response.sendRedirect("/login");
+  	  return;
+     }
+   }
 %>
 <!DOCTYPE html>
 <html>
@@ -113,8 +119,6 @@
     <div class="container animated fadeInDown">
       <form class="form-signin" action="" method="post">
         <h2 class="form-signin-heading">Cambiar password</h2>
-        <input name="fullname" type="text" class="form-control" placeholder="Full name" required autofocus>
-        <input name="email" type="email" class="form-control" placeholder="Email" required>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
         <input name="password2" type="password" class="form-control" placeholder="Confirm password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Actualizar</button>
