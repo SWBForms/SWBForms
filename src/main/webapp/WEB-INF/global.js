@@ -92,6 +92,7 @@ eng.dataSources["APIKey"] = {
         {name:"appName",title:"Aplicación",type:"string"},
         {name:"appKey",title:"Token",type:"string"},
         {name:"appSecret",title:"Secret",type:"string"},
+        {name:"appmail",title:"E-mail",type:"string"},
         {name:"enabled",title:"Activo",type:"boolean"}
         //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
         //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},

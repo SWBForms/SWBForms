@@ -86,8 +86,6 @@ public class AppServices {
 				objData.put("appKey", apiKey);
 				objData.put("appSecret", apiSecret);
 				
-				System.out.println(objData.toString());
-				
 				//Add api key object
 				SWBDataSource ds = engine.getDataSource("APIKey");
 				ds.addObj(objData);//TODO: Check errors from SWBForms API
@@ -255,8 +253,6 @@ public class AppServices {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
 		
-		System.out.println("auth "+authorization);
-		
 		//Check API Key
 		String [] parts = authorization.split(":");
 		if (parts.length != 2 || !isAPIKeyValid(parts[0])) {
@@ -275,7 +271,7 @@ public class AppServices {
 		//Get session object
 		DataObject sess = getUserSessionObjectByToken(ds, parts[1]);
 		
-		if (isSessionActive(sess)) {
+		if (isSessionActive(engine, sess)) {
 			//Find user and get email
 			String userID = sess.getString("user");
 			DataObject user = users.fetchObjById(userID);
@@ -367,16 +363,26 @@ public class AppServices {
 	 * @param sessObject Session object
 	 * @return
 	 */
-	private boolean isSessionActive(DataObject sessObject) {
-		if (null == sessObject) {
-			return false;
+	private boolean isSessionActive(SWBScriptEngine engine, DataObject sessObject) {		
+		if (null != sessObject) {
+			//Check validity
+			long now = new Date().getTime();
+			long sessExp =  sessObject.getLong("expiration");
+			
+			if (now < sessExp) {
+				return true;
+			}
+			
+			//Remove session object if expired
+			SWBDataSource sessions = engine.getDataSource("UserSession");
+			try {
+				sessions.removeObj(sessObject);
+			} catch(IOException ioex) {
+				ioex.printStackTrace();
+			}
 		}
 		
-		//Check validity
-		long now = new Date().getTime();
-		long sessExp =  sessObject.getLong("expiration");
-		
-		return now < sessExp;
+		return false;
 	}
 	
 	/**
