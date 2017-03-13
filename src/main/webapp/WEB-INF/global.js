@@ -32,6 +32,7 @@ eng.dataSources["User"]={
     scls: "User",
     modelid: DBModel,
     dataStore: "mongodb",
+    secure: true,
     displayField: "fullname",
     fields:[
         {name:"fullname",title:"Nombre",type:"string"},
@@ -46,6 +47,7 @@ eng.dataSources["Role"] = {
     scls: "Role",
     modelid: DBModel,
     dataStore: "mongodb",
+    secure: true,
     displayField: "title",
     fields: [
         {name: "title", title: "Nombre", required: true, type: "string"},
@@ -57,6 +59,7 @@ eng.dataSources["UserSession"]={
     scls: "UserSession",
     modelid: DBModel,
     dataStore: "mongodb",
+    secure: true,
     displayField: "user",
     fields:[
         {name:"user",title:"Usuario",type:"string"},
@@ -70,6 +73,7 @@ eng.dataSources["UserSession"]={
 eng.dataSources["ResetPasswordToken"]={
     scls: "ResetPasswordToken",
     modelid: DBModel,
+    secure: true,
     dataStore: "mongodb",
     fields:[
         {name:"token",title:"Token",type:"string"},
@@ -82,6 +86,7 @@ eng.dataSources["APIKey"] = {
     scls: "APIKey",
     modelid: DBModel,
     dataStore: "mongodb",
+    secure: true,
     displayField: "appName",
     fields:[
         {name:"appName",title:"Aplicación",type:"string"},
@@ -114,6 +119,7 @@ eng.routes["global"]={
     loginFallback: "login",
     routeList:[
         { routePath: "login", forwardTo: "/work/config/login.jsp", isRestricted: "false", zindex:1 },
+        { routePath: "resetpassword", forwardTo: "/work/config/resetpassword.jsp", isRestricted: "false", zindex:1 },
         { routePath: "register", forwardTo: "/work/config/register.jsp", isRestricted: "false" },
         { routePath: "work", isRestricted: "true"},
         { routePath: "app/*", forwardTo: "/app/", isRestricted: "true" },
