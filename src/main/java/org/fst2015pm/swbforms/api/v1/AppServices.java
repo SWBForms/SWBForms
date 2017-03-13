@@ -44,6 +44,8 @@ public class AppServices {
 	@Context HttpServletRequest httpRequest;
 	private boolean useCookies = false;
 	
+	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
+	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	
 	@POST
 	@Path("/apikey")
@@ -71,11 +73,11 @@ public class AppServices {
 					//objData.put("enabled", payload.optBoolean("enabled"));
 				}
 			} catch (JSONException jspex) {
-				ret = Response.status(400).entity("Malformed request body").build();
+				ret = Response.status(400).entity(ERROR_BADREQUEST).build();
 			}
 			
 			if (null == objData) {
-				ret = Response.status(400).entity("Bad request").build();
+				ret = Response.status(400).entity(ERROR_BADREQUEST).build();
 			} else {
 				//Generate app Key and Secret
 				String apiKey = FSTUtils.API.generateAPIKey();
@@ -110,36 +112,47 @@ public class AppServices {
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loginUser(String content) throws IOException {
+	public Response loginUser(@Context HttpHeaders headers, String content) throws IOException {
 		DataObject res = new DataObject();
 		boolean create = false;
 		Response ret;
+		
+		//Check auth headers
+		String authorization = getAuthCredentials(httpRequest, useCookies);
+		if (null == authorization || authorization.isEmpty()) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		}
+		
+		//Check API Key
+		if (!isAPIKeyValid(authorization)) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		}
 		
 		//Init platform with global configuration
 		engine = DataMgr.initPlatform(null);
 		
 		//Exit on empty request body
-		if (null == content || content.isEmpty()) return Response.status(400).entity("Malformed request body").build();
+		if (null == content || content.isEmpty()) return Response.status(400).entity(ERROR_BADREQUEST).build();
 		
 		//Get request body and fail on parse
 		JSONObject objData = null;
 		try {
 			objData = new JSONObject(content);
 		} catch (JSONException jspex) {
-			ret = Response.status(400).entity("{'error':'Malformed request body'}").build();
+			ret = Response.status(400).entity(ERROR_BADREQUEST).build();
 			return ret;
 		}
 		
 		//Find user in User datasource
 		DataObject user = findUser(engine.getDataSource("User"), objData.optString("email"), objData.optString("password")); 
 		if (null == user) {
-			ret = Response.status(403).entity("{'error':'Bad credentials'}").build();
+			ret = Response.status(403).entity(ERROR_FORBIDDEN).build();
 			return ret;
 		}
 		
 		//Find user session
 		SWBDataSource ds = engine.getDataSource("UserSession");
-		String token = UUID.randomUUID().toString();
+		String token = UUID.randomUUID().toString().replace("-", "");
 		String userId = user.getId();
 		DataObject sessData = getUserSessionObject(ds, userId);
 		
@@ -192,10 +205,16 @@ public class AppServices {
 	public Response logoutUser(@Context HttpHeaders headers) throws IOException {
 		DataObject res = new DataObject();
 		
+		//Check auth headers
 		String authorization = getAuthCredentials(httpRequest, useCookies);
 		if (null == authorization || authorization.isEmpty()) {
-			res.put("error", "Unauthorized");
-			return Response.status(401).entity(res).build();
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		}
+		
+		//Check API Key
+		String [] parts = authorization.split(":");
+		if (parts.length != 2 || !isAPIKeyValid(parts[0])) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
 		
 		//Init platform with global configuration
@@ -203,14 +222,13 @@ public class AppServices {
 		
 		//Find user session
 		SWBDataSource ds = engine.getDataSource("UserSession");
-		DataObject sess = getUserSessionObjectByToken(ds, authorization);
+		DataObject sess = getUserSessionObjectByToken(ds, parts[1]);
 		
 		//Remove session
 		if (null != sess) {
 			ds.removeObj(sess);
 		} else {
-			res.put("error", "Bad request");
-			return Response.status(400).entity(res).build();
+			return Response.status(400).entity(ERROR_BADREQUEST).build();
 		}
 		
 		if (useCookies) {
@@ -231,9 +249,18 @@ public class AppServices {
 	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context) throws IOException {
 		boolean create = false;
 		
+		//Check auth headers
 		String authorization = getAuthCredentials(httpRequest, useCookies);
 		if (null == authorization || authorization.isEmpty()) {
-			return Response.status(401).entity("{'error':'Unauthorized'}").build();
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		}
+		
+		System.out.println("auth "+authorization);
+		
+		//Check API Key
+		String [] parts = authorization.split(":");
+		if (parts.length != 2 || !isAPIKeyValid(parts[0])) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
 		
 		//Init platform with global options
@@ -246,7 +273,7 @@ public class AppServices {
 		SWBDataSource resetTokens = engine.getDataSource("ResetPasswordToken");
 		
 		//Get session object
-		DataObject sess = getUserSessionObjectByToken(ds, authorization);
+		DataObject sess = getUserSessionObjectByToken(ds, parts[1]);
 		
 		if (isSessionActive(sess)) {
 			//Find user and get email
@@ -278,7 +305,7 @@ public class AppServices {
 				dsFetch = dsFetch.getDataObject("response");
 			}
 			
-			String resetToken = UUID.randomUUID().toString();
+			String resetToken = UUID.randomUUID().toString().replace("-", "");
 			dsFetch.put("token", resetToken);
 			dsFetch.put("expiration", new Date().getTime() + (1000 * 60 * 60 * 24));
 			
@@ -299,13 +326,13 @@ public class AppServices {
 			
 			if (null != template) {
 				template = template.replace("___RESETTOKEN___", resetToken);
-				SimpleMailSender.getInstance().sendHTMLMail("no-reply@mit.mx", email, "Cambiar password", template);
+				SimpleMailSender.getInstance().sendHTMLMail("no-reply@miit.mx", email, "Solicitud de cambio de contraseña", template);
 			}
 			
 			//Invalidate current session
 			ds.removeObj(sess);
 		} else {
-			return Response.status(401).entity("{'error':'Unauthorized'}").build();
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
 		
 		return Response.status(200).build();
@@ -422,6 +449,40 @@ public class AppServices {
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Checks whether an API Key exists in datasource 
+	 * @param authCredentials authorization header
+	 * @return true if API Key exists in datasource
+	 */
+	private boolean isAPIKeyValid(String key) {
+		if (null != key && !key.isEmpty()) {
+			engine = DataMgr.initPlatform(null);
+			SWBDataSource ds = engine.getDataSource("APIKey");
+			DataObject queryObj = new DataObject();
+			queryObj.put("appKey", key);
+				
+			DataObject dsFetch = null;
+			try {
+				DataObject wrapper = new DataObject();
+				wrapper.put("data", queryObj);
+				dsFetch = ds.fetch(wrapper);
+			} catch (IOException ioex) {
+				ioex.printStackTrace();
+			}
+				
+			if (null != dsFetch) {
+				DataObject response = dsFetch.getDataObject("response");
+				if (null != response) {
+					DataList dlist = response.getDataList("data");
+					if (!dlist.isEmpty()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
