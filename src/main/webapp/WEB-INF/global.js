@@ -38,7 +38,8 @@ eng.dataSources["User"]={
         {name:"fullname",title:"Nombre",type:"string"},
         {name:"password",title:"Contraseña",type:"password"},
         {name:"email",title:"Correo electrónico",type:"string", validators: [{type:"isUnique"}]},
-        {name: "roles", title: "Roles", stype: "select", multiple:true , dataSource:"Role"}
+        {name: "roles", title: "Roles", stype: "select", multiple:true , dataSource:"Role"},
+        {name:"magictown",title:"Pueblo Mágico",type:"string"}
         //{name:"roles",title:"Roles",stype:"select", valueMap:{director:"Director",gerente:"Gerente",subgerente:"Subgerente"},multiple:true},
         //{name:"groups",title:"Grupos",stype:"select", valueMap:{infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"},multiple:true},
     ]

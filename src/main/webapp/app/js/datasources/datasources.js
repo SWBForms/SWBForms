@@ -1,5 +1,9 @@
 var DBModel = "FST2015PM";
 
+eng.userSessionConfig = {
+  sessTime: 21600 //Session time for App services (15 days)
+};
+
 eng.dataSources["MagicTown"] = {
     scls: "MagicTown",
     modelid: DBModel,
