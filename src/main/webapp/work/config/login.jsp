@@ -1,8 +1,15 @@
+<%@page import="org.semanticwb.datamanager.script.ScriptObject"%>
 <%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-String logoutAction=request.getParameter("logout");
-String email=request.getParameter("email");
-String password=request.getParameter("password");
+String logoutAction = request.getParameter("logout");
+String email = request.getParameter("email");
+String password = request.getParameter("password");
+
+SWBScriptEngine eng = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+ScriptObject so = eng.getScriptObject();
+System.out.println("---"+so.toString());
+System.out.println("---"+so.get("userSessionConfig").getInt("sessTime"));
+
 
 if (null != logoutAction && "true".equals(logoutAction)) {
   session.removeAttribute("_USER_");

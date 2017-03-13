@@ -31,6 +31,7 @@ import org.semanticwb.datamanager.DataUtils;
 import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 import org.semanticwb.datamanager.SWBScriptUtils;
+import org.semanticwb.datamanager.script.ScriptObject;
 
 /**
  * REST endpoint for app services
@@ -43,7 +44,6 @@ public class AppServices {
 	SWBScriptUtils utils;
 	@Context HttpServletRequest httpRequest;
 	private boolean useCookies = false;
-	
 	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	
@@ -129,6 +129,12 @@ public class AppServices {
 		//Init platform with global configuration
 		engine = DataMgr.initPlatform(null);
 		
+		ScriptObject usrSessionTime = engine.getScriptObject().get("userSessionTime");
+		if (null != usrSessionTime) {
+			expireMinutes = (Integer) usrSessionTime.getValue();
+		}
+		
+		
 		//Exit on empty request body
 		if (null == content || content.isEmpty()) return Response.status(400).entity(ERROR_BADREQUEST).build();
 		
@@ -161,6 +167,14 @@ public class AppServices {
 			sessData.put("user", userId);
 		}
 		sessData.put("token", token);
+		
+		//Get session time from config
+		SWBScriptEngine usereng = DataMgr.initPlatform("/app/js/datasources/datasources.js", null);
+		ScriptObject so = usereng.getScriptObject();
+		if (null != so && null != so.get("userSessionConfig")) {
+			expireMinutes = so.get("userSessionConfig").getInt("sessTime");
+		}
+		
 		sessData.put("expiration", new Date().getTime() + (1000 * 60 * expireMinutes));
 		
 		//Update session object
