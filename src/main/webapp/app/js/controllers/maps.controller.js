@@ -78,7 +78,6 @@
         dataviz.mapsFactory.addMarker(leaf, res.data, ENGINE_LEAFLET);
       });
 
-
       //Google Maps
       /*
       Direction for google maps

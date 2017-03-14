@@ -6,6 +6,7 @@
 @import "partials/codemirror";
 @import "partials/toaster";
 @import "partials/forms";
+@import "partials/buttons";
 
 body {
   padding-top: 50px;
@@ -13,7 +14,7 @@ body {
 }
 
 .main {
-  padding: 20px;
+  margin-top:20px;
 }
 
 @media (min-width: 768px) {
@@ -65,4 +66,9 @@ body {
 .sub-header {
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
+}
+
+.title-ribbon {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
 }

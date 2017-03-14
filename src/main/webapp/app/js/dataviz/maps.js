@@ -1,6 +1,6 @@
 /** Class to encapsulate maps creation */
 class MapsFactory {
-constructor() { }
+  constructor() { }
 
 getColor(d) {
     return d > 1000 ? '#800026' :
@@ -19,7 +19,6 @@ getColor(d) {
         }
   }
   _onEachFeatureAll(feature, layer) {
-
       //mostrar todas las propiedades
         let totProp, data, value ;
         totProp = "<table style = \"border: 1px solid black;\"><tr> <th style=\"width:50%\">Caracter&iacute;stica</th> <th style=\"width:50%\">Valor</th></tr>";
@@ -61,23 +60,22 @@ getColor(d) {
         if (!L) return;
           let mbUrl2='https://api.mapbox.com/styles/v1/ismene93/ciwd28yeq000h2pnafgwqprhz/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaXNtZW5lOTMiLCJhIjoiY2l3Y3c3MXo4MDZlcjJvbTcybml5emRsYiJ9.P0J9VRG2kvpUhayggVa2fA';
 
-          let grayscale   = L.tileLayer(mbUrl2, {id: 'mapbox.light', attribution: mbAttr}),
-              streets     = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+        let grayscale = L.tileLayer(mbUrl2, {id: 'mapbox.light', attribution: mbAttr}),
+            streets = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 
-          let mymap = L.map(container,{
-            center: [firstPoint[0], firstPoint[1]],
-            zoom: setZoom,
-            layers: [grayscale, streets]
-          });
+        let ret = L.map(container,{
+          center: [firstPoint[0], firstPoint[1]],
+          zoom: setZoom,
+          layers: [grayscale, streets]
+        });
 
-           let baseLayers = {
-            "Grayscale": grayscale,
-            "Streets": streets
-            };
-          L.control.layers(baseLayers).addTo(mymap);
-            return mymap;
-      break;
-
+        let baseLayers = {
+          "Grayscale": grayscale,
+          "Streets": streets
+        };
+        L.control.layers(baseLayers).addTo(ret);
+        return ret;
+        break;
       case ENGINE_GOOGLEMAPS:
             //let self = this;
           //  let map;
@@ -112,18 +110,17 @@ getColor(d) {
      };
  }
  addGeoJSONLayerCVS(map, data){
-   let geoLayer = L.geoCsv(data, {style: this.AddStyle });   
+   let geoLayer = L.geoCsv(data, {style: this.AddStyle });
     map.addLayer(geoLayer);
     return geoLayer;
  }
 
-
   addGeoJSONLayer(map, data, engine) {
     switch(engine) {
       case ENGINE_GOOGLEMAPS:
-        if (map) {
-          map.data.loadGeoJson(data);
-        };
+      if (map) {
+        map.data.loadGeoJson(data);
+      };
       break;
       case ENGINE_LEAFLET:
        let dataOnMap = L.geoJSON(data, {
@@ -150,126 +147,126 @@ getColor(d) {
 
 
   addRoute(map, origin, destination, type, engine) {
-      switch(engine) {
-        case ENGINE_GOOGLEMAPS:
-          if (map) {
-            GoogleMapsLoader.load(function(google, map, origin, destination, type) {
-                directionsDisplay = new google.maps.DirectionsRenderer({
-                map: map
-              });
-              //formar el request con la ruta
-              let request = {
-                  destination: destination,
-                  origin: origin,
-                  travelMode: type
-              };
-              //ejecutar la direccion del servicio
-              let directionsService = new google.maps.DirectionsService();
-              directionsService.route(request, function(response, status) {
-                  if (status == 'OK') {
-                      //si se realizo correctamente la consulta se establece la dirección
-                      directionsDisplay.setDirections(response);
-                  }
-              });
-            });
+    switch(engine) {
+      case ENGINE_GOOGLEMAPS:
+      if (map) {
+        GoogleMapsLoader.load(function(google, map, origin, destination, type) {
+          directionsDisplay = new google.maps.DirectionsRenderer({
+            map: map
+          });
+          //formar el request con la ruta
+          let request = {
+            destination: destination,
+            origin: origin,
+            travelMode: type
           };
+          //ejecutar la direccion del servicio
+          let directionsService = new google.maps.DirectionsService();
+          directionsService.route(request, function(response, status) {
+            if (status == 'OK') {
+              //si se realizo correctamente la consulta se establece la dirección
+              directionsDisplay.setDirections(response);
+            }
+          });
+        });
+      };
 
-        break;
-        case ENGINE_LEAFLET:
+      break;
+      case ENGINE_LEAFLET:
 
-        break;
-        case ENGINE_D3:
-        break;
-        default:
-      }//switch
+      break;
+      case ENGINE_D3:
+      break;
+      default:
+    }//switch
   }//route
   addSimpleMarker(data, map){
-      return L.marker([data[0], data[1]]).addTo(map);
+    return L.marker([data[0], data[1]]).addTo(map);
   }
-	addCircleMarker(map, data){
+  addCircleMarker(map, data){
     let geojsonMarkerOptionsBlue = {
-        radius: 8,
-        fillColor: "#5882FA",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
+      radius: 8,
+      fillColor: "#5882FA",
+      color: "#000",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8
     };
 
     let geojsonMarkerOptionsGreen = {
-        radius: 8,
-        fillColor: "#04B431",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
+      radius: 8,
+      fillColor: "#04B431",
+      color: "#000",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8
     };
 
- 	 L.geoJSON(data, {
- 	    pointToLayer: function (feature, latlng) {
+    L.geoJSON(data, {
+      pointToLayer: function (feature, latlng) {
         if (feature.properties.popupContent)
- 		      return L.circleMarker(latlng, geojsonMarkerOptionsBlue)
+        return L.circleMarker(latlng, geojsonMarkerOptionsBlue)
         else
-          return L.circleMarker(latlng, geojsonMarkerOptionsGreen)
- 	    }
- 	}).addTo(map);
+        return L.circleMarker(latlng, geojsonMarkerOptionsGreen)
+      }
+    }).addTo(map);
   }
 
   addMarker(map, data, engine) {
     switch(engine) {
-        case ENGINE_GOOGLEMAPS:
-          if (map) {
-            GoogleMapsLoader.load(function(google, map, data, title) {
-              var marker2 = new google.maps.Marker({
-                  map: map,
-                  position: market,
-                  title: title
-              });
-            });
-          };
-        break;
-        case ENGINE_LEAFLET:
-        let greenIcon = L.icon({
-            iconUrl: './img/icon/leaf-green.png',
-            shadowUrl: './img/icon/leaf-shadow.png',
-            iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      case ENGINE_GOOGLEMAPS:
+      if (map) {
+        GoogleMapsLoader.load(function(google, map, data, title) {
+          var marker2 = new google.maps.Marker({
+            map: map,
+            position: market,
+            title: title
+          });
         });
-        let escuela = L.icon({
-            iconUrl: './img/icon/bandera.png',
-            iconSize:     [38, 80], // size of the icon
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
-        let templo = L.icon({
-            iconUrl: './img/icon/blanco.png',
-            iconSize:     [38, 70], // size of the icon
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
-       L.geoJSON(data, {
-          pointToLayer: function (feature, latlng) {
-              switch(feature.properties.geografico){
-                case "Escuela":
-                  return L.marker(latlng, {icon: escuela});
-                break;
-                case "Templo":
-                  return L.marker(latlng, {icon: templo});
-                break;
-                default:
-                  return L.marker(latlng, {icon: greenIcon});
-                break;
-              }
+      };
+      break;
+      case ENGINE_LEAFLET:
+      let greenIcon = L.icon({
+        iconUrl: './img/icon/leaf-green.png',
+        shadowUrl: './img/icon/leaf-shadow.png',
+        iconSize:     [38, 95], // size of the icon
+        shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      });
+      let escuela = L.icon({
+        iconUrl: './img/icon/bandera.png',
+        iconSize:     [38, 80], // size of the icon
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      });
+      let templo = L.icon({
+        iconUrl: './img/icon/blanco.png',
+        iconSize:     [38, 70], // size of the icon
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      });
+      L.geoJSON(data, {
+        pointToLayer: function (feature, latlng) {
+          switch(feature.properties.geografico){
+            case "Escuela":
+            return L.marker(latlng, {icon: escuela});
+            break;
+            case "Templo":
+            return L.marker(latlng, {icon: templo});
+            break;
+            default:
+            return L.marker(latlng, {icon: greenIcon});
+            break;
           }
+        }
       }).addTo(map);
-        break;
-        case ENGINE_D3:
-        break;
-        default:
-      }//switch
+      break;
+      case ENGINE_D3:
+      break;
+      default:
+    }//switch
     return;
   }//marker
 

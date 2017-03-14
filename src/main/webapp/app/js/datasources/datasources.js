@@ -1,5 +1,9 @@
 var DBModel = "FST2015PM";
 
+eng.userSessionConfig = {
+  sessTime: 21600 //Session time for App services (15 days)
+};
+
 eng.dataSources["MagicTown"] = {
     scls: "MagicTown",
     modelid: DBModel,
@@ -10,12 +14,12 @@ eng.dataSources["MagicTown"] = {
         {name:"CVE_MUN", title:"Clave de Municipio", type:"string", required: true},
         {name:"CVE_LOC", title:"Clave de Localidad", type:"string", required: true},
         {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
-        {name:"NAME", title: "Nombre", required: true, type: "string"},
-        {name:"DESCRIPTION", title: "Descripción", type: "string"},
-        {name:"ACCEPTED", title:"Incorporado", type:"boolean"},
-        {name:"INCLUSION_DATE", title:"Fecha de incorporación", type: "date"},
-        {name:"ORIGIN", title: "Imagen", type: "string"},
-        {name:"PICTURE", title: "Imagen", type: "string"}
+        {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"description", title: "Descripción", type: "string"},
+        {name:"accepted", title:"Incorporado", type:"boolean"},
+        {name:"inclusion_date", title:"Fecha de incorporación", type: "date"},
+        {name:"origin", title: "Imagen", type: "string"},
+        {name:"picture", title: "Imagen", type: "string"}
     ]
 };
 eng.dataSources["State"] = {
@@ -40,7 +44,7 @@ eng.dataSources["Municipality"] = {
     fields: [
         {name: "NOM_MUN", title: "Municipio", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave", required: true, type: "string"},
-        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
         {name: "PTOT", title: "Población total", required: false, type: "int"},
         {name: "PMAS", title: "Población masculina", required: false, type: "int"},
         {name: "PFEM", title: "Población femenina", required: false, type: "int"}
@@ -55,33 +59,13 @@ eng.dataSources["Locality"] = {
         {name: "NOM_LOC", title: "Municipio", required: true, type: "string"},
         {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
-        {name: "CVE_ENT", title: "Clave estado", required: true, stype: "select", dataSource:"Estado"},
+        {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
         {name: "LATITUD", title: "Latitud", required: true, type: "double"},
         {name: "LONGITUD", title: "Longitud", required: true, type: "double"},
         {name: "ALTITUD", title: "Altitud", required: false, type: "double"},
         {name: "PTOT", title: "Población total", required: false, type: "int"},
         {name: "PMAS", title: "Población masculina", required: false, type: "int"},
         {name: "PFEM", title: "Población femenina", required: false, type: "int"}
-    ]
-};
-eng.dataSources["Role"] = {
-    scls: "Role",
-    modelid: DBModel,
-    dataStore: "mongodb",
-    displayField: "title",
-    fields: [
-        {name: "title", title: "Nombre", required: true, type: "string"},
-        {name: "desription", title: "Descripción", required: true, type: "string"}
-    ]
-};
-eng.dataSources["UserRole"] = {
-    scls: "UserRole",
-    modelid: DBModel,
-    dataStore: "mongodb",
-    displayField: "user",
-    fields: [
-        {name: "user", title: "Usuario", stype: "select", dataSource:"User"},
-        {name: "role", title: "Rol", stype: "select", multiple:true , dataSource:"Role"}
     ]
 };
 eng.dataSources["DSEndpoint"] = {
@@ -93,10 +77,73 @@ eng.dataSources["DSEndpoint"] = {
         {name: "name", title: "Nombre", required: true, type: "string"},
         {name:"resourceName", title:"Recurso", type:"String", required: true},
         {name:"datasourceName", title:"DataSource", type:"String", required: true},
-        {name:"enabled", title:"Habilitado", type:"boolean", required: false}
+        {name:"enabled", title:"Habilitado", type:"boolean", required: false},
+        {name:"restrictionType", title:"Restricción", type:"string", required: true}
+    ]
+};
+eng.dataSources["GeoLayer"] = {
+    scls: "GeoLayer",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "name",
+    fields: [
+        {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"type", title: "Tipo", required: true, type: "string"},
+        {name:"file", title:"Archivo", type:"String", required: true}
     ]
 };
 
+eng.dataSources["Dashboard"] = {
+    scls: "Dashboard",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "name",
+    fields: [
+        {name:"name", title: "Nombre", required: true, type: "string"}
+        //{name:"widgets", title:"Widgets", type:"boolean", required: false}
+    ]
+};
+
+eng.dataSources["Extractor"] = {
+  scls: "Extractor",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+      {name:"name", title: "Nombre", required: true, type: "string"}, //Nombre descriptivo
+      {name:"description", title: "Descripción", required: true, type: "string"}, //Descripción del extractor
+      {name:"class", title: "Tipo", required: true, type: "string"}, //Nombre de la clase a instanciar
+      {name:"periodic", title:"Periodico", type:"boolean"}, //Indica si es periódica su ejecución
+      {name:"timer", title:"Tiempo", type:"int"}, //Tiempo para la ejecución, ej. 30
+      {name:"unit", title:"Unidad de tiempo", type:"string"}, //Unidad de tiempo: h|d|m (horas, días, meses)
+      {name:"dataSource", title:"DataSource", type:"string"}, //Nombre del datasource a escribir
+      {name:"fileLocation", title:"Ubicación", type:"string"}, //Ubicación remota del recurso
+      {name:"zipped", title:"ZIP", type:"boolean"}, //Indica si el recurso está comprimido
+      {name:"zipPath", title:"ruta", type:"string"}, //Ubicación del recurso dentro del ZIP
+      {name:"charset", title:"charset", type:"string"}, //Codificación de caracteres del recurso
+      {name:"columns", title:"mapeo", type:"boolean"}, //Mapeo de columnas del datasource
+      {name:"overwrite", title:"sobreescribir", type:"boolean"}, //Indica si se sobreescribirán los datos
+      {name:"lastExecution", title:"Ultima ejecución", type:"string"} //Fecha de última ejecución
+  ]
+};
+
+eng.dataSources["Widget"] = {
+    scls: "Widget",
+    modelid: DBModel,
+    dataStore: "mongodb",
+    displayField: "name",
+    fields: [
+        {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"type", title: "Tipo", required: true, type: "string"},
+        {name:"col", title: "Columna", required: true, type: "int"},
+        {name:"row", title: "Fila", required: true, type: "int"},
+        {name:"sizeX", title: "Tamaño X", required: true, type: "int"},
+        {name:"sizeY", title: "Tamaño Y", required: true, type: "int"}
+    ]
+};
+
+
+/*
 eng.dataExtractors["StateExtractor"] = {
   timer: { time: 30, unit: "d" },
   dataSource: "State",
@@ -155,4 +202,4 @@ eng.dataExtractors["LocalityExtractor"] = {
     {src:"PMAS", type:"int"},
     {src:"PFEM", type:"int"}
   ]
-};
+};*/
