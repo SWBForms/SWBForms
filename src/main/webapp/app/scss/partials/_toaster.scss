@@ -1,0 +1,50 @@
+$transitionDuration: 200ms;
+
+#toast-container>:hover {
+  box-shadow: none;
+  opacity: 0.9;
+}
+
+#toast-container > .toast:before {
+  position: fixed;
+  font-family: FontAwesome;
+  font-size: 24px;
+  line-height: 24px;
+  float: left;
+  color: #FFF;
+  padding-right: 0.5em;
+  margin: auto 0.5em auto -1.5em;
+}
+
+#toast-container > div {
+  margin: 0 0 6px;
+  padding: 15px 15px 15px 50px;
+  width: 300px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  box-shadow: none;
+  color: #ffffff;
+  opacity: 1;
+}
+
+#toast-container > .toast-success {
+  background-color: #3bb958;
+  background-image: none !important;
+}
+
+/* Override AngularJS-Toaster styles */
+:not(.no-enter)#toast-container > div.ng-enter,
+:not(.no-leave)#toast-container > div.ng-leave {
+   transition: $transitionDuration cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+}
+
+:not(.no-enter)#toast-container > div.ng-enter.ng-enter-active,
+:not(.no-leave)#toast-container > div.ng-leave {
+   opacity: 0.9;
+}
+
+:not(.no-leave)#toast-container > div.ng-leave.ng-leave-active,
+:not(.no-enter)#toast-container > div.ng-enter {
+   opacity: 0;
+}
