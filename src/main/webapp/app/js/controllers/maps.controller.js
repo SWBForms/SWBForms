@@ -40,7 +40,7 @@
         dataviz.mapsFactory.addMarker(leaf, res.data, ENGINE_LEAFLET);
       });
 
-      let leaf = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
+      leaf = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
 
       //Google Maps
       /*

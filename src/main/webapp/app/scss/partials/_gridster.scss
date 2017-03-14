@@ -17,3 +17,20 @@ div.gridster-desktop {
       }
     }
 }
+
+div.toolbar-widget {
+  width: 100%;
+  padding: 0px 5px;
+  float: left;
+  h5 {
+    position: absolute;
+  }
+  button {
+    float: right;
+  }
+}
+
+.desactive-element {
+  pointer-events: none;
+  cursor: none;
+}
