@@ -7,33 +7,33 @@
 		DataObject data = new DataObject();
 		r.put("data", data);
 		data.put("token", resetToken);
-	
+
 		DataObject tokenObj = null;
 		try {
 			DataObject query = ds.fetch(r);
 		  DataList rdata = query.getDataObject("response").getDataList("data");
-	
+
 	  	if(!rdata.isEmpty()) {
 	  		tokenObj = rdata.getDataObject(0);
 	  	}
 		} catch (IOException ioex) {
-			ioex.printStackTrace();	
+			ioex.printStackTrace();
 		}
-		
+
 		return tokenObj;
 	}
 
-	private boolean isTokenValid(SWBScriptEngine engine, DataObject tokenObj) { 
+	private boolean isTokenValid(SWBScriptEngine engine, DataObject tokenObj) {
     if (null != tokenObj) {
     	long tokenExp = tokenObj.getLong("expiration");
     	long now = new Date().getTime();
-    	
+
     	if (now < tokenExp) {
     		return true;
     	} else {
     		SWBDataSource ds = engine.getDataSource("ResetPasswordToken");
     		try {
-    			ds.removeObj(tokenObj);	
+    			ds.removeObj(tokenObj);
     		} catch (IOException ioex) {
     			ioex.printStackTrace();
     		}
@@ -47,22 +47,22 @@
 	String token = request.getParameter("resetToken");
   String password = request.getParameter("password");
   String password2 = request.getParameter("password2");
-  
+
   //Redirect on token empty
   if (null == token || token.isEmpty()) {
 	  response.sendRedirect("/login");
 	  return;
   }
-  
+
   //Get token object
   DataObject tokenObj = getTokenObject(engine, token);
-  
+
   //Redirect on invalid token
   if (!isTokenValid(engine, tokenObj)) {
 	  response.sendRedirect("/login");
 	  return;
   }
-  
+
   //Update user if password provided
   if (null != password && null != password2) {
 		//Get user associated to token
@@ -71,16 +71,16 @@
 	  if (null != tokenObj) {
 		  userObj = ds.fetchObjById(tokenObj.getString("user"));
 	  }
-	  
+
 	  //Update user password
 		if(null != userObj && password.equals(password2)) {
     	userObj.put("password", password);
     	ds.updateObj(userObj);
-    	
+
     	//Remove reset token
     	ds = engine.getDataSource("ResetPasswordToken");
    		try {
- 				ds.removeObj(tokenObj);	
+ 				ds.removeObj(tokenObj);
    		} catch (IOException ioex) {
    			ioex.printStackTrace();
    		}
@@ -98,7 +98,11 @@
 
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="img/favicon.ico">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="theme-color" content="#ffffff">
 
     <title>Register</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">

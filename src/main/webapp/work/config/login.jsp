@@ -31,15 +31,19 @@ if (null != logoutAction && "true".equals(logoutAction)) {
 %><!DOCTYPE html>
 <html>
   <head>
+    <title>Iniciar sesión</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="theme-color" content="#ffffff">
 
-    <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="app/lib/animate.css/animate.min.css">
     <style type="text/css">
@@ -57,11 +61,11 @@ if (null != logoutAction && "true".equals(logoutAction)) {
   <body>
     <div class="container animated fadeInDown">
       <form class="form-signin" action="" method="post">
-        <h2 class="form-signin-heading">Iniciar sesi&oacute;n</h2>
+        <h2 class="form-signin-heading">Iniciar sesión</h2>
         <input name="email" type="email" class="form-control" placeholder="Email" required autofocus>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
-        <p class="text-muted text-center"><small>&iquest;A&uacute;n no tiene una cuenta?</small></p>
+        <p class="text-muted text-center"><small>¿Aún no tiene una cuenta?</small></p>
         <a href="/register" class="btn btn-sm btn-block">Crear una cuenta</a>
       </form>
     </div>
