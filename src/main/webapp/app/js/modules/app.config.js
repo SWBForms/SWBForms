@@ -476,6 +476,105 @@
           }
         }
       })
+      .state('admin.extractors', {
+        url: '/extractors',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/extractors/extractors.html',
+            controller: 'ExtractorCtrl',
+            controllerAs: "extractors"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.editextractor', {
+        url: '/extractors/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/extractors/extractorEdit.html',
+            controller: 'ExtractorEditCtrl',
+            controllerAs: "extractors"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.addextractor', {
+        url: '/extractors/add',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/extractors/extractorEdit.html',
+            controller: 'ExtractorEditCtrl',
+            controllerAs: "extractors"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
       .state('admin.roles', {
         url: '/roles',
         views: {
@@ -928,7 +1027,7 @@
         menuItems: [
           {
             label:"Extractores",
-            stateLink: 'admin.dataextractors'
+            stateLink: 'admin.extractors'
           },
           {
             label:"Capas",
