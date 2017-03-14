@@ -211,10 +211,11 @@ public class DataSourceService {
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
-                        DataObject updateObj = new DataObject();
+            DataObject updateObj = null;
+            
 			if (null == ds) return Response.status(400).build();
 			
-			JSONObject objData;
+			JSONObject objData = null;
 			try {
 				objData = new JSONObject(content);
 			} catch (JSONException jspex) {
@@ -222,20 +223,17 @@ public class DataSourceService {
 			}
 			
 			if (null != objData) {
-				DataObject obj = new DataObject();
-
-				for (String key : objData.keySet()) {
-					Object val = objData.get(key);
-					obj.addParam(key, val);
-				}
+				//Transform JSON to dataobject to avoid fail
+				DataObject obj = (DataObject) DataObject.parseJSON(content);
 
 				if (validateObject(obj)) {
-					//System.out.println(obj);
 					updateObj = ds.updateObj(obj);
+					//DataObject objNew = ds.addObj(obj);
+					return Response.ok(updateObj).status(200).build();
+				} else {
+					return Response.status(400).build();
 				}
 			}
-
-			return Response.ok(updateObj).status(200).build();
 		}
 
 		return Response.status(403).entity("forbidden").build();
