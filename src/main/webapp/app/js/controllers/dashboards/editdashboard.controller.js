@@ -10,38 +10,26 @@
   function editDashboardCtrl($scope, $state, $stateParams, $Datasource) {
 
     let deletedWidgets = [];
-    $scope.dashboardName = "";
 
     let newDashboard = {
-      name: $scope.dashboardName,
+      name: "",
       widgets: []
     }
 
     if ($stateParams.id && $stateParams.id.length) {
       $Datasource.getObject($stateParams.id, "Dashboard").then(
         dashboard => {
+          var widgets = dashboard.data.widgets;
           $scope.dashboard = dashboard.data;
-          $scope.dashboardName = dashboard.data.name;
-          $scope.dashboard.name = $scope.dashboardName;
+          $scope.dashboard.name = dashboard.data.name;
           $scope.dashboard.widgets = [];
-          if (dashboard.data.widgets.name) {
-            console.log(dashboard.data.widgets);
-            $Datasource.getObject(dashboard.data.widgets._id).then(widget => {
-              console.log(widget);
-              $scope.dashboard.widgets.push(widget);
+
+          for(var key in widgets) {
+            $Datasource.getObject(widgets[key]._id, "Widget").then(widget => {
+              $scope.dashboard.widgets.push(widget.data);
             }).catch(error => {
               console.log(error);
             });
-          } else {
-            for (var i = 0; i < dashboard.data.widgets.length; i++) {
-              console.log(dashboard.data.widgets);
-              $Datasource.getObject(dashboard.data.widgets[i]._id).then(widget => {
-                $scope.dashboard.widgets.push(widget);
-                console.log(widget);
-              }).catch(error => {
-                console.log(error);
-              });
-            };
           }
         }
       );
@@ -137,39 +125,71 @@
     };
 
     $scope.save = function() {
+
       let dashboard = {};
-      dashboard.name = $scope.dashboardName;
-      let widgets = {};
+      let widgetsObject = {};
+      let indice = 0;
+      let total = $scope.dashboard.widgets.length;
+
+      dashboard._id = $scope.dashboard._id;
+      dashboard.name = $scope.dashboard.name;
+      dashboard.widgets = {};
 
       for (var i = 0; i < deletedWidgets.length; i++) {
-        $Datasource.removeObject(deletedWidgets[i]._id, "Widget")
-        .catch(function(error) {
-          console.log(error);
-        });
+        let widget ={};
+        widget._id = deletedWidgets[i]._id;
+        $Datasource.removeObject(widget._id, "Widget")
+        .catch(function(error) {});
       };
 
       for(var i=0 ; i < $scope.dashboard.widgets.length; i++) {
-        $Datasource.getObject($scope.dashboard.widgets[i]._id, "Widget")
-        .then(function(result) {
-          console.log(result);
+        let widget = {};
+
+        widget._id = $scope.dashboard.widgets[i]._id;
+        widget.name = $scope.dashboard.widgets[i].name;
+        widget.type = "undefined"
+        widget.col = $scope.dashboard.widgets[i].col;
+        widget.row = $scope.dashboard.widgets[i].row;
+        widget.sizeX = $scope.dashboard.widgets[i].sizeX;
+        widget.sizeY = $scope.dashboard.widgets[i].sizeY;
+
+        $Datasource.getObject(widget._id, "Widget")
+        .then(function(result){
+          saveDashboard({"_id": widget._id, "name": widget.name });
         })
         .catch(function(error){
-          console.log(error);
+          delete widget['_id'];
+          $Datasource.addObject(widget,"Widget")
+          .then(function(result) {
+            saveDashboard({"_id":result.data.response.data._id, "name": result.data.response.data.name });
+          });
         });
       };
 
-      dashboard.widgets = widgets;
-      if ($scope.dashboard._id) {
-        $Datasource.updateObject(dashboard,"Dashboard").
-        then(response => {
-          $state.go('dashboard.dashboards',{})
-        })
-      } else {
-        $Datasource.addObject(dashboard, "Dashboard")
-        .then(response => {
-          $state.go('dashboard.dashboards', {});
-        });
-      }
+      function saveDashboard(widget) {
+        widgetsObject[indice] = widget;
+        indice++;
+        if (total == indice) {
+          dashboard.widgets = widgetsObject;
+          if (dashboard._id) {
+            $Datasource.updateObject(dashboard,"Dashboard")
+            .then(response => {
+              $state.go('dashboard.dashboards',{})
+            }).catch(error => {
+              console.log(error);
+            })
+          } else {
+            $Datasource.addObject(dashboard, "Dashboard")
+            .then(response => {
+              $state.go('dashboard.dashboards', {});
+            })
+            .catch(error => {
+              console.log(error);
+            })
+          }
+        };
+      };
+
     }
 
     $scope.deleteWidget = function($event) {

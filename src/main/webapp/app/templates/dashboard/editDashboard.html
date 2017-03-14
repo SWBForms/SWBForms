@@ -3,14 +3,14 @@
   <div class="row title-ribbon">
     <h1 class="page-header" ng-show="formVisible">{{ pageTitle }}</h1>
     <div class="text-left">
-      <a ng-show="formVisible" class="pull-right btn btn-primary btn-minw" ng-click="clear()"><i class="glyphicon glyphicon-trash"></i> Clear</a>
+      <a ng-show="formVisible" class="pull-right btn btn-primary btn-minw" ng-click="clear()"><i clsass="glyphicon glyphicon-trash"></i> Clear</a>
       <a ng-show="formVisible" class="pull-right btn btn-primary btn-minw" ng-click="addWidget()"><i class="glyphicon glyphicon-plus"></i> Add Widget</a>
       <a ng-show="formVisible" class="pull-right btn btn-primary btn-minw" ng-click="save()"><i class="glyphicon glyphicon-floppy-saved"></i> Save </a>
       <div ng-show="formVisible" class="form-group">
         <label for="dashboardName">Dashboard Name</label>
-        <input id="dashboardName" type="text" ng-model="dashboardName">
+        <input id="dashboardName" type="text" ng-model="dashboard.name">
       </div>
-      <h1 style="display: inline-block;">{{ dashboardName }}</h1>
+      <h1 style="display: inline-block;">{{ dashboard.name }}</h1>
     </div>
   </div>
   <div gridster>
