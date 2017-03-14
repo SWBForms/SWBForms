@@ -16,7 +16,7 @@ public class SimpleMailSender {
 	static Properties properties = new Properties();
 	static SimpleMailSender instance = null;
 	static final String host = "localhost";
-	private static final ExecutorService processor = Executors.newSingleThreadExecutor();
+	static final ExecutorService processor = Executors.newSingleThreadExecutor();
 
 	static {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

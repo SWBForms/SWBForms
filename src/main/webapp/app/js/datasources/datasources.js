@@ -1,5 +1,9 @@
 var DBModel = "FST2015PM";
 
+eng.userSessionConfig = {
+  sessTime: 21600 //Session time for App services (15 days)
+};
+
 eng.dataSources["MagicTown"] = {
     scls: "MagicTown",
     modelid: DBModel,
@@ -107,6 +111,7 @@ eng.dataSources["Extractor"] = {
   displayField: "name",
   fields: [
       {name:"name", title: "Nombre", required: true, type: "string"}, //Nombre descriptivo
+      {name:"description", title: "Descripción", required: true, type: "string"}, //Descripción del extractor
       {name:"class", title: "Tipo", required: true, type: "string"}, //Nombre de la clase a instanciar
       {name:"periodic", title:"Periodico", type:"boolean"}, //Indica si es periódica su ejecución
       {name:"timer", title:"Tiempo", type:"int"}, //Tiempo para la ejecución, ej. 30
