@@ -192,6 +192,9 @@ public class AppServices {
 		DataObject respUserData = new DataObject();
 		respUserData.put("fullname", user.getString("fullname"));
 		respUserData.put("email", user.getString("email"));
+		if (null != user.getString("magictown") && !user.getString("magictown").isEmpty()) {
+			respUserData.put("magictown", user.getString("magictown"));
+		}
 		
 		res.put("user", respUserData);
 		res.put("session", respSessData);
