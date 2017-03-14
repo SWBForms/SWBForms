@@ -45,6 +45,7 @@
     "bootbox": "4.4.0",
     "ng-file-upload": "12.2.13",
     "angular-gridster": "0.13.14",
+    "leaflet.geoCSV": "https://github.com/joker-x/Leaflet.geoCSV.git",
     "underscore": "^1.8.3",
     "eonasdan-bootstrap-datetimepicker": "^4.17.45"
   },

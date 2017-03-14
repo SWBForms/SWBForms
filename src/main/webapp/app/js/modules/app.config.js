@@ -54,12 +54,15 @@
                   files: [
                     'lib/leaflet/dist/leaflet.css',
                     'lib/leaflet/dist/leaflet.js',
+                    'lib/leaflet.geoCSV/leaflet.geocsv-src.js',
+                    'lib/leaflet.geoCSV/leaflet.geocsv.js',                
                     'lib/google-maps/lib/Google.min.js',
                     'js/dataviz/constants.js',
                     'js/dataviz/charts.js',
                     'js/dataviz/maps.js',
                     'js/dataviz/datatables.js',
                     'js/dataviz/dataviz.js',
+                    'lib/d3/d3.min.js',
                   ]
               }
             ]);

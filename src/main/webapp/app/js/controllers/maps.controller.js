@@ -9,20 +9,58 @@
     function MapsCtrl($scope, $http) {
       //LEAFLET
       let mochis = [25.793, -108.977];
-      let df = [ 40.46, -100.715 ]
-      let leaf = dataviz.mapsFactory.createMap("map1",ENGINE_LEAFLET_DUAL, mochis, 10);
-      let mp2 = dataviz.mapsFactory.createMap("map3",ENGINE_LEAFLET_DUAL, df,5 );
-      let googleMap = dataviz.mapsFactory.createMap("map", ENGINE_GOOGLEMAPS, df,10);
+      let df = [ 19.419444, -99.14555 ];
+      let datosMun;
 
+      let leaf = dataviz.mapsFactory.createMap("map1",ENGINE_LEAFLET_DUAL, df, 10);
+      let mp2 = dataviz.mapsFactory.createMap("map3",ENGINE_LEAFLET_DUAL, df,5 );
+      let googleMap = dataviz.mapsFactory.createMap("map", ENGINE_GOOGLEMAPS, mochis,10);
+      let leaf2 = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
+      let Hmap = dataviz.mapsFactory.createMap("hMap",ENGINE_LEAFLET, df, 10);
+
+    /*  $http({
+        url: "/app/mockdata/geo/PM_15_municipio.geojson",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayer(Hmap, res.data,ENGINE_LEAFLET );
+      });*/
+      $http({
+        url: "/app/mockdata/shape/uni.geojson",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayer(Hmap, res.data,ENGINE_LEAFLET );
+      });
+      $http({
+        url: "/app/mockdata/datMun.csv",
+        method: "GET"
+      }).then((res) => {
+        dataviz.mapsFactory.addGeoJSONLayerCVS(Hmap, res.data );
+      });
+
+      dataviz.mapsFactory.addControls(leaf2, 'topright', 'prueba', 'PRUEBAS');
       dataviz.mapsFactory.addSimpleMarker(df, mp2);
+
       $http({
         url: "/app/mockdata/geo/PM_15_municipio.geojson",
         method: "GET"
       }).then((res) => {
       //  console.log(res.data);
+        let datosMun = res.data;
         dataviz.mapsFactory.addGeoJSONLayer(leaf, res.data, ENGINE_LEAFLET);
         dataviz.mapsFactory.addGeoJSONLayer(googleMap, res.data, ENGINE_GOOGLEMAPS);
+
+
+        document.getElementById("prueba").addEventListener ("click", function()
+        { let dataOnMaps;
+          if (this.checked){
+             dataOnMaps = dataviz.mapsFactory.addGeoJSONLayer(leaf2, res.data, ENGINE_LEAFLET);
+          }else{
+            dataviz.mapsFactory.quitGeoJson(dataOnMaps);
+          }
+        }
+        , false);
       });
+
 
       $http({
         url: "/app/mockdata/geo/PM_15_puntos_complem.geojson",
@@ -39,8 +77,6 @@
       }).then((res) => {
         dataviz.mapsFactory.addMarker(leaf, res.data, ENGINE_LEAFLET);
       });
-
-      leaf = dataviz.mapsFactory.createMap("mapButt",ENGINE_LEAFLET, df, 10);
 
       //Google Maps
       /*
