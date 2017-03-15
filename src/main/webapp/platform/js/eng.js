@@ -804,6 +804,8 @@ var eng = {
             base.canAdd = false;
         if (base.canPrint===undefined)
             base.canPrint = true;      
+        if (base.canExport===undefined)
+            base.canExport = true;      
         if (base.warnOnRemoval===undefined)
             base.warnOnRemoval = true;      
         base.canRemoveRecords = eng.utils.removeAttribute(base, "canRemove");
@@ -859,12 +861,18 @@ var eng = {
             mem.push(button2);
         }
         
-        var exp_button = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/download.png",
-            prompt: "Exportar Datos",
-            autoDraw:false,
-      	});
-      	mem.push(exp_button);
+        var exp_button;
+        
+        if(base.canExport===true)
+        {        
+        
+            exp_button = isc.ToolStripButton.create({
+                icon: "[SKIN]/actions/download.png",
+                prompt: "Exportar Datos",
+                autoDraw:false,
+            });
+            mem.push(exp_button);
+        }
         
         var toolStrip = isc.ToolStrip.create({
             width: "100%",
@@ -925,55 +933,65 @@ var eng = {
                 grid.editHilites();
             };
         }
+
         
-        exp_button.click =function()
+        if(base.canExport===true)
         {
-          var uri = 'data:application/vnd.ms-excel;base64,'
-            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
-            , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-            , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
-          
-            setTimeout(function(){grid.data.getAllRows();},0);
-
-            var f=function()
-            {  			
-                grid.getClientExportData(null,function(data)
+            if(base.exportButtonClick===undefined)
+            {        
+                exp_button.click =function()
                 {
-                  var table="<tr>";
-                  for(var x=0;x<grid.fields.length;x++)
-                  {
-                      var f=grid.fields[x];
-                      if(!f.isRemoveField)table+="<th>"+f.title+"</th>";
-                  }
-                  table+="</tr>";
+                  var uri = 'data:application/vnd.ms-excel;base64,'
+                    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+                    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
 
-                  for(var y=0;y<data.length;y++)
-                  {
-                      table+="<tr>";
-                      for(var x=0;x<grid.fields.length;x++)
-                      {
-                          var f=grid.fields[x];
-                          if(!f.isRemoveField)table+="<td>"+data[y][f.name]+"</td>";
-                      }
-                      table+="</tr>";
-                  }                                      
+                    setTimeout(function(){grid.data.getAllRows();},0);
 
-                  var ctx = {worksheet: name || 'Worksheet', table: table};
-                  var a = document.createElement('a');
-                  a.href=uri + base64(format(template, ctx));
-                  a.download = 'exported_table.xls';
-                  a.click();
-              });
-            };    		
-            var to=function()
+                    var f=function()
+                    {  			
+                        grid.getClientExportData(null,function(data)
+                        {
+                          var table="<tr>";
+                          for(var x=0;x<grid.fields.length;x++)
+                          {
+                              var f=grid.fields[x];
+                              if(!f.isRemoveField)table+="<th>"+f.title+"</th>";
+                          }
+                          table+="</tr>";
+
+                          for(var y=0;y<data.length;y++)
+                          {
+                              table+="<tr>";
+                              for(var x=0;x<grid.fields.length;x++)
+                              {
+                                  var f=grid.fields[x];
+                                  if(!f.isRemoveField)table+="<td>"+data[y][f.name]+"</td>";
+                              }
+                              table+="</tr>";
+                          }                                      
+
+                          var ctx = {worksheet: name || 'Worksheet', table: table};
+                          var a = document.createElement('a');
+                          a.href=uri + base64(format(template, ctx));
+                          a.download = 'exported_table.xls';
+                          a.click();
+                      });
+                    };    		
+                    var to=function()
+                    {
+                        setTimeout(function(){
+                            if(grid.data.cachedRows<grid.data.size())to();
+                            else f();
+                        },200);
+                    };
+                    to();
+                };
+            }else
             {
-                setTimeout(function(){
-                    if(grid.data.cachedRows<grid.data.size())to();
-                    else f();
-                },200);
-            };
-            to();
-        };
+                exp_button.click = base.exportButtonClick;
+            }    
+        }
         
         return grid;
     },
