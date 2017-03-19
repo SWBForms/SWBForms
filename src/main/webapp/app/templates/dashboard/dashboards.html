@@ -12,16 +12,12 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Widgets</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="dashboard in dashboards.dashboardList">
               <td>{{dashboard.name}}</td>
-              <td>
-                <span ng-show="{{dashboard.widgets }}" class="fa fa-check"></span>
-              </td>
               <td class="text-right">
                 <a class="btn btn-sm btn-primary" ui-sref="dashboard.editdashboard({id: '{{dashboard._id}}', mode: 'view'})"><span class="fa fa-eye"></span></a> 
                 <a class="btn btn-sm btn-primary" ui-sref="dashboard.editdashboard({id: '{{dashboard._id}}', mode: 'edit'})"><span class="fa fa-pencil"></span></a>
