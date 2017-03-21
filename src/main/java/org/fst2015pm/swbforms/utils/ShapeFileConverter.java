@@ -1,11 +1,10 @@
 package org.fst2015pm.swbforms.utils;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
-import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -60,8 +59,7 @@ public class ShapeFileConverter {
 				System.out.println("Iniciando...");
 			
 				 MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);				
-				 Query query = new Query(schemaDBF.getTypeName());
-				 
+								 
 				 /*
 				  * Es importante identificar que sean diferentes, de lo contrarios transform no reflejara modificacion alguna
 				  * puede tener las mismas coordenadas, sin que necesariamente este en EPSG:4326, se deber� extraer de nuevo el .shp del .zip
@@ -87,9 +85,10 @@ public class ShapeFileConverter {
 			            	//System.out.println(attribute.getClass());
 				            	if (attribute.getValue().getClass() == Double.class){				            			
 				            		Double trans = (Double)attribute.getValue();
-				            		System.out.println( String.format("%.1f", trans));
-				            		System.out.println(trans.intValue());
-				            		fb.add(trans.intValue());	
+				            		DecimalFormat num = new DecimalFormat("###.00");
+				            		System.out.println(num.format(trans));
+				            	//	System.out.println(Integer.parseInt(num.format(trans)));
+				            		fb.add(num.format(trans));	
 				            		
 				            	}else if(attribute.getValue().getClass() == Integer.class){				            		
 				            		fb.add(Integer.parseInt(attribute.getValue().toString()));
@@ -98,11 +97,8 @@ public class ShapeFileConverter {
 				            	}
 				            }// for 	           
 			            
-			            SimpleFeature featureDest = fb.buildFeature(feature.getID());
-			          //  featureDest.setAttribute("name", feature.getName());
+			            SimpleFeature featureDest = fb.buildFeature(feature.getID());			          
 			            CollectionDest.add(featureDest);	
-			            //System.out.println(feature.getID());
-
 			        }//while			        
 			       
 			        SimpleFeatureCollection output  =  CollectionDest;			        
@@ -130,13 +126,14 @@ public class ShapeFileConverter {
 			f.setWritable(true);
 			io.writeFeatureCollection(featuresSHP, f);
 
-			FeatureIterator<SimpleFeature> features = featuresSHP.features();
+			/*FeatureIterator<SimpleFeature> features = featuresSHP.features();
 			while (features.hasNext()){
 				SimpleFeature feature = features.next();
 	            System.out.println(feature.getID() + ": ");
-	          /* for (Property attribute : feature.getProperties()) {
+	            for (Property attribute : feature.getProperties()) {
 	                System.out.println("\t"+attribute.getName()+":"+attribute.getValue() );
-	            }*/
-			}
+	            }
+			}*/
+			
 	}//ShpToGeoJSON
 }
