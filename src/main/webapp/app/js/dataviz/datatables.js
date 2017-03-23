@@ -43,6 +43,7 @@ class DataTablesFactory {
     },
     columns: [ ... ]
 } );
+  }
 
 /*En  gijgo para un archivo remoto
 
