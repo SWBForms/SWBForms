@@ -22,11 +22,12 @@ public class ExtractorTask extends TimerTask {
 
     public void reviewExtractorPeriodicity() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
         Iterator<String> it = ExtractorManager.hmExtractor.keySet().iterator();
         while (it.hasNext()) {  //
             String next = it.next();
             PMExtractor extractor = ExtractorManager.hmExtractor.get(next);
-            if (null!=extractor && (extractor.getStatus().equals("STARTED")  || extractor.getStatus().equals("STOPPED"))) {
+            if (null!=extractor && extractor.canStart()) {
                 try {
                     DataObject dobj = ExtractorManager.datasource.fetchObjById(next);
                     Date now = new Date();
@@ -40,7 +41,9 @@ public class ExtractorTask extends TimerTask {
                             //obteniendo Unidad de tiempo: h|d|m (horas, días, meses)
                             String unidad = dobj.getString("unit");
                             long unitmilis = 1000;
-                            if(unidad.equals("h")){ // equivalencia de una hora en milisegundos
+                            if (unidad.equals("min")) {
+                            	unitmilis = 60 * 1000;
+                            } else if(unidad.equals("h")){ // equivalencia de una hora en milisegundos
                                 unitmilis = 60 * 60 * 1000;
                             } else if(unidad.equals("d")){ // equivalencia de un dia en milisegundos
                                 unitmilis = 24 * 60 * 60 * 1000;

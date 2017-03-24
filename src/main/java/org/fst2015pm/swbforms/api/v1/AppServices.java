@@ -10,8 +10,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
+import org.fst2015pm.swbforms.extractors.ExtractorManager;
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.fst2015pm.swbforms.utils.SimpleMailSender;
 import org.json.JSONException;
@@ -39,11 +42,12 @@ import org.semanticwb.datamanager.script.ScriptObject;
  */
 @Path("/services")
 public class AppServices {
-	private int expireMinutes = 30;
 	SWBScriptEngine engine;
 	SWBScriptUtils utils;
+	ExtractorManager extractorManager = ExtractorManager.getInstance();
 	@Context HttpServletRequest httpRequest;
 	private boolean useCookies = false;
+	private int expireMinutes = 30;
 	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	
@@ -208,6 +212,54 @@ public class AppServices {
 		return ret;
 	}
 	
+	@GET
+	@Path("/extractor/status/{objId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getExtractorStatus(@PathParam("objId") String oId) {
+		HttpSession session = httpRequest.getSession();
+
+		if (null != session.getAttribute("_USER_")) {
+			if (null == oId || oId.isEmpty()) return Response.status(400).build();
+			String status = extractorManager.getStatus(oId);
+			
+			return Response.status(200).entity("{\"status\":\"" + status + "\"}").build();
+		}
+		
+		return Response.status(401).build();
+	}
+	
+	@POST
+	@Path("/extractor/start/{objId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response startExtractor(@PathParam("objId") String oId) {
+		HttpSession session = httpRequest.getSession();
+
+		if (null != session.getAttribute("_USER_")) {
+			if (null == oId || oId.isEmpty()) return Response.status(400).build();
+			extractorManager.startExtractor(oId);
+			
+			return Response.status(200).build();
+		}
+		
+		return Response.status(401).build();
+	}
+	
+	@POST
+	@Path("/extractor/load/{objId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response loadExtractor(@PathParam("objId") String oId) {
+		HttpSession session = httpRequest.getSession();
+
+		if (null != session.getAttribute("_USER_")) {
+			if (null == oId || oId.isEmpty()) return Response.status(400).build();
+			extractorManager.loadExtractor(oId);
+			
+			return Response.status(200).build();
+		}
+		
+		return Response.status(401).build();
+	}
+	
 	/**
 	 * Destroys a user session
 	 * @return Status code 200 on success
@@ -218,7 +270,6 @@ public class AppServices {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response logoutUser(@Context HttpHeaders headers) throws IOException {
-		DataObject res = new DataObject();
 		
 		//Check auth headers
 		String authorization = getAuthCredentials(httpRequest, useCookies);
