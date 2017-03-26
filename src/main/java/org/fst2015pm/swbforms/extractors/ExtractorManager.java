@@ -2,9 +2,12 @@ package org.fst2015pm.swbforms.extractors;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
+
+import org.fst2015pm.swbforms.servlet.PMExtractorsContextListener;
 import org.semanticwb.datamanager.DataList;
 import org.semanticwb.datamanager.DataMgr;
 import org.semanticwb.datamanager.DataObject;
@@ -18,8 +21,8 @@ import org.semanticwb.datamanager.SWBScriptEngine;
  * @modified juan.fernandez
  */
 public class ExtractorManager {
-
-    protected static HashMap<String, PMExtractor> hmExtractor = new HashMap(); //id del DataObject, instancia del extractor
+	private static Logger log = Logger.getLogger(PMExtractorsContextListener.class.getName());
+    protected static ConcurrentHashMap<String, PMExtractor> hmExtractor = new ConcurrentHashMap<>(); //id del DataObject, instancia del extractor
     protected static SWBDataSource datasource = null;
     private static SWBScriptEngine engine = null;
     private static ExtractorManager instance = null; //  Instancia del ExtractorManager
@@ -32,11 +35,11 @@ public class ExtractorManager {
         return instance;
     }
 
-    ;
     /**
      * Initializes extractor manager
      */
     public void init() {
+    	log.info("Starting PM extractor manager");
         engine = DataMgr.initPlatform(null);
         datasource = engine.getDataSource("Extractor");
         

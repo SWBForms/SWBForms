@@ -21,7 +21,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.fst2015pm.swbforms.extractors.ExtractorManager;
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,7 +101,7 @@ public class DataSourceService {
 			for (String key : params.keySet()) {
 				String type = dsFields.get(key); 
 				if (null != type) {
-					Object typed = FSTUtils.DATA.getTypedObject(params.getFirst(key), type);
+					Object typed = FSTUtils.DATA.inferTypedValue(params.getFirst(key));//FSTUtils.DATA.getTypedObject(params.getFirst(key), type);
 					if (null != typed) {
 						queryObj.put(key, typed);
 					}

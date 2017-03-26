@@ -11,6 +11,7 @@
     cnt.formTitle = "Agregar extractor";
     cnt.extractorData = {};
     cnt.dsList = [];
+    cnt.charsetList = [];
 
     if($stateParams.id && $stateParams.id.length) {
       cnt.formTitle = "Editar extractor";
@@ -18,6 +19,11 @@
         cnt.extractorData = ds.data;
       });
     }
+
+    $Extractor.getEncodingList()
+    .then(res => {
+      cnt.charsetList = res;
+    });
 
     $Datasource.listDatasources()
     .then(res => {
@@ -45,8 +51,8 @@
         if (!cnt.extractorData._id) {
           $Datasource.addObject(cnt.extractorData, "Extractor")
           .then(response => {
-            if (response.data && response.data.id) {
-              $Extractor.loadExtractor(cnt.extractorData._id);
+            if (response.data.data && response.data.data._id) {
+              $Extractor.loadExtractor(response.data.data._id);
             }
             $state.go('admin.extractors', {});
           })

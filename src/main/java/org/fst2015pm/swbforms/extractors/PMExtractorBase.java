@@ -18,13 +18,14 @@ import org.semanticwb.datamanager.SWBScriptEngine;
  * @author Hasdai Pacheco
  */
 public class PMExtractorBase implements PMExtractor {
-	private static SWBDataSource ds; 
 	static Logger log = Logger.getLogger(PMExtractorBase.class.getName());
+	
+	protected DataObject extractorDef;
+	private SWBDataSource ds;
+	private boolean extracting;
 	public static enum STATUS {
 		LOADED, STARTED, EXTRACTING, STOPPED, ABORTED, FAILLOAD
 	}
-	protected boolean extracting;
-	DataObject extractorDef;
 	private STATUS status;
 	
 	/**
@@ -52,6 +53,7 @@ public class PMExtractorBase implements PMExtractor {
 		}
 	}
 	
+	@Override
 	public String getName() {
 		return null != extractorDef ? extractorDef.getString("name") : null;
 	}
@@ -142,12 +144,12 @@ public class PMExtractorBase implements PMExtractor {
 	
 	@Override
 	public boolean canStart() {
-		return status == STATUS.STARTED || status == STATUS.STOPPED || status == STATUS.LOADED;
+		return status != STATUS.FAILLOAD && (status == STATUS.STARTED || status == STATUS.STOPPED || status == STATUS.LOADED);
 	}
 
 	@Override
 	public synchronized void start() {
-		if (status != STATUS.FAILLOAD) {
+		if (canStart()) {
 			log.info("PMExtractor :: Started extractor " + getName());
 			try {
 				extract();
@@ -162,6 +164,11 @@ public class PMExtractorBase implements PMExtractor {
 		status = STATUS.STOPPED;
 	}
 
+	/**
+	 * Stores data in extracting phase
+	 * @param filePath
+	 * @throws IOException
+	 */
 	public void store(String filePath) throws IOException {
 		throw new UnsupportedOperationException("Method not implemented");
 	}

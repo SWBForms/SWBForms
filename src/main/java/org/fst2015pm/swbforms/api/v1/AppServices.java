@@ -2,7 +2,9 @@ package org.fst2015pm.swbforms.api.v1;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.SortedMap;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -25,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.fst2015pm.swbforms.extractors.ExtractorManager;
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.fst2015pm.swbforms.utils.SimpleMailSender;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.semanticwb.datamanager.DataList;
@@ -35,6 +38,8 @@ import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 import org.semanticwb.datamanager.SWBScriptUtils;
 import org.semanticwb.datamanager.script.ScriptObject;
+
+import com.mongodb.util.JSON;
 
 /**
  * REST endpoint for app services
@@ -50,6 +55,25 @@ public class AppServices {
 	private int expireMinutes = 30;
 	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
+	
+	@GET
+	@Path("/encoding")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAvailableCharsets() {
+		HttpSession session = httpRequest.getSession();
+
+		if (null != session.getAttribute("_USER_")) {
+			SortedMap<String, Charset> map = Charset.availableCharsets();
+			JSONArray ret = new JSONArray();
+			for(String key : map.keySet()) {
+				ret.put(key);
+			}
+			
+			return Response.status(200).entity(ret.toString()).build();
+		}
+		
+		return Response.status(401).build();
+	}
 	
 	@POST
 	@Path("/apikey")

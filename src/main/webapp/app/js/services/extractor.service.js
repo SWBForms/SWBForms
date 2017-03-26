@@ -15,8 +15,26 @@
     service.startExtractor = startExtractor;
     service.stopExtractor = stopExtractor;
     service.getStatus = getStatus;
+    service.getEncodingList = getEncodingList;
 
     return service;
+
+    function getEncodingList() {
+      let deferred = $q.defer();
+
+      let theUrl = `/api/v${apiVersion}/services/encoding`;
+      let request = $http({
+        url: theUrl,
+        method: "GET"
+      }).then(response => {
+        deferred.resolve(response.data);
+      })
+      .catch(error => {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
 
     function loadExtractor(id) {
       let deferred = $q.defer();

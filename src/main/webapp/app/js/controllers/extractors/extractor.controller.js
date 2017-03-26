@@ -34,7 +34,7 @@
               });
             });
           }
-        }, 6000);
+        }, 3000);
       }
     });
 
@@ -43,7 +43,7 @@
     };
 
     cnt.canStart = function(extractor) {
-      return extractor.status && (extractor.status === "LOADED" || extractor.status === "STARTED");
+      return !extractor.periodic && extractor.status && (extractor.status === "LOADED" || extractor.status === "STARTED");
     };
 
     cnt.deleteExtractor = function(id) {
