@@ -323,7 +323,11 @@
 		    <artifactId>gt-epsg-hsql</artifactId>
 		    <version>16.1</version>
 		</dependency>
-       
+       <dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-mongodb</artifactId>
+		    <version>16.1</version>
+		</dependency>
         
       </dependencies>
 
