@@ -116,7 +116,7 @@ public class ShapeFileConverter {
 	 * @param newName ruta y nombre de donde se guardara el geojson
 	 * @param usuShape	ubicacion del archivo shape a convertir
 	 */
-	public void ShpToGeoJSON(String newName, String usuShape ) throws IOException, NoSuchAuthorityCodeException, FactoryException, TransformException{
+	public void ShpToGeoJSONCRS(String newName, String usuShape ) throws IOException, NoSuchAuthorityCodeException, FactoryException, TransformException{
 			SimpleFeatureCollection featuresSHP = readShapefile(usuShape);	
 			
 			if (featuresSHP == null){
@@ -131,65 +131,86 @@ public class ShapeFileConverter {
 			JSONObject crs = new JSONObject();
 			crs.put("type", "name");
 			crs.put("properties", properties);
-			
-			
-			JSONObject actObject = new JSONObject();
-			JSONArray inFeature = new JSONArray();			
-			
+			JSONArray inFeature = new JSONArray();		
+
 			SimpleFeatureIterator iterator = featuresSHP.features();
 			
 			while(iterator.hasNext()){
 				Integer i=0;
+				JSONObject actObject = new JSONObject();			
 				SimpleFeature actual = iterator.next();
 				JSONObject geo = new JSONObject();
 				JSONObject prop = new JSONObject();
 				JSONArray arrCoor = new JSONArray();				
 				JSONArray detCoor = new JSONArray();
-				for (Property attribute : actual.getProperties()){					
-					
+				
+				for (Property attribute : actual.getProperties()){		
 					if(attribute.getName().toString() ==  "the_geom" ){			
 						geo.put("type", attribute.getType().getName().toString());
 						
+						
 						Geometry  sourceGeo = (Geometry)actual.getDefaultGeometry();
 						Coordinate[] arrCoord = sourceGeo.getCoordinates();
+						
+						JSONArray coorClosePoly = new JSONArray();
+						//hacer validaciones para los distitntos tipos de geometrias
 						for (i=0; i<sourceGeo.getCoordinates().length; i++){
 							Coordinate coor = arrCoord[i];
+							if (i==0){
+								Coordinate coorClose = arrCoord[0];
+								coorClosePoly.put(coor.x);
+								coorClosePoly.put(coor.y);
+							}
 							//se contempla que se trabajara con mapas 2d
-							double[] coorByProp = new double[2];
-							coorByProp[0]= coor.x;
-							coorByProp[1]= coor.y;
-							detCoor.put(coorByProp);
+							JSONArray coorByProp = new JSONArray();
+							coorByProp.put(coor.x);
+							coorByProp.put(coor.y);
 							
+							detCoor.put(coorByProp);						
 						}		
-						
-						arrCoor.put(detCoor);
-						geo.put("coordinates", arrCoor);
-						actObject.put("geometry", geo);
-					}else{
-						
+						detCoor.put(coorClosePoly);
+						arrCoor.put(detCoor);						
+					}else{						
 						if (attribute.getValue().getClass() == Double.class){
 							Double trans = (Double)attribute.getValue();
 		            		DecimalFormat num = new DecimalFormat("###.00");				            	
-		            		prop.put(attribute.getName().toString(),num.format(trans));
-							
+		            		prop.put(attribute.getName().toString(),num.format(trans));							
 						}else{
-							prop.put(attribute.getName().toString(), attribute.getValue());
-							actObject.put("properties", prop);
+							prop.put(attribute.getName().toString(), attribute.getValue());							
 						}
-					}
-					
-				}
-				prop.put("id", actual.getID());		
-				actObject.put("type", "Feature");
-				inFeature.put(actObject);
-			}
+					}					
+									
+				}//for properties
 			
-			featureCollection.put("features", inFeature);
+				geo.put("coordinates", arrCoor);
+				actObject.put("geometry", geo);	
+				
+				actObject.put("properties", prop);
+				actObject.put("type", "Feature");
+				actObject.put("id", actual.getID());
+				inFeature.put(actObject);
+				
+			}//while
+			System.out.println(inFeature.length());
+			featureCollection.put("type", featuresSHP.getID());	
 			featureCollection.put("crs", crs);
-			featureCollection.put("type", featuresSHP.getID());
+			featureCollection.put("features", inFeature);
+
 			FileWriter fileDest = new FileWriter(newName+".geojson");
 			fileDest.write(featureCollection.toString());
 			fileDest.close();
-	}//ShpToGeoJSON
+			
+	}//ShpToGeoJSONCRS
+
+	public void ShpToGeoJSON(String newName, String usuShape ) throws IOException, NoSuchAuthorityCodeException, FactoryException, TransformException{
+
+		SimpleFeatureCollection featuresSHP = readShapefile(usuShape);
+		FeatureJSON io = new FeatureJSON();
+		File f = new File(newName+".geojson");
+		f.setWritable(true);
+		io.writeFeatureCollection(featuresSHP, f);
+	
+
+	}
 
 }
