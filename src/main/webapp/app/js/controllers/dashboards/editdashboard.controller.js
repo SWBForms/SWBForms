@@ -31,7 +31,7 @@
             $Datasource.getObject(widgets[key]._id, "Widget").then(widget => {
               $scope.dashboard.widgets.push(widget.data);
               setTimeout(() => {
-                $scope.addWidgetContent(widget, data['type']);
+                $scope.addWidgetContent(widget.data, widget.data.type);
               }, 1000);
             }).catch(error => {
               console.log(error);
@@ -74,7 +74,7 @@
     }
 
     $scope.returnPage = function($event) {
-      $state.go('dashboard.dashboards',{});
+      $state.go('admin.dashboards',{});
     }
 
     $scope.addWidget = function() {
@@ -155,12 +155,18 @@
     });
 
     $scope.addWidgetContent = function (widget, type) {
+
+      var cadena = new String(widget._id);
+      if (cadena.indexOf(':') != -1) {
+        var widgetId = widget._id.split(':').join('\\:');
+      } else {
+        var widgetId = widget._id;
+      }
       switch(type) {
         case "map":
           let mochis = [25.793, -108.977];
-          console.log($('#content-'+widget._id));
           dataviz.mapsFactory.createMap(
-            $('#content-'+widget._id)[0],
+            $('#content-'+ widgetId)[0],
             ENGINE_GOOGLEMAPS,
             mochis,
             10,
@@ -176,9 +182,9 @@
             })
             .then((res) => {
               $.get('templates/datatables.html', template => {
-                $('#content-'+widget._id).css('overflow','auto');
-                $('#content-'+widget._id).append(template);
-                dataviz.dataTablesFactory.createDataTable('content-'+widget._id+" > table", res.data);
+                $('#content-'+widgetId).css('overflow','auto');
+                $('#content-'+widgetId).append(template);
+                dataviz.dataTablesFactory.createDataTable('content-'+widgetId+" > table", res.data);
               })
             });
         break;
@@ -188,10 +194,10 @@
             method: "GET"
           }).then((res) => {
             var options = {};
-            options.height = $('#content-'+widget._id).height();
-            options.width = $('#content-'+widget._id).width();
-            dataviz.chartsFactory.createChart('content-'+widget._id, res.data, null, options);
-            $('#content-'+widget._id).on("change", item => {
+            options.height = $('#content-'+widgetId).height();
+            options.width = $('#content-'+widgetId).width();
+            dataviz.chartsFactory.createChart('content-'+widgetId, res.data, null, options);
+            $('#content-'+ widgetId).on("change", item => {
               console.log(item);
             })
           });
@@ -260,7 +266,7 @@
           if (dashboard._id) {
             $Datasource.updateObject(dashboard,"Dashboard")
             .then(response => {
-              $state.go('dashboard.dashboards',{})
+              $state.go('admin.dashboards',{})
             })
             .catch(error => {
               console.log(error);
@@ -268,7 +274,7 @@
           } else {
             $Datasource.addObject(dashboard, "Dashboard")
             .then(response => {
-              $state.go('dashboard.dashboards', {});
+              $state.go('admin.dashboards', {});
             })
             .catch(error => {
               console.log(error);
