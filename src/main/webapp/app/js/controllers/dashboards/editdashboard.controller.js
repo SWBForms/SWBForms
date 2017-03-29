@@ -6,8 +6,8 @@
     .controller('editDashboardCtrl', editDashboardCtrl)
     ;
 
-  editDashboardCtrl.$inject = ["$scope", "$state","$stateParams", "$Datasource"];
-  function editDashboardCtrl($scope, $state, $stateParams, $Datasource) {
+  editDashboardCtrl.$inject = ["$scope", "$state","$stateParams", "$Datasource","$http"];
+  function editDashboardCtrl($scope, $state, $stateParams, $Datasource, $http) {
 
     let deletedWidgets = [];
 
@@ -30,6 +30,9 @@
           for(var key in widgets) {
             $Datasource.getObject(widgets[key]._id, "Widget").then(widget => {
               $scope.dashboard.widgets.push(widget.data);
+              setTimeout(() => {
+                $scope.addWidgetContent(widget, data['type']);
+              }, 1000);
             }).catch(error => {
               console.log(error);
             });
@@ -40,6 +43,7 @@
       $scope.pageTitle = "Editar dashboard";
 
     } else {
+
 
       let newDashboard = {
         name: "",
@@ -90,15 +94,20 @@
 
               $scope.$apply(() => {
                 let itemId = Date.now();
-                $scope.dashboard.widgets.push({
-                  _id: itemId,
-                  name: data.name,
-                  type: data.type,
-                  content: '<div class="gridster-angular-content-item"></div>',
-                  sizeX: 1,
-                  sizeY: 1
-                });
+                let widget = {
+                      _id: itemId,
+                      name: data.name,
+                      type: data.type,
+                      content: '<div id="content-'+itemId+'" class="gridster-angular-content-item"></div>',
+                      sizeX: 1,
+                      sizeY: 1
+                    }
+                $scope.dashboard.widgets.push(widget);
+                setTimeout(() => {
+                  $scope.addWidgetContent(widget, data['type']);
+                }, 1000);
               });
+              $scope.dashboard.widgets
             };
           });
         });
@@ -125,7 +134,10 @@
                       $scope.dashboard.widgets[i].name = data['name'];
                     };
                     if (data['type'].length) {
-                      $scope.dashboard.widgets[i].type = data['type'];
+                      var widget = $scope.dashboard.widgets[i].type = data['type'];
+                      setTimeout(() => {
+                        $scope.addWidgetContent(widget, data['type']);
+                      }, 1000);
                     };
                   };
                 };
@@ -135,6 +147,59 @@
         });
       };
     };
+
+    $scope.$on('gridster-item-initialized', function(item) {
+      //$scope.addWidgetContent($scope.dashboard.widgets[i], data['type']);
+      console.log(item.$element);
+      console.log(item.gridster);
+    });
+
+    $scope.addWidgetContent = function (widget, type) {
+      switch(type) {
+        case "map":
+          let mochis = [25.793, -108.977];
+          console.log($('#content-'+widget._id));
+          dataviz.mapsFactory.createMap(
+            $('#content-'+widget._id)[0],
+            ENGINE_GOOGLEMAPS,
+            mochis,
+            10,
+            function(map, container){
+              console.log(map);
+            }
+          );
+        break;
+        case "table":
+          var request = $http({
+              url: "/app/mockdata/datatables.json",
+              method: "GET"
+            })
+            .then((res) => {
+              $.get('templates/datatables.html', template => {
+                $('#content-'+widget._id).css('overflow','auto');
+                $('#content-'+widget._id).append(template);
+                dataviz.dataTablesFactory.createDataTable('content-'+widget._id+" > table", res.data);
+              })
+            });
+        break;
+        case "chart":
+          var request = $http({
+            url: "/app/mockdata/piedata.json",
+            method: "GET"
+          }).then((res) => {
+            var options = {};
+            options.height = $('#content-'+widget._id).height();
+            options.width = $('#content-'+widget._id).width();
+            dataviz.chartsFactory.createChart('content-'+widget._id, res.data, null, options);
+            $('#content-'+widget._id).on("change", item => {
+              console.log(item);
+            })
+          });
+        break;
+        default:
+          console.log("bad type of content");
+      }
+    }
 
     $scope.save = function() {
 
@@ -234,6 +299,8 @@
         $scope.dashboard.widgets = [];
       };
     };
+
+    $scope.$on('gridster-item-resized', function(item){ console.log(item); });
 
   };
 

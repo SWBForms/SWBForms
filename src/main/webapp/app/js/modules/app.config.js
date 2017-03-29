@@ -236,8 +236,16 @@
                   files: [
                     'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/bootbox/bootbox.js',
+                    'lib/d3/d3.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
                     'lib/angular-gridster/dist/angular-gridster.min.css',
-                    'lib/angular-gridster/dist/angular-gridster.min.js'
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                    'lib/google-maps/lib/Google.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
                   ]
               }
             ]);

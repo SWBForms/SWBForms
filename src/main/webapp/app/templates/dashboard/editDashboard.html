@@ -15,13 +15,12 @@
   </div>
   <div gridster>
     <ul>
-      <li ng-class="desactiveClass" gridster-item="item" ng-repeat="item in dashboard.widgets">
+      <li class="item-li" ng-class="desactiveClass" gridster-item="item" ng-repeat="item in dashboard.widgets">
         <div class="actions toolbar-widget">
-          <h5 id="{{item._id}}" ng-click="editWidget($event)">{{item.name}}</h5>
+          <h5 id="{{item._id}}" ng-click="editWidget($event)"><i>{{item.name}}</i></h5>
           <button ng-show="formVisible" id="{{item._id}}" class="glyphicon glyphicon-trash" ng-click="deleteWidget($event)"></button>
         </div>
-        <div class="gridster-angular-content-item" ng-bind-html="item.content">
-        </div>
+        <div id="content-{{item._id}}" class="gridster-angular-content-item"></div>
       </li>
     </ul>
   </div>
