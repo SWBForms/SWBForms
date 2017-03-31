@@ -305,8 +305,12 @@ public class PMCredentialsManager {
 		}
 		
 		if (ret && checkSessionToken) {
-			DataObject sessData = getUserSessionObjectByToken(authorization[1]);
-			ret = isSessionActive(sessData);
+			ret = false;
+			
+			if (authorization.length == 2) {
+				DataObject sessData = getUserSessionObjectByToken(authorization[1]);
+				ret = isSessionActive(sessData);
+			}
 		}
 		
 		return ret;
