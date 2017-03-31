@@ -26,7 +26,7 @@ public class PMCredentialsManager {
 	public PMCredentialsManager() {
 		SWBScriptEngine engine = DataMgr.initPlatform(null);
 		userDS = engine.getDataSource("User");
-		userDS = engine.getDataSource("UserSession");
+		sessionDS = engine.getDataSource("UserSession");
 		APIKeyDS = engine.getDataSource("APIKey");
 	}
 	
@@ -177,7 +177,7 @@ public class PMCredentialsManager {
 			res.put("session", respSessData);
 			
 		} catch (IOException ioex) {
-			System.out.println("Error updating session object");
+			ioex.printStackTrace();
 		}
 
 		return res;
