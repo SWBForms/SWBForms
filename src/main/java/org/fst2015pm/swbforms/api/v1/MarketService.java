@@ -62,6 +62,8 @@ public class MarketService {
 						DataList dlist = response.getDataList("data");
 						if (!dlist.isEmpty()) {
 							ret = Response.status(200).entity(dlist).build();
+						} else {
+							ret = Response.status(200).entity("[]").build();
 						}
 					}
 				} else {
