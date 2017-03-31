@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.semanticwb.datamanager.DataList;
@@ -14,6 +13,10 @@ import org.semanticwb.datamanager.DataUtils;
 import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 
+/**
+ * Encapsulates methods to perform API Key and user session validation for Mobile App Services.
+ * @author Hasdai Pacheco {haxdai@gmail.com}
+ */
 public class PMCredentialsManager {
 	private SWBDataSource sessionDS;
 	private SWBDataSource APIKeyDS;
@@ -70,18 +73,20 @@ public class PMCredentialsManager {
 	 * @param checkCookies whether to check session cookie
 	 * @return
 	 */
-	public String getAuthCredentials(HttpServletRequest request, boolean checkCookies) {
+	public String[] getAuthCredentials(HttpServletRequest request, boolean checkCookies) {
+		String auth = request.getHeader("authorization");
+		String[] ret = {};
+		
 		//Find session token in authorization headers
-		String ret = request.getHeader("authorization"); 
-		if (null != ret) {
-			ret = ret.replace("Basic ", "");
-		} else if (checkCookies && null != request.getCookies()) {
-			Cookie cookies [] = request.getCookies();
-			for (Cookie c : cookies) {
-				if ("APPSESSIONID".equals(c.getName()) && !c.getValue().isEmpty()) {
-					//TODO: check cookie maxAge or check session expiration time to invalid cookie
-					ret = c.getValue();
-				}
+		if (null != auth) auth = auth.replace("Basic ", "");
+		
+		//Check for user session token in header string
+		if (null != auth) {
+			if (auth.contains(":")) {
+				ret = auth.split(":");
+			} else {
+				ret = new String[1];
+				ret [0] = auth;
 			}
 		}
 		
@@ -275,20 +280,33 @@ public class PMCredentialsManager {
 	}
 	
 	/**
-	 * Validates user credentials
+	 * Validates user credentials using authorization header in request
 	 * @param request HTTPServlet request
 	 * @param checkCookies Whether to check session cookie
 	 * @return true if session is valid
 	 */
 	public boolean validateCredentials(HttpServletRequest request, boolean checkCookies) {
-		boolean ret = true;
-		String authorization = getAuthCredentials(request, checkCookies);
-		if (null == authorization || authorization.isEmpty()) {
-			ret = false;
+		return validateCredentials(request, checkCookies, false);
+	}
+	
+	/**
+	 * Validates user credentials using authorization header in request
+	 * @param request HTTPServlet request
+	 * @param checkCookies Whether to check session cookie
+	 * @param checkSessionToken Whether to check session token
+	 * @return true if session is valid
+	 */
+	public boolean validateCredentials(HttpServletRequest request, boolean checkCookies, boolean checkSessionToken) {
+		boolean ret = false;
+		String []authorization = getAuthCredentials(request, checkCookies);
+		
+		if (authorization.length > 0) {
+			ret = isAPIKeyValid(authorization[0]);
 		}
 		
-		if (!isAPIKeyValid(authorization)) {
-			ret = false;
+		if (ret && checkSessionToken) {
+			DataObject sessData = getUserSessionObjectByToken(authorization[1]);
+			ret = isSessionActive(sessData);
 		}
 		
 		return ret;

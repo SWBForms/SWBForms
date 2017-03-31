@@ -44,7 +44,7 @@ public class MarketService {
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 		Response ret = null;
 		
-		if (!mgr.validateCredentials(httpRequest, useCookies)) {
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			//TODO: Check session permissions
@@ -84,11 +84,15 @@ public class MarketService {
 	public Response addMarket(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
-
-		//if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 		SWBDataSource ds = engine.getDataSource("Market"); 
 		
-		if (null != ds) {
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		} else {
+			if (null == ds) {
+				return Response.status(500).build();
+			}
+			
 			try {
 				JSONArray objArray = new JSONArray(content);
 				JSONArray retArray = new JSONArray();
@@ -115,27 +119,6 @@ public class MarketService {
 			} catch (JSONException jspex) {
 				return Response.status(400).entity(ERROR_BADREQUEST).build();
 			}
-		} else {
-			return Response.status(500).build();
 		}
 	}
-	
-	
-	
-	
-	/*@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response startExtractor(@PathParam("objId") String oId) {
-		HttpSession session = httpRequest.getSession();
-
-		if (null != session.getAttribute("_USER_")) {
-			if (null == oId || oId.isEmpty()) return Response.status(400).build();
-			extractorManager.startExtractor(oId);
-			
-			return Response.status(200).build();
-		}
-		
-		return Response.status(401).build();
-	}*/
 }

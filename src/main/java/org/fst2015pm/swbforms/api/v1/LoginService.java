@@ -15,9 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import org.fst2015pm.swbforms.api.v1.PMCredentialsManager;
 
 import org.apache.commons.io.IOUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
@@ -78,38 +76,32 @@ public class LoginService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loginUser(@Context HttpHeaders headers, String content) throws IOException {
+	public Response loginUser(@Context HttpHeaders headers, String content) {
 		//Check credentials
-		if (!mgr.validateCredentials(httpRequest, useCookies)) {
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
 		
-		if (null != content && !content.isEmpty()) {
-			//Get request body and fail on parse
-			JSONObject objData = null;
-			try {
-				objData = new JSONObject(content);
-			} catch (JSONException jspex) {
-				return Response.status(400).entity(ERROR_BADREQUEST).build();
-			}
-			
+		if (null == content || content.isEmpty()) {
+			return Response.status(400).entity(ERROR_BADREQUEST).build();
+		}
+		
+		//Get request body and fail on parse
+		JSONObject objData = null;
+		DataObject res = null;
+		try {
+			objData = new JSONObject(content);
 			//Update session object
-			DataObject res = mgr.updateUserSession(objData.optString("email"), objData.optString("password"), expireMinutes);
-			if (null == res) {
-				return Response.status(401).entity(res).build();
-			}
-			return Response.status(200).entity(res).build();
-		} else {
+			res = mgr.updateUserSession(objData.optString("email"), objData.optString("password"), expireMinutes);
+		} catch (JSONException jspex) {
 			return Response.status(400).entity(ERROR_BADREQUEST).build();
 		}
 				
-		
-		/*if (useCookies) {
-			return Response.status(200).entity(res).cookie(new NewCookie("APPSESSIONID", token, null, null, null, (60 * expireMinutes), false, true)).build();
+		if (null != res) {
+			return Response.status(200).entity(res).build();
 		} else {
-			ret = Response.status(200).entity(res).build();
-		}*/
-	
+			return Response.status(500).build();
+		}
 	}
 	
 	/**
@@ -119,36 +111,21 @@ public class LoginService {
 	 */
 	@POST
 	@Path("/logout")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response logoutUser(@Context HttpHeaders headers) throws IOException {
-		
-		//Check auth headers
-		String authorization = mgr.getAuthCredentials(httpRequest, useCookies);
-		if (null == authorization || authorization.isEmpty()) {
+	public Response logoutUser(@Context HttpHeaders headers) {
+		//Check credentials
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
+
+		String []authData = mgr.getAuthCredentials(httpRequest, useCookies);
+		DataObject sess = mgr.getUserSessionObjectByToken(authData[1]);
 		
-		//Check API Key
-		String [] parts = authorization.split(":");
-		if (parts.length != 2 || !mgr.isAPIKeyValid(parts[0])) {
-			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		}
-				
-		//Find user session
-		DataObject sess = mgr.getUserSessionObjectByToken(parts[1]);
-		
-		//Remove session
-		if (null != sess) {
+		try {
 			userSessionDataSource.removeObj(sess);
-		} else {
-			return Response.status(400).entity(ERROR_BADREQUEST).build();
-		}
-		
-		if (useCookies) {
-			return Response.status(200).cookie(new NewCookie("APPSESSIONID", null, null, null, null, 0, false, true)).build();
-		} else {
 			return Response.status(200).build();
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+			return Response.status(500).build();
 		}
 	}
 	
@@ -159,24 +136,15 @@ public class LoginService {
 	 */
 	@POST
 	@Path("/resetpassword")
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context) throws IOException {
 		boolean create = false;
 		
-		//Check auth headers
-		String authorization = mgr.getAuthCredentials(httpRequest, useCookies);
-		if (null == authorization || authorization.isEmpty()) {
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
-		
-		//Check API Key
-		String [] parts = authorization.split(":");
-		if (parts.length != 2 || !mgr.isAPIKeyValid(parts[0])) {
-			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		}
-		
-		//Get session object
-		DataObject sess = mgr.getUserSessionObjectByToken(parts[1]);
+
+		String []authData = mgr.getAuthCredentials(httpRequest, useCookies);
+		DataObject sess = mgr.getUserSessionObjectByToken(authData[1]);
 		
 		if (mgr.isSessionActive(sess)) {
 			//Find user and get email
@@ -250,6 +218,7 @@ public class LoginService {
 		DataObject res = new DataObject();
 		Response ret;
 		
+		//API Keys can only be created in Web App
 		if (null == session.getAttribute("_USER_")) {
 			ret = Response.status(403).build();
 		} else {
