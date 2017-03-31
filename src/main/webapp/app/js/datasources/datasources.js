@@ -142,6 +142,23 @@ eng.dataSources["Widget"] = {
     ]
 };
 
+eng.dataSources["Market"] = {
+  scls: "Market",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "name", title:"Nombre", required: true, type: "string"},
+    {name: "type", title: "Tipo", required: true, type : "string"},
+    {name: "description", title: "Descripción", required: true, type:"string"},
+    {name: "created", title:"Creado", required:false, type:"date"},
+    {name: "shopNumber", title: "Locales", required:false, type:"int"},
+    {name: "serviceDays", title: "Días de servicio", required: false, type:"boolean"},
+    {name: "serviceHours", title:"Horas de servicio", required:false, type:"boolean"}
+  ]
+};
+
 
 /*
 eng.dataExtractors["StateExtractor"] = {
