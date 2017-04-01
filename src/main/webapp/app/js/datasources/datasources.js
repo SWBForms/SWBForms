@@ -196,6 +196,19 @@ eng.dataSources["TourismSignal"] = {
   ]
 };
 
+eng.dataSources["ATM"] = {
+  scls: "ATM",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "type",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "bank", title: "Banco", required: true, type : "string"},
+    {name: "atmUnits", title: "Unidades", required: true, type : "int"},
+    {name: "inService", title: "En servicio", required: false, type:"boolean"}
+  ]
+};
+
 eng.dataSources["UndergroundWiring"] = {
   scls: "UndergroundWiring",
   modelid: DBModel,
