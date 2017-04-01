@@ -26,8 +26,8 @@ import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 
-@Path("/services/market")
-public class MarketService {
+@Path("/services/parking")
+public class ParkingService {
 	@Context HttpServletRequest httpRequest;
 	@Context ServletContext context;
 	
@@ -36,14 +36,14 @@ public class MarketService {
 	final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	PMCredentialsManager mgr;
 	
-	public MarketService() {
+	public ParkingService() {
 		//Create credentials manager
 		mgr = new PMCredentialsManager();
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMarkets() {
+	public Response getParkingList() {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 		Response ret = null;
@@ -51,7 +51,7 @@ public class MarketService {
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
-			SWBDataSource ds = engine.getDataSource("Market");
+			SWBDataSource ds = engine.getDataSource("Parking");
 			DataObject dsFetch = null;
 			
 			try {
@@ -84,7 +84,7 @@ public class MarketService {
 	@GET
 	@Path("/{objId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMarket(@PathParam("objId") String oId) {
+	public Response getParking(@PathParam("objId") String oId) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 		Response ret = null;
@@ -92,7 +92,7 @@ public class MarketService {
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
-			SWBDataSource ds = engine.getDataSource("Market");
+			SWBDataSource ds = engine.getDataSource("Parking");
 			DataObject dsFetch = null;
 			
 			try {
@@ -115,10 +115,10 @@ public class MarketService {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addMarket(String content) throws IOException {
+	public Response addParking(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
-		SWBDataSource ds = engine.getDataSource("Market"); 
+		SWBDataSource ds = engine.getDataSource("Parking"); 
 		
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
@@ -161,12 +161,12 @@ public class MarketService {
 						
 						//Store image data
 						if (null != imgName && null != imgContent) {
-							String path = context.getRealPath("/") + "public/images/Market/" + oId;
+							String path = context.getRealPath("/") + "public/images/Parking/" + oId;
 							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
 								String requestUrl = httpRequest.getScheme() +
 									"://" + httpRequest.getServerName() + 
 									(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
-								dlist.put("image", requestUrl + "/public/images/Market/" + oId + "/" + imgName);
+								dlist.put("image", requestUrl + "/public/images/Parking/" + oId + "/" + imgName);
 								ds.updateObj(dlist);
 							}
 						}

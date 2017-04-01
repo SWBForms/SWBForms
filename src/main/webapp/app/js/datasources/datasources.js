@@ -160,6 +160,28 @@ eng.dataSources["Market"] = {
   ]
 };
 
+eng.dataSources["Parking"] = {
+  scls: "Parking",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "name", title:"Nombre", required: true, type: "string"},
+    {name: "fee", title:"Cuota", required:false, type:"double"},
+    {name: "freeTime", title: "Tiempo libre", required: false, type:"boolean"},
+    {name: "is24h", title: "24 horas", required: false, type:"boolean"},
+    {name: "isFormal", title: "Formal", required: false, type:"boolean"},
+    {name: "isSelfService", title: "Autoservicio", required: false, type:"boolean"},
+    {name: "carCapacity", title: "Capacidad", required:false, type:"int"},
+    {name: "contact", title:"Datos de contacto", required: true, type: "string"},
+    {name: "amenities", title:"Datos de contacto", required: false, type: "string"},
+    {name: "serviceDays", title: "Días de servicio", required: false, type:"boolean"},
+    {name: "serviceHours", title:"Horas de servicio", required:false, type:"boolean"},
+    {name: "image", title: "Fotografía", required: false, type:"boolean"}
+  ]
+};
+
 eng.dataSources["TourismSignal"] = {
   scls: "TourismSignal",
   modelid: DBModel,
