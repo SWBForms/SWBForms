@@ -1,6 +1,5 @@
 package org.fst2015pm.swbforms.api.v1;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -44,7 +43,7 @@ public class MarketService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMarkets(@PathParam("objId") String oId) {
+	public Response getMarkets() {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 		Response ret = null;
@@ -52,7 +51,6 @@ public class MarketService {
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
-			//TODO: Check session permissions
 			SWBDataSource ds = engine.getDataSource("Market");
 			DataObject dsFetch = null;
 			
@@ -73,6 +71,37 @@ public class MarketService {
 					}
 				} else {
 					ret = Response.status(500).build();
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				ret = Response.status(500).build();
+			}
+		}
+		
+		return ret;
+	}
+	
+	@GET
+	@Path("/{objId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getMarkets(@PathParam("objId") String oId) {
+		HttpSession session = httpRequest.getSession();
+		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		Response ret = null;
+		
+		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
+			return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		} else {
+			SWBDataSource ds = engine.getDataSource("Market");
+			DataObject dsFetch = null;
+			
+			try {
+				dsFetch = ds.fetchObjById(oId);
+				
+				if (null != dsFetch) {
+					ret = Response.status(200).entity(dsFetch).build();
+				} else {
+					ret = Response.status(400).build();
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
