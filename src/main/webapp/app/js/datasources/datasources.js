@@ -155,7 +155,22 @@ eng.dataSources["Market"] = {
     {name: "created", title:"Creado", required:false, type:"date"},
     {name: "shopNumber", title: "Locales", required:false, type:"int"},
     {name: "serviceDays", title: "Días de servicio", required: false, type:"boolean"},
-    {name: "serviceHours", title:"Horas de servicio", required:false, type:"boolean"}
+    {name: "serviceHours", title:"Horas de servicio", required:false, type:"boolean"},
+    {name: "image", title: "Fotografía", required: false, type:"boolean"}
+  ]
+};
+
+eng.dataSources["TourismSignal"] = {
+  scls: "TourismSignal",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "type",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "type", title: "Tipo", required: true, type : "string"},
+    {name: "position", title: "Posición", required: true, type : "string"},
+    {name: "visible", title: "Visible", required: true, type : "string"},
+    {name: "image", title: "Fotografía", required: false, type:"boolean"}
   ]
 };
 
