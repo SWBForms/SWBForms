@@ -209,6 +209,21 @@ eng.dataSources["ATM"] = {
   ]
 };
 
+eng.dataSources["WifiHotSpot"] = {
+  scls: "WifiHotSpot",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "type",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "provider", title: "Banco", required: true, type : "string"},
+    {name: "upSpeed", title: "Unidades", required: true, type : "int"},
+    {name: "downSpeed", title: "Unidades", required: true, type : "int"},
+    {name: "accesType", title: "Banco", required: true, type : "string"},
+    {name: "inService", title: "En servicio", required: false, type:"boolean"}
+  ]
+};
+
 eng.dataSources["UndergroundWiring"] = {
   scls: "UndergroundWiring",
   modelid: DBModel,
