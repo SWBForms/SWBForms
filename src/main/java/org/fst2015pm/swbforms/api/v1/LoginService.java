@@ -77,8 +77,6 @@ public class LoginService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loginUser(@Context HttpHeaders headers, String content) {
-		System.out.println(httpRequest.getScheme()+"://"+httpRequest.getServerName()+":"+httpRequest.getLocalPort()+"/public");
-		
 		//Check credentials
 		if (!mgr.validateCredentials(httpRequest, useCookies)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();

@@ -1,8 +1,10 @@
 package org.fst2015pm.swbforms.api.v1;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +30,8 @@ import org.semanticwb.datamanager.SWBScriptEngine;
 @Path("/services/market")
 public class MarketService {
 	@Context HttpServletRequest httpRequest;
+	@Context ServletContext context;
+	
 	boolean useCookies = false;
 	final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
@@ -102,14 +107,41 @@ public class MarketService {
 					JSONObject objData = (JSONObject)it.next();//objArray.getJSONObject(i);
 					objData.remove("_id");
 					
-					//Transform JSON to dataobject to avoid fail
-					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());
-					DataObject objNew = ds.addObj(obj);
+					//Strip image data
+					JSONObject imageData = objData.optJSONObject("image");
+					String imgContent = null;
+					String imgName = null;
+					if (null != imageData) {
+						objData.remove("image");
+						imgName = imageData.optString("fileName");
+						imgContent = imageData.optString("content");
+					}
 					
+					//Transform JSON to dataobject to avoid fail
+					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());					
+					DataObject objNew = ds.addObj(obj);
 					DataObject response = objNew.getDataObject("response");
 
 					if (null != response && 0 == response.getInt("status")) {
 						DataObject dlist = response.getDataObject("data");
+						String oId = dlist.getId();
+						
+						if (oId.lastIndexOf(":") > 0) {
+				            oId = oId.substring(oId.lastIndexOf(":") + 1);
+				        }
+						
+						//Store image data
+						if (null != imgName && null != imgContent) {
+							String path = context.getRealPath("/") + "public/images/Market/" + oId;
+							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
+								String requestUrl = httpRequest.getScheme() +
+									"://" + httpRequest.getServerName() + 
+									(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
+								dlist.put("image", requestUrl + "/public/images/Market/" + oId + "/" + imgName);
+								ds.updateObj(dlist);
+							}
+						}
+						
 						JSONObject el = new JSONObject();
 						el.put("_id", dlist.getId());
 						retArray.put(el);

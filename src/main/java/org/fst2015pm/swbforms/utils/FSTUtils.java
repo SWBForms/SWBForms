@@ -5,6 +5,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -123,8 +126,35 @@ public class FSTUtils {
 	}
 	
 	public static class FILE {
-		//public static File f = new File();
 		private static final SortedMap<String, Charset> charsets = Charset.availableCharsets();
+		/**
+		 * Stores base64 encoded image in file system
+		 * @param path Path to store file
+		 * @param name Name of the file
+		 * @param content Base64 encoded file content
+		 * @return true if file could be stored
+		 */
+		public static boolean storeBase64File(String path, String name, String content) {
+			try {
+				String cData = content;
+				if (cData.contains(",")) {
+					cData = content.split(",")[1];
+				}
+				byte[] data = Base64.getDecoder().decode(cData.getBytes("UTF-8"));
+				File f = new File(path);
+				if (!f.exists())  f.mkdirs();
+				
+				OutputStream stream = new FileOutputStream(path + "/" + name);
+			    stream.write(data);
+			    stream.close();
+			    return true;
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				return false;
+			}
+		}
+		
+		//public static File f = new File();
 		public Charset findCharset(File file) {
 			Charset ret = null;
 			for (String charsetName : charsets.keySet()) {

@@ -28,7 +28,6 @@ public class AppServices {
 	ExtractorManager extractorManager = ExtractorManager.getInstance();
 	@Context HttpServletRequest httpRequest;
 	private boolean useCookies = false;
-	private int expireMinutes = 30;
 	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	
