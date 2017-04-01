@@ -174,6 +174,17 @@ eng.dataSources["TourismSignal"] = {
   ]
 };
 
+eng.dataSources["UndergroundWiring"] = {
+  scls: "UndergroundWiring",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "type",
+  fields: [
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "type", title: "Tipo", required: true, type : "string"}
+  ]
+};
+
 
 /*
 eng.dataExtractors["StateExtractor"] = {
