@@ -200,12 +200,29 @@ eng.dataSources["ATM"] = {
   scls: "ATM",
   modelid: DBModel,
   dataStore: "mongodb",
-  displayField: "type",
+  displayField: "bank",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "bank", title: "Banco", required: true, type : "string"},
     {name: "atmUnits", title: "Unidades", required: true, type : "int"},
     {name: "inService", title: "En servicio", required: false, type:"boolean"}
+  ]
+};
+
+eng.dataSources["TravelAgency"] = {
+  scls: "TravelAgency",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+    {name: "name", title: "Nombre", required: true, type : "string"},
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "type", title: "Tipo", required: true, type : "string"},
+    {name: "address", title:"Dirección", required: true, type: "string"},
+    {name: "contact", title:"Datos de contacto", required: true, type: "string"},
+    {name: "products", title: "Productos", required: true, type : "string"},
+    {name: "serviceDays", title: "Días de servicio", required: false, type:"boolean"},
+    {name: "serviceHours", title:"Horas de servicio", required:false, type:"boolean"}
   ]
 };
 
