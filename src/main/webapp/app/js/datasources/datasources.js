@@ -226,6 +226,20 @@ eng.dataSources["TravelAgency"] = {
   ]
 };
 
+eng.dataSources["ConferenceOffice"] = {
+  scls: "ConferenceOffice",
+  modelid: DBModel,
+  dataStore: "mongodb",
+  displayField: "name",
+  fields: [
+    {name: "name", title: "Nombre", required: true, type : "string"},
+    {name: "loc", title: "Ubicación", required: true, type: "boolean"},
+    {name: "contact", title:"Datos de contacto", required: true, type: "string"},
+    {name: "manager", title: "Administrador", required: true, type : "string"},
+    {name: "image", title: "Fotografía", required: false, type:"boolean"}
+  ]
+};
+
 eng.dataSources["WifiHotSpot"] = {
   scls: "WifiHotSpot",
   modelid: DBModel,
