@@ -9,6 +9,7 @@ eng.dataSources["MagicTown"] = {
     modelid: DBModel,
     dataStore: "mongodb",
     displayField: "name",
+    ontCategory: "",
     fields: [
         {name:"CVE_ENT", title:"Clave de Estado", type:"string", required: true},
         {name:"CVE_MUN", title:"Clave de Municipio", type:"string", required: true},
@@ -33,6 +34,7 @@ eng.dataSources["State"] = {
     modelid: DBModel,
     dataStore: "mongodb",
     displayField: "NOM_ENT",
+    ontCategory: "",
     fields: [
         {name: "NOM_ENT", title: "Estado", required: true, type: "string"},
         {name: "CVE_ENT", title: "Clave", required: true, type: "string"},
@@ -47,6 +49,7 @@ eng.dataSources["Municipality"] = {
     modelid: DBModel,
     dataStore: "mongodb",
     displayField: "NOM_MUN",
+    ontCategory: "",
     fields: [
         {name: "NOM_MUN", title: "Municipio", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave", required: true, type: "string"},
@@ -61,6 +64,7 @@ eng.dataSources["Locality"] = {
     modelid: DBModel,
     dataStore: "mongodb",
     displayField: "NOM_LOC",
+    ontCategory: "",
     fields: [
         {name: "NOM_LOC", title: "Municipio", required: true, type: "string"},
         {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
@@ -153,6 +157,7 @@ eng.dataSources["Market"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "name",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "name", title:"Nombre", required: true, type: "string"},
@@ -171,6 +176,7 @@ eng.dataSources["Parking"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "name",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "name", title:"Nombre", required: true, type: "string"},
@@ -193,6 +199,7 @@ eng.dataSources["TourismSignal"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "type",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "type", title: "Tipo", required: true, type : "string"},
@@ -207,6 +214,7 @@ eng.dataSources["ATM"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "bank",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "bank", title: "Banco", required: true, type : "string"},
@@ -220,6 +228,7 @@ eng.dataSources["TravelAgency"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "name",
+  ontCategory: "",
   fields: [
     {name: "name", title: "Nombre", required: true, type : "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
@@ -237,6 +246,7 @@ eng.dataSources["ConferenceOffice"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "name",
+  ontCategory: "",
   fields: [
     {name: "name", title: "Nombre", required: true, type : "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
@@ -251,6 +261,7 @@ eng.dataSources["WifiHotSpot"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "type",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "provider", title: "Banco", required: true, type : "string"},
@@ -266,6 +277,7 @@ eng.dataSources["UndergroundWiring"] = {
   modelid: DBModel,
   dataStore: "mongodb",
   displayField: "type",
+  ontCategory: "",
   fields: [
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "type", title: "Tipo", required: true, type : "string"}
