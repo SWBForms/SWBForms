@@ -15,11 +15,17 @@ eng.dataSources["MagicTown"] = {
         {name:"CVE_LOC", title:"Clave de Localidad", type:"string", required: true},
         {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
         {name:"name", title: "Nombre", required: true, type: "string"},
-        {name:"description", title: "Descripción", type: "string"},
+        {name:"denomination", title: "Denominación", required: false, type: "string"},
+        {name:"description", title: "Descripción", required: true, type: "string"},
         {name:"accepted", title:"Incorporado", type:"boolean"},
         {name:"inclusion_date", title:"Fecha de incorporación", type: "date"},
-        {name:"origin", title: "Imagen", type: "string"},
-        {name:"picture", title: "Imagen", type: "string"}
+        {name:"foundation_date", title:"Fecha de fundación", type: "date"},
+        {name:"origin", title: "Origen", type: "string"},
+        {name:"location", title: "Ubicación", type: "string"},
+        {name:"ethnic_name", title: "Nombre indígena", type: "string"},
+        {name:"attractives", title: "Atractivos turísticos", required: true, type: "string"},
+        {name:"festivities", title: "Festividades", type: "string"},
+        {name:"picture", title: "Imagen", type: "image"}
     ]
 };
 eng.dataSources["State"] = {
