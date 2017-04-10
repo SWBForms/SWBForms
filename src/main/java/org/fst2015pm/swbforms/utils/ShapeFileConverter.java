@@ -100,7 +100,7 @@ public class ShapeFileConverter {
 			        }//while			        
 			        
 			        SimpleFeatureCollection output  =  CollectionDest;				       
-			        iterator.close();
+			      
 			        return output;
 					}				
 				}
