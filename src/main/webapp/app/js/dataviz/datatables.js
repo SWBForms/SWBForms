@@ -35,7 +35,8 @@ class DataTablesFactory {
       "scrollX": true
     } );
   }
-  remoteData(container, data){
+
+  /*remoteData(container, data){
   $('#'+container).DataTable( {
     ajax: {
         url: '/api/myData', //archivo
@@ -43,7 +44,7 @@ class DataTablesFactory {
     },
     columns: [ ... ]
 } );
-  }
+  }*/
 
 /*En  gijgo para un archivo remoto
 
