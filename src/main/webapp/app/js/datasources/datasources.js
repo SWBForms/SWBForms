@@ -98,11 +98,14 @@ eng.dataSources["GeoLayer"] = {
     displayField: "name",
     fields: [
         {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"description", title: "Descripción", required: true, type: "string"},
         {name:"type", title: "Tipo", required: true, type: "string"},
-        {name:"file", title:"Archivo", type:"String", required: true}
+        {name:"fileLocation", title:"Ubicación", required: true, type:"string"}, //Ubicación remota del recurso
+        {name:"zipped", title:"ZIP", type:"boolean"}, //Indica si el recurso está comprimido
+        {name:"zipPath", title:"ruta", type:"string"}, //Ubicación del recurso dentro del ZIP
+        {name:"resourceURL", title:"URL del recurso", type:"string"}
     ]
 };
-
 eng.dataSources["Dashboard"] = {
     scls: "Dashboard",
     modelid: DBModel,

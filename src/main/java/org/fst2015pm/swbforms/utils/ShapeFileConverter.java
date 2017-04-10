@@ -51,7 +51,6 @@ public class ShapeFileConverter {
 			
 		if (!fileShape.exists()){
 			System.out.println("No se encontro el archivo");
-			System.exit(0); 
 		}
 		try {	
 			
@@ -121,7 +120,6 @@ public class ShapeFileConverter {
 			
 			if (featuresSHP == null){
 				System.out.println("El archivo no se puede leer o se encuentra vacio");
-				System.exit(0);
 			}			
 			
 			JSONObject featureCollection = new JSONObject();			

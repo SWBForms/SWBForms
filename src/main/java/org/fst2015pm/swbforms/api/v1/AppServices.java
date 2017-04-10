@@ -27,7 +27,6 @@ public class AppServices {
 	SWBScriptUtils utils;
 	ExtractorManager extractorManager = ExtractorManager.getInstance();
 	@Context HttpServletRequest httpRequest;
-	private boolean useCookies = false;
 	private final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	private final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	
