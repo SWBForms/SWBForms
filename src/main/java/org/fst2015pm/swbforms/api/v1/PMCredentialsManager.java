@@ -41,7 +41,9 @@ public class PMCredentialsManager {
 		DataObject queryObj = new DataObject();
 		
 		queryObj.put("email", email);
-		queryObj.put("password", DataUtils.encodeSHA(password));
+		if (null != password && !password.isEmpty()) {
+			queryObj.put("password", DataUtils.encodeSHA(password));
+		}
 		
 		DataObject dsFetch = null;
 		if (null != userDS) {
@@ -181,6 +183,41 @@ public class PMCredentialsManager {
 		}
 
 		return res;
+	}
+	
+	/**
+	 * Gets user session object.
+	 * @param userobj User data
+	 * @return User session object or null.
+	 */
+	public DataObject getUserSessionObject(DataObject userobj) {
+		DataObject ret = null;
+		DataObject queryObj = new DataObject();
+		
+		queryObj.put("user", userobj.getId());
+		
+		DataObject dsFetch = null;
+		if (null != sessionDS) {
+			try {
+				DataObject wrapper = new DataObject();
+				wrapper.put("data", queryObj);
+				dsFetch = sessionDS.fetch(wrapper);
+			} catch (IOException ioex) {
+				ioex.printStackTrace();
+			}
+		}
+		
+		if (null != dsFetch) {
+			DataObject response = dsFetch.getDataObject("response");
+			if (null != response) {
+				DataList dlist = response.getDataList("data");
+				if (!dlist.isEmpty()) {
+					ret = dlist.getDataObject(0);
+				}
+			}
+		}
+		
+		return ret;
 	}
 	
 	/**

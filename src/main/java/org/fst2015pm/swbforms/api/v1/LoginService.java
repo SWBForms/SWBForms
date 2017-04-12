@@ -130,23 +130,107 @@ public class LoginService {
 	}
 	
 	/**
-	 * Resets user password
+	 * Resets user password.
 	 * @return Status code 200 on success
 	 * @throws IOException
 	 */
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/resetpassword")
-	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context) throws IOException {
+	public Response resetUserPassword(@Context HttpHeaders headers, @Context ServletContext context, String content) throws IOException {
 		boolean create = false;
+		boolean checkSessionToken = false;
 		
-		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
+		if (!mgr.validateCredentials(httpRequest, useCookies, checkSessionToken)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		}
-
-		String []authData = mgr.getAuthCredentials(httpRequest, useCookies);
-		DataObject sess = mgr.getUserSessionObjectByToken(authData[1]);
 		
-		if (mgr.isSessionActive(sess)) {
+		JSONObject payload = new JSONObject(content);
+		if (payload.optString("email", "").isEmpty()) {
+			return Response.status(400).entity(ERROR_BADREQUEST).build();
+		}
+
+		String []authData = mgr.getAuthCredentials(httpRequest, useCookies); 
+		DataObject user = null;
+		DataObject sess = null;
+		
+		if (checkSessionToken) {
+			sess = mgr.getUserSessionObjectByToken(authData[1]);
+			
+			if (mgr.isSessionActive(sess)) {
+				String userID = sess.getString("user");
+				user = userDataSource.fetchObjById(userID);
+			}
+		} else {
+			user = mgr.findUser(payload.getString("email"), null);
+		}
+		
+		if (null != user) {
+			String email = user.getString("email");
+			String userID = user.getId();
+			
+			//Check if previous token exists
+			DataObject queryObj = new DataObject();
+			queryObj.put("user", userID);
+			
+			DataObject dsFetch = null;
+			if (null != resetTokens) {
+				try {
+					DataObject wrapper = new DataObject();
+					wrapper.put("data", queryObj);
+					dsFetch = resetTokens.fetch(wrapper);
+				} catch (IOException ioex) {
+					ioex.printStackTrace();
+				}
+			}
+			
+			//Add token to datasource with expiration of 1 day
+			if (null == dsFetch || null != dsFetch.getDataObject("response")) {
+				dsFetch = new DataObject();
+				dsFetch.put("user", userID);
+				create = true;
+			} else {
+				dsFetch = dsFetch.getDataObject("response");
+			}
+			
+			String resetToken = UUID.randomUUID().toString().replace("-", "");
+			dsFetch.put("token", resetToken);
+			dsFetch.put("expiration", new Date().getTime() + (1000 * 60 * 60 * 24));
+			
+			if (create) {
+				resetTokens.addObj(dsFetch);
+			} else {
+				resetTokens.updateObj(dsFetch);
+			}
+			
+			//Send mail with reset link
+			String template = null;
+			FileInputStream inputStream = new FileInputStream(context.getRealPath("/")+"work/config/resetPasswordMailTemplate.html");
+			try {
+			    template = IOUtils.toString(inputStream, "UTF-8");
+			} finally {
+			    inputStream.close();
+			}
+			
+			if (null != template) {
+				template = template.replace("___RESETTOKEN___", resetToken);
+				SimpleMailSender.getInstance().sendHTMLMail("no-reply@miit.mx", email, "Solicitud de cambio de contraseña", template);
+			}
+			
+			//Invalidate current session
+			if (checkSessionToken) {
+				userSessionDataSource.removeObj(sess);
+			}
+			return Response.status(200).build();
+		} else {
+			return Response.status(400).build();
+		}
+		
+		//Si no viene session token, buscar usuario por email
+		
+		//DataObject sess = mgr.getUserSessionObjectByToken(authData[1]);
+		
+		/*if (mgr.isSessionActive(sess)) {
 			//Find user and get email
 			String userID = sess.getString("user");
 			DataObject user = userDataSource.fetchObjById(userID);
@@ -204,9 +288,8 @@ public class LoginService {
 			userSessionDataSource.removeObj(sess);
 		} else {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		}
-		
-		return Response.status(200).build();
+		}*/
+
 	}
 	
 	@POST
