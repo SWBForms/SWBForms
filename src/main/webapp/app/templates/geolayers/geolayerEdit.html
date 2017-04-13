@@ -26,9 +26,9 @@
               <div class="col-sm-10">
                 <select name="type" required class="form-control" ng-model="geo.layerData.type">
                   <option value="">Seleccione un tipo</option>
-                  <option value="geoJSON">GeoJSON</option>
+                  <option value="geojson">GeoJSON</option>
                   <option value="kml">KML</option>
-                  <option value="shapeFile">ShapeFile</option>
+                  <option value="shp">ShapeFile</option>
                 </select>
                 <span ng-show="(editForm.$submitted || editForm.type.$touched) && editForm.type.$invalid" class="help-block">El tipo es requerido</span>
               </div>

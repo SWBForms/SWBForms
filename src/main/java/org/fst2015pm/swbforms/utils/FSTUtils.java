@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -16,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.SortedMap;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -196,6 +199,49 @@ public class FSTUtils {
 	            return false;
 	        }
 	        return true;
+		}
+		
+		public static String downloadResource(String urlString, String fileName, boolean zipped) {
+			String destPath = org.apache.commons.io.FileUtils.getTempDirectoryPath() + UUID.randomUUID().toString().replace("-", "");
+			return downloadResource(urlString, destPath, fileName, zipped);
+		}
+		
+		/**
+		 * Downloads a resource to a given path and renames to a given name.
+		 * @param urlString Resource URL.
+		 * @param destPath Path to folder to download to.
+		 * @param fileName Name of downloaded file. "tempFile" will be used as default name.
+		 * @param zipped Whether the downloaded resource is zipped. Resource will be extracted if needed. 
+		 * @return Path to resource folder or empty string.
+		 */
+		public static String downloadResource(String urlString, String destPath, String fileName, boolean zipped) {
+			File destDir;
+			if (null != fileName && !fileName.isEmpty()) {
+				 destDir = new File(destPath, fileName);
+			} else {
+				 destDir = new File(destPath, "tempFile");
+			}
+			
+			URL url = null;
+			try {
+				url = new URL(urlString);
+			} catch (MalformedURLException muex) {
+				return "";
+			}
+			
+			try {
+				System.out.println("..Downloading resource "+url);
+				org.apache.commons.io.FileUtils.copyURLToFile(url, destDir, 5000, 5000);
+				if (zipped) {
+					System.out.println("..Inflating "+url);
+					FSTUtils.ZIP.extractAll(destDir.getAbsolutePath(), destPath);
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				return "";
+			}
+			
+			return destPath;
 		}
 	}
 	

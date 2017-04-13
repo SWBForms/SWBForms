@@ -2,9 +2,6 @@ package org.fst2015pm.swbforms.api.v1;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -86,7 +83,7 @@ public class GeolayerService {
 	@Path("/geoLayers")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addGeLayer(String content) throws IOException {
+	public Response addGeoLayer(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 
@@ -113,20 +110,20 @@ public class GeolayerService {
 					DataObject dlist = response.getDataObject("data");
 					String oId = dlist.getId();
 					
-					if (oId.lastIndexOf(":") > 0) {
-			            oId = oId.substring(oId.lastIndexOf(":") + 1);
-			         
-						//Try to update resource
-			            String ext = updateLayerResource(dlist); 
-			            if (null != ext) {
+					if (null != oId) {
+						if (oId.lastIndexOf(":") > 0) oId = oId.substring(oId.lastIndexOf(":") + 1);
+						
+						//Try to update resource 
+			            if (updateLayerResource(obj)) {
+			            	String type = "." + obj.getString("type");
 			            	String requestUrl = httpRequest.getScheme() +
 								"://" + httpRequest.getServerName() + 
 								(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
-								"/public/geolayers/" + oId + ext;
-			            	dlist.put("resourceURL", requestUrl);
-			            	ds.updateObj(dlist);
+								"/public/geolayers/" + oId + (".shp".equals(type) ? ".geojson" : type);
+			            	obj.put("resourceURL", requestUrl);
+			            	ds.updateObj(obj);
 			            }
-			        }
+					}
 				}
 				return Response.status(200).entity(objNew.getDataObject("response")).build();
 			}
@@ -180,16 +177,16 @@ public class GeolayerService {
 			if (null != objData) {
 				//Transform JSON to dataobject to avoid fail
 				DataObject obj = (DataObject) DataObject.parseJSON(content);
-
 				updateObj = ds.updateObj(obj);
 				
-				//Try to update resource
-	            String ext = updateLayerResource(obj); 
-	            if (null != ext) {
+				//Try to update resource 
+	            if (updateLayerResource(obj)) {
+	            	if (oId.lastIndexOf(":") > 0) oId = oId.substring(oId.lastIndexOf(":") + 1);
+	            	String type = "." + obj.getString("type");
 	            	String requestUrl = httpRequest.getScheme() +
 						"://" + httpRequest.getServerName() + 
 						(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
-						"/public/geolayers/" + oId + ext;
+						"/public/geolayers/" + oId + (".shp".equals(type) ? ".geojson" : type);
 	            	obj.put("resourceURL", requestUrl);
 	            	ds.updateObj(obj);
 	            }
@@ -223,83 +220,49 @@ public class GeolayerService {
 		return Response.status(403).entity(ERROR_FORBIDDEN).build();
 	}
 	
-	private String updateLayerResource(DataObject obj) throws IOException {
-		String ret = null;
+	/**
+	 * Updates resource associated to dataobject.
+	 * @param obj
+	 * @return
+	 */
+	private boolean updateLayerResource(DataObject obj) {
 		String fileUrl = obj.getString("fileLocation");
-		String oId = obj.getId();
+		String relPath = obj.getString("zipPath");
 		String layerType = obj.getString("type");
-		boolean zipped = Boolean.valueOf(obj.getString("zipped"));
-	
-		String resourcePath = downloadResource(fileUrl, zipped);
+		String oId = obj.getId();
+		boolean ret = false;
 		if (oId.lastIndexOf(":") > 0) {
             oId = oId.substring(oId.lastIndexOf(":") + 1);
         }
 		
-		if (null != resourcePath) {
-			if (zipped) {
-				String zipPath = obj.getString("zipPath");
-				resourcePath += zipPath;
-			}
+		boolean zipped = Boolean.valueOf(obj.getString("zipped"));
+		String destFileName = context.getRealPath("/") + "public/geolayers/" + oId;		
+		String fName = "/tempFile";
+		if (!zipped) {
+			fName += "." + layerType.toLowerCase();
+		}
 		
-			String newFileName = context.getRealPath("/") + "public/geolayers/" + oId;
-			
-			//Convert file if it is a shapefile
-			if ("shapeFile".equals(layerType)) {
-				ShapeFileConverter converter = new ShapeFileConverter();
-
+		String resPath = FSTUtils.FILE.downloadResource(fileUrl, fName, zipped);
+		if (null != resPath && !resPath.isEmpty()) {
+			if ("shp".equals(layerType)) {
+				System.out.println("Must convert shape "+ resPath + (zipped ? relPath : fName) + " to geojson " + destFileName);
 				try {
-					//System.out.println("must convert "+resourcePath+ (zipped ? "" : "/tempFile")+" to "+newFileName+".geojson");
-					converter.ShpToGeoJSON(newFileName, resourcePath+ (zipped ? "" : "/tempFile"));
-					ret = ".geojson";
+					ShapeFileConverter c = new ShapeFileConverter();
+					c.shapeToGeoJSON(destFileName, resPath + (zipped ? relPath : fName));
+					ret = true;
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					return ret;
 				}
-			} else { //kml or geojson, just copy resource
-				//Get file extension
-				String ext = ".kml";
-				if ("geoJSON".equals(layerType)) ext = ".geojson";
-				ret = ext;
-				//System.out.println("must copy "+resourcePath + (zipped ? "" : "/tempFile")+" to " + newFileName + ext);
-				org.apache.commons.io.FileUtils.copyFile(new File(resourcePath+(zipped ? "" : "/tempFile")), new File(newFileName + ext));
+			} else {
+				System.out.println("Must copy "+ resPath + (zipped ? relPath : fName) + " to " + destFileName + fName);
+				try {
+					org.apache.commons.io.FileUtils.copyFile(new File(resPath + (zipped ? relPath : fName)), new File(destFileName + fName));
+					ret = true;
+				} catch (Exception ioex) {
+					ioex.printStackTrace();
+				}
 			}
-			org.apache.commons.io.FileUtils.deleteQuietly(new File(resourcePath));
-			return ret;
 		}
-		return null;
+		return ret;
 	}
-	
-	private String downloadResource(String fileURL, boolean zipped) throws IOException {
-		String fileUrl = fileURL;
-		boolean remote = false;
-		
-		//Prepare file system
-		String destPath = DataMgr.getApplicationPath() + "tempDir/" + UUID.randomUUID();
-		File destDir = new File(destPath);
-		
-		//Check if URL is provided
-		URL url = null;
-		try {
-			url = new URL(fileUrl);
-			remote = true;
-		} catch (MalformedURLException muex) { }
-		
-		fileUrl = remote ? fileUrl : DataMgr.getApplicationPath() + fileUrl;
-		
-		//Get local or remote file, store in localPath
-		if (remote) {
-			log.info("GeoLayerService :: Downloading resource "+ url +"...");
-			destDir = new File(destPath,"tempFile");
-			org.apache.commons.io.FileUtils.copyURLToFile(url, destDir, 5000, 5000);
-			fileUrl = destPath + "/tempFile";
-		}
-		
-		if (zipped) {
-			log.info("GeoLayerService:: Inflating file...");
-			FSTUtils.ZIP.extractAll(fileUrl, destPath);
-		}
-		//System.out.println("resource downloaded on "+destPath);
-		return destPath;
-	}
-	
 }

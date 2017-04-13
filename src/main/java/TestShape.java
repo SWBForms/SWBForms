@@ -9,7 +9,7 @@ public class TestShape {
 
 	public static void main(String[] args) throws IOException, NoSuchAuthorityCodeException, FactoryException, TransformException {
 		ShapeFileConverter files = new ShapeFileConverter();
-		files.ShpToGeoJSON("./src/main/webapp/app/mockdata/shape/uniClim6", "./src/main/webapp/app/mockdata/shape/unidadesClimaticas.shp");
+		files.shapeToGeoJSON("./src/main/webapp/app/mockdata/shape/uniClim6", "./src/main/webapp/app/mockdata/shape/unidadesClimaticas.shp");
 		//files.readShapefile("./src/main/webapp/app/mockdata/shape/unidadesClimaticas.shp");
 		System.out.println("listo");
 	}
