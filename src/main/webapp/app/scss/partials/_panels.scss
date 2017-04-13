@@ -1,0 +1,51 @@
+div.codemirror-panel {
+  .panel-body {
+    padding: 0px;
+  }
+
+  .panel-heading {
+    padding: 6px 15px;
+  }
+
+  .panel-footer {
+    padding: 5px 15px;
+  }
+
+  .codemirror-panel-heading {
+    float: left;
+    padding-top:0.5em;
+  }
+}
+
+.pm-card-container {
+  float:left;
+  width: 220px;
+
+  .pm-card {
+    border: 1px solid #e7eaec;
+    padding: 0;
+    background-color: #ffffff;
+    position: relative;
+    margin-bottom: 20px;
+    margin-right: 20px;
+
+    .image {
+      height: 100px;
+      overflow: hidden;
+    }
+
+    .pm-title {
+      padding: 10px;
+      background-color: #f8f8f8;
+      border-top: 1px solid #e7eaec;
+    }
+  }
+}
+
+.box-panel {
+  margin-top: 20px;
+}
+
+.map-container {
+  height: 600px;
+}
