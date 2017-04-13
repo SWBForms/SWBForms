@@ -114,14 +114,14 @@ public class GeolayerService {
 						if (oId.lastIndexOf(":") > 0) oId = oId.substring(oId.lastIndexOf(":") + 1);
 						
 						//Try to update resource 
-			            if (updateLayerResource(obj)) {
-			            	String type = "." + obj.getString("type");
+			            if (updateLayerResource(dlist)) {
+			            	String type = "." + dlist.getString("type");
 			            	String requestUrl = httpRequest.getScheme() +
 								"://" + httpRequest.getServerName() + 
 								(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
 								"/public/geolayers/" + oId + (".shp".equals(type) ? ".geojson" : type);
-			            	obj.put("resourceURL", requestUrl);
-			            	ds.updateObj(obj);
+			            	dlist.put("resourceURL", requestUrl);
+			            	ds.updateObj(dlist);
 			            }
 					}
 				}
@@ -245,7 +245,7 @@ public class GeolayerService {
 		String resPath = FSTUtils.FILE.downloadResource(fileUrl, fName, zipped);
 		if (null != resPath && !resPath.isEmpty()) {
 			if ("shp".equals(layerType)) {
-				System.out.println("Must convert shape "+ resPath + (zipped ? relPath : fName) + " to geojson " + destFileName);
+				//System.out.println("Must convert shape "+ resPath + (zipped ? relPath : fName) + " to geojson " + destFileName);
 				try {
 					ShapeFileConverter c = new ShapeFileConverter();
 					c.shapeToGeoJSON(destFileName, resPath + (zipped ? relPath : fName));
@@ -254,9 +254,9 @@ public class GeolayerService {
 					ex.printStackTrace();
 				}
 			} else {
-				System.out.println("Must copy "+ resPath + (zipped ? relPath : fName) + " to " + destFileName + fName);
+				//System.out.println("Must copy "+ resPath + (zipped ? relPath : fName) + " to " + destFileName + layerType.toLowerCase());
 				try {
-					org.apache.commons.io.FileUtils.copyFile(new File(resPath + (zipped ? relPath : fName)), new File(destFileName + fName));
+					org.apache.commons.io.FileUtils.copyFile(new File(resPath + (zipped ? relPath : fName)), new File(destFileName + "." + layerType.toLowerCase()));
 					ret = true;
 				} catch (Exception ioex) {
 					ioex.printStackTrace();
