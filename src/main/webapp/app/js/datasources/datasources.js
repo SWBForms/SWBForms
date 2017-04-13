@@ -16,6 +16,8 @@ eng.dataSources["MagicTown"] = {
         {name:"CVE_LOC", title:"Clave de Localidad", type:"string", required: true},
         {name:"CVE_MTW", title:"Clave Geo", type:"string", required: true},
         {name:"name", title: "Nombre", required: true, type: "string"},
+        {name:"segment", title: "Segmento turístico", required: true, type: "string"},
+        {name:"symbolicattractive", title: "Atractivo simbólico", required: true, type: "string"},
         {name:"denomination", title: "Denominación", required: false, type: "string"},
         {name:"description", title: "Descripción", required: true, type: "string"},
         {name:"accepted", title:"Incorporado", type:"boolean"},
@@ -66,7 +68,7 @@ eng.dataSources["Locality"] = {
     displayField: "NOM_LOC",
     ontCategory: "",
     fields: [
-        {name: "NOM_LOC", title: "Municipio", required: true, type: "string"},
+        {name: "NOM_LOC", title: "Localidad", required: true, type: "string"},
         {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
         {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
         {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
@@ -162,6 +164,9 @@ eng.dataSources["Market"] = {
   displayField: "name",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "name", title:"Nombre", required: true, type: "string"},
     {name: "type", title: "Tipo", required: true, type : "string"},
@@ -181,6 +186,9 @@ eng.dataSources["Parking"] = {
   displayField: "name",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "name", title:"Nombre", required: true, type: "string"},
     {name: "fee", title:"Cuota", required:false, type:"double"},
@@ -204,6 +212,9 @@ eng.dataSources["TourismSignal"] = {
   displayField: "type",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "type", title: "Tipo", required: true, type : "string"},
     {name: "position", title: "Posición", required: true, type : "string"},
@@ -219,6 +230,9 @@ eng.dataSources["ATM"] = {
   displayField: "bank",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "bank", title: "Banco", required: true, type : "string"},
     {name: "atmUnits", title: "Unidades", required: true, type : "int"},
@@ -233,6 +247,9 @@ eng.dataSources["TravelAgency"] = {
   displayField: "name",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "name", title: "Nombre", required: true, type : "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "type", title: "Tipo", required: true, type : "string"},
@@ -251,6 +268,9 @@ eng.dataSources["ConferenceOffice"] = {
   displayField: "name",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "name", title: "Nombre", required: true, type : "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "contact", title:"Datos de contacto", required: true, type: "string"},
@@ -266,6 +286,9 @@ eng.dataSources["WifiHotSpot"] = {
   displayField: "type",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "provider", title: "Banco", required: true, type : "string"},
     {name: "upSpeed", title: "Unidades", required: true, type : "int"},
@@ -282,6 +305,9 @@ eng.dataSources["UndergroundWiring"] = {
   displayField: "type",
   ontCategory: "",
   fields: [
+    {name: "CVE_LOC", title: "Clave", required: true, type: "string"},
+    {name: "CVE_MUN", title: "Clave municipio", required: true, type: "string"},
+    {name: "CVE_ENT", title: "Clave estado", required: true, type: "string"},
     {name: "loc", title: "Ubicación", required: true, type: "boolean"},
     {name: "type", title: "Tipo", required: true, type : "string"}
   ]
