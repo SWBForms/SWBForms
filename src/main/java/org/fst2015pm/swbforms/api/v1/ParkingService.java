@@ -14,7 +14,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONArray;
@@ -43,7 +45,7 @@ public class ParkingService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getParkingList() {
+	public Response getParkingList(@Context UriInfo context) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
 		Response ret = null;
@@ -56,7 +58,13 @@ public class ParkingService {
 			
 			try {
 				DataObject wrapper = new DataObject();
-				wrapper.put("data", new DataObject());
+				DataObject q = new DataObject();
+				MultivaluedMap<String, String> params = context.getQueryParameters();
+				for (String key : params.keySet()) {
+					q.put(key, params.getFirst(key));
+				}
+				
+				wrapper.put("data", q);
 				dsFetch = ds.fetch(wrapper);
 				
 				if (null != dsFetch) {
