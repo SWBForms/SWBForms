@@ -2,6 +2,7 @@ package org.fst2015pm.swbforms.api.v1;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -116,7 +117,8 @@ public class GeolayerService {
 						//Try to update resource 
 			            if (updateLayerResource(dlist)) {
 			            	String type = "." + dlist.getString("type");
-			            	String requestUrl = httpRequest.getScheme() +
+			            	
+			            	String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
 								"://" + httpRequest.getServerName() + 
 								(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
 								"/public/geolayers/" + oId + (".shp".equals(type) ? ".geojson" : type);
@@ -183,7 +185,8 @@ public class GeolayerService {
 	            if (updateLayerResource(obj)) {
 	            	if (oId.lastIndexOf(":") > 0) oId = oId.substring(oId.lastIndexOf(":") + 1);
 	            	String type = "." + obj.getString("type");
-	            	String requestUrl = httpRequest.getScheme() +
+	            	
+	            	String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
 						"://" + httpRequest.getServerName() + 
 						(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
 						"/public/geolayers/" + oId + (".shp".equals(type) ? ".geojson" : type);
@@ -235,8 +238,12 @@ public class GeolayerService {
             oId = oId.substring(oId.lastIndexOf(":") + 1);
         }
 		
+		File layersDir = new File(context.getRealPath("/") + "public/geolayers/");
+		if (!layersDir.exists()) layersDir.mkdir();
+		
 		boolean zipped = Boolean.valueOf(obj.getString("zipped"));
-		String destFileName = context.getRealPath("/") + "public/geolayers/" + oId;		
+		String destFileName = context.getRealPath("/") + "public/geolayers/" + oId;
+		
 		String fName = "/tempFile";
 		if (!zipped) {
 			fName += "." + layerType.toLowerCase();
