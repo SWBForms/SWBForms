@@ -93,13 +93,30 @@ public class LoginService {
 			objData = new JSONObject(content);
 			//Update session object
 			res = mgr.updateUserSession(objData.optString("email"), objData.optString("password"), expireMinutes);
+			//Update userObj to add PM
+			DataObject usrData = res.getDataObject("user");
+			
+			String pmId = usrData.getString("magictown");
+			if (null != pmId) {
+				engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", null);
+				SWBDataSource pmds = engine.getDataSource("MagicTown");
+				DataObject pm = pmds.fetchObjById(pmId);
+				
+				if (null != pm) {
+					DataObject pmData = new DataObject();
+					pmData.put("_id", pmId);
+					pmData.put("CVE_ENT", pm.get("CVE_ENT"));
+					pmData.put("CVE_MUN", pm.get("CVE_MUN"));
+					pmData.put("CVE_LOC", pm.get("CVE_LOC"));
+					
+					usrData.put("magictown", pmData);
+					res.put("user", usrData);
+				}
+			}
+			return Response.status(200).entity(res).build();
 		} catch (JSONException jspex) {
 			return Response.status(400).entity(ERROR_BADREQUEST).build();
-		}
-				
-		if (null != res) {
-			return Response.status(200).entity(res).build();
-		} else {
+		} catch (IOException ioex) {
 			return Response.status(500).build();
 		}
 	}
