@@ -1008,8 +1008,13 @@
                 serie: true,
                 //insertBefore: "#mainStyles", //Otherwise app styles will be overridem
                 files: [
+                  'lib/leaflet-markercluster/dist/MarkerCluster.css',
+                  'lib/leaflet-markercluster/dist/MarkerCluster.Default.css',
                   'lib/leaflet/dist/leaflet.css',
                   'lib/leaflet/dist/leaflet.js',
+                  'lib/leaflet-markercluster/dist/leaflet.markercluster.js',
+                  'lib/spin.js/spin.min.js',
+                  'lib/leaflet-spin/leaflet.spin.min.js',
                   'lib/google-maps/lib/Google.min.js',
                   'lib/togeojson/togeojson.js',
                   'js/dataviz/constants.js',
