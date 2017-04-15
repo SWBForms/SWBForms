@@ -6,7 +6,7 @@
     .controller("GeolayerPreviewCtrl", GeolayerPreviewCtrl);
 
     GeolayerPreviewCtrl.$inject = ["$GeoLayer", "$stateParams", "$http", "$timeout"];
-    function GeolayerPreviewCtrl($GeoLayer, $stateParams, $http, $timeout) {
+    function GeolayerPreviewCtrl($GeoLayer, $stateParams, $http, $timeout, $scope) {
       let cnt = this;
       let df = [40.46, -100.715];
       cnt.layerData = {};
@@ -30,7 +30,7 @@
               }).then((response) => {
                 if (response.status === 200) {
                   if (cnt.layerData.type === "kml") {
-                    dataviz.mapsFactory.addKMLLayer(cnt.map, response.data, ENGINE_LEAFLET);
+                    dataviz.mapsFactory.addKMLLayer(cnt.map, response.data, ENGINE_LEAFLET, true);
                   } else {
                     dataviz.mapsFactory.addGeoJSONLayer(cnt.map, response.data, ENGINE_LEAFLET, true);
                   }
@@ -44,6 +44,12 @@
           }, 500);
         }
       };
+
+      $scope.$on('$destroy', () => {
+        if (angular.isDefined(cnt.map)) {
+          cnt.map.remove();
+        }
+      });
 
     };
 

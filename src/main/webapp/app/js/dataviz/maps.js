@@ -135,11 +135,11 @@ class MapsFactory {
     return geoLayer;
   }
 
-  addKMLLayer(map, kml, engine) {
+  addKMLLayer(map, kml, engine, clustered=false) {
     let parser = new DOMParser();
     let dom = parser.parseFromString(kml, "text/xml");
 
-    this.addGeoJSONLayer(map, toGeoJSON.kml(dom), engine);
+    this.addGeoJSONLayer(map, toGeoJSON.kml(dom), engine, clustered);
   }
 
   addGeoJSONLayer(map, data, engine, clustered=false) {

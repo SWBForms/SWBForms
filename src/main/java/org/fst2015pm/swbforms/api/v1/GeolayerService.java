@@ -2,7 +2,6 @@ package org.fst2015pm.swbforms.api.v1;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
