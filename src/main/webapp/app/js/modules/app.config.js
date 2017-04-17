@@ -193,7 +193,7 @@
         },
         resolve: {
           menuItems: function() {
-            return dashboardMenuItems;
+            return adminMenuItems;
           },
           loadDependencies: function($ocLazyLoad, $stateParams) {
             return $ocLazyLoad.load([
@@ -484,6 +484,45 @@
         resolve: {
           menuItems: function() {
             return adminMenuItems;
+          }
+        }
+      })
+      .state('admin.previewdatasource', {
+        url: '/datasources/preview/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/datasources/datasourcePreview.html',
+            controller: 'DSPreviewCtrl',
+            controllerAs: "ds"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  insertBefore: "#mainStyles", //Otherwise app styles will be overridem
+                  files: [
+                    'lib/spin.js/spin.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/datatables.net-bs/js/dataTables.bootstrap.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js',
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/AngularJS-Toaster/toaster.min.js',
+                    'lib/bootbox/bootbox.js',
+                    'lib/datatables.net-bs/css/dataTables.bootstrap.min.css',
+                  ]
+              }
+            ]);
           }
         }
       })
