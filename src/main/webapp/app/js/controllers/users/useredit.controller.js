@@ -5,9 +5,10 @@
     .module('FST2015PM.controllers')
     .controller('UsersEditCtrl', UsersEditCtrl);
 
-  UsersEditCtrl.$inject = ["$Datasource", "$stateParams", "$state"];
-  function UsersEditCtrl($Datasource, $stateParams, $state) {
+  UsersEditCtrl.$inject = ["$rootScope", "$Datasource", "$stateParams", "$state", "$http", "$window"];
+  function UsersEditCtrl($rootScope, $Datasource, $stateParams, $state, $http, $window) {
     let cnt = this;
+    let apiVersion = 1;
     cnt.userData = {};
     cnt.userRoles = [];
     cnt.selectedRoles = [];
@@ -49,12 +50,28 @@
         if ($stateParams.id && $stateParams.id.length) {
           $Datasource.updateObject(cnt.userData, "User")
           .then(response => {
+            $http({
+              url: `/api/v${apiVersion}/services/login/me`,
+              method: "GET"
+            }).then((response) => {
+              $rootScope.userInfo = response.data;
+            }).catch((error) => {
+              $window.location.href = "/login"
+            });
             $state.go('admin.users', {});
           });
         } else {
           cnt.userData.password = cnt.password1;
           $Datasource.addObject(cnt.userData, "User")
           .then(response => {
+            $http({
+              url: `/api/v${apiVersion}/services/login/me`,
+              method: "GET"
+            }).then((response) => {
+              $rootScope.userInfo = response.data;
+            }).catch((error) => {
+              $window.location.href = "/login"
+            });
             $state.go('admin.users', {});
           });
         }

@@ -45,7 +45,7 @@ if (null != logoutAction && "true".equals(logoutAction)) {
 		<meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="app/lib/animate.css/animate.min.css">
+    <link rel="stylesheet" href="/app/lib/animate.css/animate.min.css">
     <style type="text/css">
       body{padding-top:50px;background-color:#eee}
       .form-signin{max-width:330px;padding:15px;margin:0 auto}
