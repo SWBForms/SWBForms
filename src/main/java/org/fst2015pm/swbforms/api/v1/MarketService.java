@@ -32,12 +32,12 @@ import org.semanticwb.datamanager.SWBScriptEngine;
 public class MarketService {
 	@Context HttpServletRequest httpRequest;
 	@Context ServletContext context;
-	
+
 	boolean useCookies = false;
 	final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	PMCredentialsManager mgr;
-	
+
 	public MarketService() {
 		//Create credentials manager
 		mgr = new PMCredentialsManager();
@@ -47,15 +47,15 @@ public class MarketService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMarkets(@Context UriInfo context) {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		Response ret = null;
-		
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			SWBDataSource ds = engine.getDataSource("Market");
 			DataObject dsFetch = null;
-			
+
 			try {
 				DataObject wrapper = new DataObject();
 				DataObject q = new DataObject();
@@ -63,10 +63,10 @@ public class MarketService {
 				for (String key : params.keySet()) {
 					q.put(key, params.getFirst(key));
 				}
-				
+
 				wrapper.put("data", q);
 				dsFetch = ds.fetch(wrapper);
-				
+
 				if (null != dsFetch) {
 					DataObject response = dsFetch.getDataObject("response");
 					if (null != response) {
@@ -85,27 +85,27 @@ public class MarketService {
 				ret = Response.status(500).build();
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@GET
 	@Path("/{objId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMarket(@PathParam("objId") String oId) {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		Response ret = null;
-		
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			SWBDataSource ds = engine.getDataSource("Market");
 			DataObject dsFetch = null;
-			
+
 			try {
 				dsFetch = ds.fetchObjById(oId);
-				
+
 				if (null != dsFetch) {
 					ret = Response.status(200).entity(dsFetch).build();
 				} else {
@@ -116,34 +116,34 @@ public class MarketService {
 				ret = Response.status(500).build();
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addMarket(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
-		SWBDataSource ds = engine.getDataSource("Market"); 
-		
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
+		SWBDataSource ds = engine.getDataSource("Market");
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			if (null == ds) {
 				return Response.status(500).build();
 			}
-			
+
 			try {
 				JSONArray objArray = new JSONArray(content);
 				JSONArray retArray = new JSONArray();
-				
+
 				Iterator<Object> it = objArray.iterator();
 				while(it.hasNext()) {
 					JSONObject objData = (JSONObject)it.next();//objArray.getJSONObject(i);
 					objData.remove("_id");
-					
+
 					//Strip image data
 					JSONObject imageData = objData.optJSONObject("image");
 					String imgContent = null;
@@ -153,32 +153,32 @@ public class MarketService {
 						imgName = imageData.optString("fileName");
 						imgContent = imageData.optString("content");
 					}
-					
+
 					//Transform JSON to dataobject to avoid fail
-					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());					
+					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());
 					DataObject objNew = ds.addObj(obj);
 					DataObject response = objNew.getDataObject("response");
 
 					if (null != response && 0 == response.getInt("status")) {
 						DataObject dlist = response.getDataObject("data");
 						String oId = dlist.getId();
-						
+
 						if (oId.lastIndexOf(":") > 0) {
 				            oId = oId.substring(oId.lastIndexOf(":") + 1);
 				        }
-						
+
 						//Store image data
 						if (null != imgName && null != imgContent) {
 							String path = context.getRealPath("/") + "public/images/Market/" + oId;
 							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
 								String requestUrl = httpRequest.getScheme() +
-									"://" + httpRequest.getServerName() + 
+									"://" + httpRequest.getServerName() +
 									(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
 								dlist.put("image", requestUrl + "/public/images/Market/" + oId + "/" + imgName);
 								ds.updateObj(dlist);
 							}
 						}
-						
+
 						JSONObject el = new JSONObject();
 						el.put("_id", dlist.getId());
 						retArray.put(el);

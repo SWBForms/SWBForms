@@ -31,12 +31,12 @@ import org.semanticwb.datamanager.SWBScriptEngine;
 public class WIFIHotspotService {
 	@Context HttpServletRequest httpRequest;
 	@Context ServletContext context;
-	
+
 	boolean useCookies = false;
 	final static String ERROR_FORBIDDEN = "{\"error\":\"Unauthorized\"}";
 	final static String ERROR_BADREQUEST = "{\"error\":\"Bad request\"}";
 	PMCredentialsManager mgr;
-	
+
 	public WIFIHotspotService() {
 		//Create credentials manager
 		mgr = new PMCredentialsManager();
@@ -46,15 +46,15 @@ public class WIFIHotspotService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHotspots(@Context UriInfo context) {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		Response ret = null;
-		
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			SWBDataSource ds = engine.getDataSource("WifiHotSpot");
 			DataObject dsFetch = null;
-			
+
 			try {
 				DataObject wrapper = new DataObject();
 				DataObject q = new DataObject();
@@ -62,10 +62,10 @@ public class WIFIHotspotService {
 				for (String key : params.keySet()) {
 					q.put(key, params.getFirst(key));
 				}
-				
+
 				wrapper.put("data", q);
 				dsFetch = ds.fetch(wrapper);
-				
+
 				if (null != dsFetch) {
 					DataObject response = dsFetch.getDataObject("response");
 					if (null != response) {
@@ -84,27 +84,27 @@ public class WIFIHotspotService {
 				ret = Response.status(500).build();
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@GET
 	@Path("/{objId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHotspot(@PathParam("objId") String oId) {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		Response ret = null;
-		
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			SWBDataSource ds = engine.getDataSource("WifiHotSpot");
 			DataObject dsFetch = null;
-			
+
 			try {
 				dsFetch = ds.fetchObjById(oId);
-				
+
 				if (null != dsFetch) {
 					ret = Response.status(200).entity(dsFetch).build();
 				} else {
@@ -115,36 +115,36 @@ public class WIFIHotspotService {
 				ret = Response.status(500).build();
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addHotspot(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
-		SWBScriptEngine engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
-		SWBDataSource ds = engine.getDataSource("WifiHotSpot"); 
-		
+		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
+		SWBDataSource ds = engine.getDataSource("WifiHotSpot");
+
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
 		} else {
 			if (null == ds) {
 				return Response.status(500).build();
 			}
-			
+
 			try {
 				JSONArray objArray = new JSONArray(content);
 				JSONArray retArray = new JSONArray();
-				
+
 				Iterator<Object> it = objArray.iterator();
 				while(it.hasNext()) {
 					JSONObject objData = (JSONObject)it.next();//objArray.getJSONObject(i);
 					objData.remove("_id");
-					
+
 					//Transform JSON to dataobject to avoid fail
-					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());					
+					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());
 					DataObject objNew = ds.addObj(obj);
 					DataObject response = objNew.getDataObject("response");
 

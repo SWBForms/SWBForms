@@ -3,10 +3,12 @@ package org.fst2015pm.swbforms.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.fst2015pm.swbforms.extractors.ExtractorManager;
@@ -40,6 +42,12 @@ public class FST2015PMServletContextListener implements ServletContextListener {
         
         checkDefaultAccessCredentials(engine, sce);
         
+        try {
+    		updateDBDataSources(engine, sce);
+        } catch (IOException ioex) {
+        	ioex.printStackTrace();
+        }
+        
 		ExtractorManager i = ExtractorManager.getInstance();
 		i.init();
 
@@ -48,6 +56,55 @@ public class FST2015PMServletContextListener implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 
+	}
+	
+	private synchronized void updateDBDataSources(SWBScriptEngine eng, ServletContextEvent sce) throws IOException {
+		SWBDataSource dbsources = eng.getDataSource("DBDataSource");
+		StringBuilder sb = new StringBuilder();
+		String newLine = "\n";
+		String quoteChar = "\"";
+		String colon = ",";
+		
+		DataObject fetch = dbsources.fetch();
+		DataList sources = fetch.getDataObject("response").getDataList("data");
+		
+		sb.append("var DBModel = \"FST2015PM\";").append(newLine);
+		for(int i = 0; i < sources.size(); i++) {
+			DataObject obj = sources.getDataObject(i);
+			sb.append("eng.dataSources[").append(quoteChar).append(obj.getString("name")).append(quoteChar).append("] = {").append(newLine);
+			
+			sb.append("  scls: ").append(quoteChar).append(obj.getString("name")).append(quoteChar).append(colon).append(newLine);
+			sb.append("  modelid: ").append("DBModel").append(colon).append(newLine);
+			sb.append("  dataStore: ").append(quoteChar).append("mongodb").append(quoteChar).append(colon).append(newLine);
+			sb.append("  secure:").append(Boolean.valueOf(obj.getBoolean("restricted")));
+			
+			DataList columns = obj.getDataList("columns");
+			if (null != columns && !columns.isEmpty()) {
+				sb.append(colon).append(newLine);
+				sb.append("  fields: [").append(newLine);
+				Iterator colit = columns.iterator(); 
+				while (colit.hasNext()) {
+					DataObject dob = (DataObject) colit.next();
+					sb.append("    {");
+					sb.append("name: ").append(quoteChar).append(dob.getString("name")).append(quoteChar).append(colon);
+					sb.append("title: ").append(quoteChar).append(dob.getString("title")).append(quoteChar).append(colon);
+					sb.append("type: ").append(quoteChar).append(dob.getString("type")).append(quoteChar).append(colon);
+					sb.append("required: ").append(Boolean.valueOf(dob.getBoolean("type")));
+					sb.append("}");
+					if (colit.hasNext()) sb.append(colon);
+					
+					sb.append(newLine);
+				}
+				sb.append("  ]").append(newLine);
+			} else {
+				sb.append(newLine);
+			}
+			
+			sb.append("};").append(newLine);
+		}
+		
+		File f = new File(sce.getServletContext().getRealPath("/") + "WEB-INF/dbdatasources.js");
+		FileUtils.write(f, sb.toString(), "UTF-8", false);
 	}
 	
 	private void checkDefaultAccessCredentials(SWBScriptEngine eng, ServletContextEvent sce) {
@@ -62,8 +119,9 @@ public class FST2015PMServletContextListener implements ServletContextListener {
 	        queryObj.put("title", "Admin");
 	        
 	        try {
-	        	DataObject response = roleDS.fetch(new DataObject().addParam("data", queryObj));
-	        	DataList data = response.getDataList("data");
+	        	DataObject response = roleDS.fetch(new DataObject().addParam("data", queryObj));	        	
+	        	DataList data = response.getDataObject("response").getDataList("data");
+	        	
 	        	if (null == data || data.isEmpty()) {
 	        		DataObject adminRole = new DataObject();
 	        		adminRole.put("title", "Admin");

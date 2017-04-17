@@ -24,9 +24,9 @@
       if (res.data && res.data.length) {
         cnt.dsList = res.data;
 
-        $Datasource.listObjects("DSEndpoint").then(res => {
-          if(res.data.data && res.data.data.length) {
-            res.data.data.forEach(elem => {
+        $Datasource.listEndpoints().then(result => {
+          if (result.data && result.data.data) {
+            result.data.data.forEach(elem => {
               let idx = cnt.dsList.indexOf(elem.dataSourceName);
               if (idx > -1) {
                 cnt.dsList.splice(idx, 1);
