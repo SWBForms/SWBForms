@@ -29,7 +29,7 @@
             if (sample) {
               for (let p in sample) {
                 if (sample.hasOwnProperty(p)) {
-                  columns.push({name: p, data: p, title: p});
+                  columns.push({name: p, data: p, title: p, defaultContent:" "});
                 }
               }
             }
