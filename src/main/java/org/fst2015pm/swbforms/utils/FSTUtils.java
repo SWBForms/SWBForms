@@ -202,7 +202,9 @@ public class FSTUtils {
 		}
 		
 		public static String downloadResource(String urlString, String fileName, boolean zipped) {
-			String destPath = org.apache.commons.io.FileUtils.getTempDirectoryPath() + UUID.randomUUID().toString().replace("-", "");
+			String destPath = org.apache.commons.io.FileUtils.getTempDirectoryPath();
+			if (!destPath.endsWith("/")) destPath += "/";
+			destPath += UUID.randomUUID().toString().replace("-", "");
 			return downloadResource(urlString, destPath, fileName, zipped);
 		}
 		

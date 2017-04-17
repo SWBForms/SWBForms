@@ -92,7 +92,10 @@ public class PMExtractorBase implements PMExtractor {
 
 		//Prepare file system
 		String uuid = UUID.randomUUID().toString().replace("-", "");
-		String destPath = org.apache.commons.io.FileUtils.getTempDirectoryPath() + uuid;
+		String destPath = org.apache.commons.io.FileUtils.getTempDirectoryPath();
+		if (!destPath.endsWith("/")) destPath += "/";
+		destPath += uuid;
+		
 		File destDir = new File(destPath);
 
 		//Check if URL is provided
