@@ -1332,8 +1332,18 @@
     ];
   };
 
-  run.$inject = ["$rootScope", "$state", "$templateCache"];
-  function run($rootScope, $state, $templateCache) {
+  run.$inject = ["$rootScope", "$state", "$templateCache", "$http", "$window"];
+  function run($rootScope, $state, $templateCache, $http, $window) {
+    let apiVersion = 1;
+    $http({
+      url: `/api/v${apiVersion}/services/login/me`,
+      method: "GET"
+    }).then((response) => {
+      $rootScope.userInfo = response.data;
+    }).catch((error) => {
+      $window.location.href = "/login"
+    });
+
     $rootScope.$state = $state;
   };
 

@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -65,6 +66,33 @@ public class LoginService {
 		mgr = new PMCredentialsManager();
 	}
 
+	@Path("/login/me")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUser() {
+		HttpSession session = httpRequest.getSession();
+
+		Object usr = session.getAttribute("_USER_");
+		if (null == usr) return Response.status(404).entity("").build();
+		
+		DataObject usrObj = (DataObject)usr;
+		DataObject finalUser = usrObj;
+		SWBDataSource userDS = DataMgr.initPlatform(session).getDataSource("User");
+
+		//Update user info
+		if (null != userDS) {
+			try {
+				finalUser = userDS.fetchObjById(usrObj.getId());
+				session.setAttribute("_USER_", finalUser);
+			} catch (IOException ioex) {
+				Response.status(500).build();
+				ioex.printStackTrace();
+			}
+		}
+		
+		finalUser.remove("password");
+		return Response.status(200).entity(finalUser.toString()).build();
+	}
 
 	/**
 	 * Creates a session token for a user
