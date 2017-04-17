@@ -428,8 +428,38 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/datasources.html',
-            controller: 'DataSourcesCtrl'
+            templateUrl: 'templates/datasources/datasources.html',
+            controller: 'DSCtrl',
+            controllerAs: "ds"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  //serie: true,
+                  files: [
+                    'lib/bootbox/bootbox.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.adddatasource', {
+        url: "/datasources/add",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/datasources/datasourceEdit.html',
+            controller: 'DSEditCtrl',
+            controllerAs: "ds"
           }
         },
         resolve: {
@@ -439,6 +469,25 @@
         }
       })
       .state('admin.datasourceedit', {
+        url: "/datasources/:id",
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/datasources/datasourceEdit.html',
+            controller: 'DSEditCtrl',
+            controllerAs: "ds"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          }
+        }
+      })
+      /*.state('admin.datasourceedit', {
         url: '/datasources/:id',
         views: {
           'sidenav': {
@@ -486,7 +535,7 @@
             ]);
           }
         }
-      })
+      })*/
       .state('admin.users', {
         url: '/users',
         views: {

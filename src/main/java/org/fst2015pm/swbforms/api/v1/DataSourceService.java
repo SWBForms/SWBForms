@@ -37,16 +37,16 @@ import org.semanticwb.datamanager.script.ScriptObject;
 @Path("/datasources")
 public class DataSourceService {
 	SWBScriptEngine engine;
-	
+
 	@Context
 	HttpServletRequest httpRequest;
 	boolean checkSession = false;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDataSourceList() throws IOException {
 		HttpSession session = httpRequest.getSession();
-		engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+		engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 
 		if (null != session.getAttribute("_USER_")) {
 			Set<String> dataSources = engine.getDataSourceNames();
@@ -55,9 +55,15 @@ public class DataSourceService {
 			try {
 				ret = new JSONArray();
 				for (String name : dataSources) {
-					JSONObject ds = new JSONObject();
-					ds.put("name", name);
-					ret.put(ds);
+					SWBDataSource dsource = engine.getDataSource(name);
+					ScriptObject dsourceDef = dsource.getDataSourceScript();
+					
+					if (null != dsource && null != dsourceDef && !Boolean.valueOf(dsourceDef.getString("secure"))) {
+						//JSONObject ds = new JSONObject();
+						//ds.put("name", name);
+						//ret.put(ds);
+						ret.put(name);
+					}
 				}
 			} catch (JSONException jsex) {
 				return Response.status(500).build();
@@ -76,34 +82,37 @@ public class DataSourceService {
 		HttpSession session = httpRequest.getSession();
 		MultivaluedMap<String, String> params = info.getQueryParameters();
 		DataObject queryObj = new DataObject();
-		
+
 		//Init SWBForms engine
 		if ("User".equals(dataSourceId)) {
 			engine = DataMgr.initPlatform(session);
 		} else {
-			engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 			if (null == ds) return Response.status(400).build();
-			
+
 			//Get datasource fields
 			HashMap<String, String> dsFields = new HashMap<>();
 			ScriptObject fieldsDef = ds.getDataSourceScript().get("fields");
-			Iterator<ScriptObject> itFields = fieldsDef.values().iterator();
-			while (itFields.hasNext()) {
-				ScriptObject col = itFields.next();
-				dsFields.put(col.getString("name"), col.getString("type"));
-			}
-			
-			//Build query object
-			for (String key : params.keySet()) {
-				String type = dsFields.get(key); 
-				if (null != type) {
-					Object typed = FSTUtils.DATA.inferTypedValue(params.getFirst(key));//FSTUtils.DATA.getTypedObject(params.getFirst(key), type);
-					if (null != typed) {
-						queryObj.put(key, typed);
+
+			if (null != fieldsDef) {
+				Iterator<ScriptObject> itFields = fieldsDef.values().iterator();
+				while (itFields.hasNext()) {
+					ScriptObject col = itFields.next();
+					dsFields.put(col.getString("name"), col.getString("type"));
+				}
+
+				//Build query object
+				for (String key : params.keySet()) {
+					String type = dsFields.get(key);
+					if (null != type) {
+						Object typed = FSTUtils.DATA.inferTypedValue(params.getFirst(key));//FSTUtils.DATA.getTypedObject(params.getFirst(key), type);
+						if (null != typed) {
+							queryObj.put(key, typed);
+						}
 					}
 				}
 			}
@@ -137,20 +146,20 @@ public class DataSourceService {
 		if ("User".equals(dataSourceId)) {
 			engine = DataMgr.initPlatform(session);
 		} else {
-			engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 			if (null == ds) return Response.status(400).build();
-			
+
 			JSONObject objData = null;
 			try {
 				objData = new JSONObject(content);
 			} catch (JSONException jspex) {
 				return Response.status(500).build();
 			}
-			
+
 			if (null != objData) {
 				objData.remove("_id");
 				//Transform JSON to dataobject to avoid fail
@@ -177,7 +186,7 @@ public class DataSourceService {
 		if ("User".equals(dataSourceId)) {
 			engine = DataMgr.initPlatform(session);
 		} else {
-			engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
@@ -204,22 +213,22 @@ public class DataSourceService {
 		if ("User".equals(dataSourceId)) {
 			engine = DataMgr.initPlatform(session);
 		} else {
-			engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
             DataObject updateObj = null;
-            
+
 			if (null == ds) return Response.status(400).build();
-			
+
 			JSONObject objData = null;
 			try {
 				objData = new JSONObject(content);
 			} catch (JSONException jspex) {
 				return Response.status(500).build();
 			}
-			
+
 			if (null != objData) {
 				//Transform JSON to dataobject to avoid fail
 				DataObject obj = (DataObject) DataObject.parseJSON(content);
@@ -246,7 +255,7 @@ public class DataSourceService {
 		if ("User".equals(dataSourceId)) {
 			engine = DataMgr.initPlatform(session);
 		} else {
-			engine = DataMgr.initPlatform("/app/js/datasources/datasources.js", session);
+			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
