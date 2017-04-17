@@ -160,6 +160,14 @@ public class PMExtractorBase implements PMExtractor {
 	public synchronized void stop() {
 		status = STATUS.STOPPED;
 	}
+	
+	/**
+	 * Sets extractor status flag.
+	 * @param st Status flag.
+	 */
+	public synchronized void setStatus(STATUS st) {
+		status = st;
+	}
 
 	/**
 	 * Stores data in extracting phase

@@ -19,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.fst2015pm.swbforms.utils.ShapeFileConverter;
 import org.json.JSONException;
@@ -268,6 +269,7 @@ public class GeolayerService {
 					ioex.printStackTrace();
 				}
 			}
+			FileUtils.deleteQuietly(new File(resPath));
 		}
 		return ret;
 	}
