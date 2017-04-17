@@ -23,6 +23,7 @@ import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.fst2015pm.swbforms.utils.SimpleMailSender;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.semanticwb.datamanager.DataList;
 import org.semanticwb.datamanager.DataMgr;
 import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
@@ -71,26 +72,39 @@ public class LoginService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser() {
 		HttpSession session = httpRequest.getSession();
-
+		SWBScriptEngine engine = DataMgr.initPlatform(session);
+		SWBDataSource userDS = engine.getDataSource("User");
+		SWBDataSource rolesDS = engine.getDataSource("Role");
+		
 		Object usr = session.getAttribute("_USER_");
 		if (null == usr) return Response.status(404).entity("").build();
 		
 		DataObject usrObj = (DataObject)usr;
 		DataObject finalUser = usrObj;
-		SWBDataSource userDS = DataMgr.initPlatform(session).getDataSource("User");
-
+		boolean isAdmin = false;
+		
 		//Update user info
 		if (null != userDS) {
 			try {
 				finalUser = userDS.fetchObjById(usrObj.getId());
+				DataList roles = finalUser.getDataList("roles");
+				for (Object role : roles) {
+					DataObject r = rolesDS.fetchObjById((String)role);
+					if (null != r && "Admin".equals(r.getString("title"))) {
+						isAdmin = true;
+						break;
+					}
+				}
 				session.setAttribute("_USER_", finalUser);
 			} catch (IOException ioex) {
 				Response.status(500).build();
 				ioex.printStackTrace();
 			}
 		}
-		
+
+		finalUser.put("isAdmin", isAdmin);
 		finalUser.remove("password");
+		
 		return Response.status(200).entity(finalUser.toString()).build();
 	}
 
