@@ -52,6 +52,9 @@
                 spinner.stop();
               }
             });
+          } else {
+            document.getElementById("tableContainer").innerHTML = "<p>No existen datos en este conjunto</p>";
+            spinner.stop();
           }
 
           //cnt.extractorData = ds.data;
