@@ -5,7 +5,7 @@
     .module("FST2015PM.controllers")
     .controller("GeolayerPreviewCtrl", GeolayerPreviewCtrl);
 
-    GeolayerPreviewCtrl.$inject = ["$GeoLayer", "$stateParams", "$http", "$timeout"];
+    GeolayerPreviewCtrl.$inject = ["$GeoLayer", "$stateParams", "$http", "$timeout", "$scope"];
     function GeolayerPreviewCtrl($GeoLayer, $stateParams, $http, $timeout, $scope) {
       let cnt = this;
       let df = [40.46, -100.715];
