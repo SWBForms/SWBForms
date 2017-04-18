@@ -31,6 +31,12 @@
           }
         }
       })
+      .state('pminfo', {
+        url: "/pminfo/:id",
+        templateUrl: 'templates/magictowns/pmInfo.html',
+        controller: 'PMInformation',
+        controllerAs: "pm"
+      })
       /*.state('dashboard.maps', {
         url: "/maps",
         views: {
