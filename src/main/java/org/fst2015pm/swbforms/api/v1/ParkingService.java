@@ -171,9 +171,10 @@ public class ParkingService {
 						if (null != imgName && null != imgContent) {
 							String path = context.getRealPath("/") + "public/images/Parking/" + oId;
 							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
-								String requestUrl = httpRequest.getScheme() +
-									"://" + httpRequest.getServerName() +
-									(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
+								String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
+										"://" + httpRequest.getServerName() +
+										(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
+								
 								dlist.put("image", requestUrl + "/public/images/Parking/" + oId + "/" + imgName);
 								ds.updateObj(dlist);
 							}
