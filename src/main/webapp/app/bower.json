@@ -53,7 +53,9 @@
     "datatables.net": "^2.1.1",
     "datatables.net-bs": "^2.1.1",
     "leaflet-markercluster": "https://github.com/Leaflet/Leaflet.markercluster.git#v1.0.4",
-    "leaflet-spin": "^1.1.0"
+    "leaflet-spin": "^1.1.0",
+    "angular-base64-upload": "https://github.com/adonespitogo/angular-base64-upload.git#master",
+    "matchheight": "matchheight#^0.7.2"
   },
   "resolutions": {
     "jquery": "~2.1.4",

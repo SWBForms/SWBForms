@@ -1,10 +1,13 @@
 package org.fst2015pm.swbforms.api.v1;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -21,6 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.FileUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,10 +40,10 @@ import org.semanticwb.datamanager.script.ScriptObject;
  **/
 @Path("/datasources")
 public class DataSourceService {
+	@Context ServletContext context;
+	@Context HttpServletRequest httpRequest;
+	
 	SWBScriptEngine engine;
-
-	@Context
-	HttpServletRequest httpRequest;
 	boolean checkSession = false;
 
 	@GET
@@ -154,8 +158,25 @@ public class DataSourceService {
 			if (null == ds) return Response.status(400).build();
 
 			JSONObject objData = null;
+			HashMap<String, JSONObject> imgFields = new HashMap<>();
 			try {
 				objData = new JSONObject(content);
+				
+				//Check fields in search of image | photo | picture
+				String keys [] = JSONObject.getNames(objData);
+				for (String key : keys) {
+					if ("image".equalsIgnoreCase(key) || "picture".equalsIgnoreCase(key) || "photo".equalsIgnoreCase(key)) {
+						Object job = objData.get(key);
+						if (job instanceof JSONObject) {
+							JSONObject jjob = (JSONObject) job;
+							//Fields must be objects with name and content fields, otherwise treat as strings
+							if (jjob.has("fileName") && jjob.has("content")) {
+								imgFields.put(key, jjob);
+								objData.remove(key);
+							}
+						}
+					}
+				}
 			} catch (JSONException jspex) {
 				return Response.status(500).build();
 			}
@@ -167,7 +188,11 @@ public class DataSourceService {
 
 				if (validateObject(obj)) {
 					DataObject objNew = ds.addObj(obj);
-					return Response.ok(objNew.getDataObject("response")).status(200).build();
+					DataObject response = objNew.getDataObject("response");
+					if (null != response && 0 == response.getInt("status")) {
+						objNew = processImages(ds, imgFields, response.getDataObject("data"));
+					}
+					return Response.status(200).entity(objNew.getDataObject("response")).build();
 				} else {
 					return Response.status(400).build();
 				}
@@ -223,8 +248,25 @@ public class DataSourceService {
 			if (null == ds) return Response.status(400).build();
 
 			JSONObject objData = null;
+			HashMap<String, JSONObject> imgFields = new HashMap<>();
 			try {
 				objData = new JSONObject(content);
+				
+				//Check fields in search of image | photo | picture
+				String keys [] = JSONObject.getNames(objData);
+				for (String key : keys) {
+					if ("image".equalsIgnoreCase(key) || "picture".equalsIgnoreCase(key) || "photo".equalsIgnoreCase(key)) {
+						Object job = objData.get(key);
+						if (job instanceof JSONObject) {
+							JSONObject jjob = (JSONObject) job;
+							//Fields must be objects with name and content fields, otherwise treat as strings
+							if (jjob.has("fileName") && jjob.has("content")) {
+								imgFields.put(key, jjob);
+								objData.remove(key);
+							}
+						}
+					}
+				}
 			} catch (JSONException jspex) {
 				return Response.status(500).build();
 			}
@@ -234,9 +276,12 @@ public class DataSourceService {
 				DataObject obj = (DataObject) DataObject.parseJSON(content);
 
 				if (validateObject(obj)) {
-					updateObj = ds.updateObj(obj);
-					//DataObject objNew = ds.addObj(obj);
-					return Response.ok(updateObj).status(200).build();
+					DataObject objNew = ds.updateObj(obj);
+					DataObject response = objNew.getDataObject("response");
+					if (null != response && 0 == response.getInt("status")) {
+						objNew = processImages(ds, imgFields, response.getDataObject("data"));
+					}
+					return Response.status(200).entity(objNew.getDataObject("response")).build();
 				} else {
 					return Response.status(400).build();
 				}
@@ -258,19 +303,71 @@ public class DataSourceService {
 			engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
 		}
 
+		//TODO: Remove associated images
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 
 			if (null == ds) return Response.status(400).build();
 			DataObject obj = ds.fetchObjById(oId);
-			if (null == obj)
-				return Response.status(400).build();
+			if (null == obj) return Response.status(400).build();
+			
+			ArrayList<String> imgFields = new ArrayList<>();
+			for (String key : obj.keySet()) {
+				if ("image".equalsIgnoreCase(key) || "picture".equalsIgnoreCase(key) || "photo".equalsIgnoreCase(key)) {
+					String imgUrl = obj.getString(key);
+					if (null != imgUrl && !imgUrl.isEmpty()) {
+						imgFields.add(imgUrl);
+					}
+				}
+			}
 			DataObject ret = ds.removeObj(obj);
-
+			DataObject response = ret.getDataObject("response");
+			if (null != ret && 0 == response.getInt("status")) { //TODO: Define a better mechanism to remove images, similar URL items could collide
+				for (String img : imgFields) {
+					String fName = context.getRealPath("/") + "public/images/"+ ds.getName() +"/" + img.substring(img.lastIndexOf("/") + 1, img.length());
+					FileUtils.deleteQuietly(new File(fName));
+				}
+			}
 			return Response.status(200).entity(ret).build();
 		}
 
 		return Response.status(403).entity("forbidden").build();
+	}
+	
+	private DataObject processImages(SWBDataSource ds, HashMap<String, JSONObject> imgFields, DataObject dob) {
+		String oId = dob.getId();
+		if (oId.lastIndexOf(":") > 0) {
+            oId = oId.substring(oId.lastIndexOf(":") + 1);
+        }
+		String destPath = context.getRealPath("/") + "public/images/"+ ds.getName() +"/";
+		String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
+				"://" + httpRequest.getServerName() +
+				(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort()) +
+				"/public/images/"+ ds.getName() +"/";
+		
+		HashMap<String, String> fields = new HashMap<>();
+		for (String key : imgFields.keySet()) {
+			JSONObject imgObj = imgFields.get(key);
+			String imgName = imgObj.getString("fileName").replaceAll("[/\\\\]+", "");
+			
+			if (imgName.lastIndexOf(".") > -1) {
+				imgName = oId + imgName.substring(imgName.lastIndexOf("."), imgName.length());
+				if (FSTUtils.FILE.storeBase64File(destPath, imgName, imgObj.getString("content"))) {
+					fields.put(key, requestUrl + imgName);
+				}
+			}
+		}
+		
+		for (String key : fields.keySet()) {
+			dob.put(key, fields.get(key));
+		}
+		
+		try {
+			return ds.updateObj(dob);
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+			return null;
+		}
 	}
 
 	private boolean validateObject(DataObject obj) {
