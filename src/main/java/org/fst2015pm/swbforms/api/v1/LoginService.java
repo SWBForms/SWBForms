@@ -88,11 +88,14 @@ public class LoginService {
 			try {
 				finalUser = userDS.fetchObjById(usrObj.getId());
 				DataList roles = finalUser.getDataList("roles");
-				for (Object role : roles) {
-					DataObject r = rolesDS.fetchObjById((String)role);
-					if (null != r && "Admin".equals(r.getString("title"))) {
-						isAdmin = true;
-						break;
+				
+				if (null != roles) {
+					for (Object role : roles) {
+						DataObject r = rolesDS.fetchObjById((String)role);
+						if (null != r && "Admin".equals(r.getString("title"))) {
+							isAdmin = true;
+							break;
+						}
 					}
 				}
 				session.setAttribute("_USER_", finalUser);
