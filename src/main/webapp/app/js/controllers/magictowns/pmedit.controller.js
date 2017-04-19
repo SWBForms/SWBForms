@@ -5,8 +5,8 @@
     .module('FST2015PM.controllers')
     .controller('PMEditCatalog', PMEditCatalog);
 
-  PMEditCatalog.$inject = ["$Datasource", "Upload", "$stateParams", "$state"];
-  function PMEditCatalog($Datasource, Upload, $stateParams, $state) {
+  PMEditCatalog.$inject = ["$Datasource", "$stateParams", "$state"];
+  function PMEditCatalog($Datasource, $stateParams, $state) {
     let cnt = this;
     cnt.formTitle = "Agregar Pueblo Mágico";
     cnt.pmData = {};
