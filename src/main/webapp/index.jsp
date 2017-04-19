@@ -1,26 +1,32 @@
 <%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
+  String logoutAction=request.getParameter("logout");
   String email=request.getParameter("email");
   String password=request.getParameter("password");
 
   boolean hasError = false;
-  if(email!=null && password!=null) {
-    SWBScriptEngine engine=DataMgr.initPlatform(session);
-    SWBDataSource ds=engine.getDataSource("User");
-    DataObject r=new DataObject();
-    DataObject data=new DataObject();
-    r.put("data", data);
-    data.put("email", email);
-    data.put("password", password);
-    DataObject ret=ds.fetch(r);
-    DataList rdata=ret.getDataObject("response").getDataList("data");
-    if(!rdata.isEmpty()) {
-      rdata.remove("password");
-      session.setAttribute("_USER_", rdata.get(0));
-      response.sendRedirect("/app/#/admin/");
-      return;
-    } else {
-      hasError = true;
+
+  if (null != logoutAction && "true".equals(logoutAction)) {
+    session.removeAttribute("_USER_");
+  } else {
+    if(email!=null && password!=null) {
+      SWBScriptEngine engine=DataMgr.initPlatform(session);
+      SWBDataSource ds=engine.getDataSource("User");
+      DataObject r=new DataObject();
+      DataObject data=new DataObject();
+      r.put("data", data);
+      data.put("email", email);
+      data.put("password", password);
+      DataObject ret=ds.fetch(r);
+      DataList rdata=ret.getDataObject("response").getDataList("data");
+      if(!rdata.isEmpty()) {
+        rdata.remove("password");
+        session.setAttribute("_USER_", rdata.get(0));
+        response.sendRedirect("/app/#/admin/");
+        return;
+      } else {
+        hasError = true;
+      }
     }
   }
 %>

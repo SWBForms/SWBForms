@@ -1344,7 +1344,7 @@
     }).then((response) => {
       $rootScope.userInfo = response.data;
     }).catch((error) => {
-      $window.location.href = "/login"
+      $window.location.href = "/"
     });
 
     $rootScope.$state = $state;
