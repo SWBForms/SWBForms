@@ -169,6 +169,7 @@ public class ConferenceOfficeService {
 
 						//Store image data
 						if (null != imgName && null != imgContent) {
+							imgName = imgName.replaceAll("[/\\\\]+", "");
 							String path = context.getRealPath("/") + "public/images/ConferenceOffice/" + oId;
 							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
 								String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
