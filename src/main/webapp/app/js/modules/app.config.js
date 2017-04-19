@@ -338,8 +338,7 @@
                     //'js/dataviz/datatables.js',
                     //'js/dataviz/dataviz.js',
                     'lib/bootbox/bootbox.js',
-                    'lib/ng-file-upload/ng-file-upload-shim.min.js',
-                    'lib/ng-file-upload/ng-file-upload.min.js'
+                    'lib/matchheight/dist/jquery.matchHeight-min.js'
                   ]
               }
             ]);
@@ -377,9 +376,7 @@
                     'lib/moment/moment.js',
                     'lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
                     'lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-                    'lib/bootbox/bootbox.js',
-                    'lib/ng-file-upload/ng-file-upload-shim.min.js',
-                    'lib/ng-file-upload/ng-file-upload.min.js'
+                    'lib/bootbox/bootbox.js'
                   ]
               }
             ]);
