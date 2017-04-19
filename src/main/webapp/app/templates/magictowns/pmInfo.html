@@ -16,6 +16,7 @@
   }
 
   .vcenter {
+    width: 100%;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -43,27 +44,29 @@
     }
   }
 </style>
-<div class="vcenter">
-  <div class="row">
-    <div class="col-sm-6">
-      <h1>{{pm.pmData.name}}</h1>
-      <p class="lead">{{pm.pmData.denomination}}</p>
-      <p>{{pm.pmData.description}}</p>
-    </div>
-    <div class="col-sm-6 text-left pm-detail">
-      <h3>Origen</h3>
-      <p class="small">{{pm.pmData.origin}}</p>
+<div class="animated fadeIn">
+  <div class="vcenter">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>{{pm.pmData.name}}</h1>
+        <p class="lead">{{pm.pmData.denomination}}</p>
+        <p>{{pm.pmData.description}}</p>
+      </div>
+      <div class="col-sm-6 text-left pm-detail">
+        <h3>Origen</h3>
+        <p class="small">{{pm.pmData.origin}}</p>
 
-      <h3>Atractivos turísticos</h3>
-      <p class="small" ng-bind-html="pm.pmData.atractives"></p>
+        <h3>Atractivos turísticos</h3>
+        <p class="small" ng-bind-html="pm.pmData.atractives"></p>
 
-      <h3>Festividades</h3>
-      <p class="small" ng-bind-html="pm.pmData.festivities"></p>
+        <h3>Festividades</h3>
+        <p class="small" ng-bind-html="pm.pmData.festivities"></p>
+      </div>
     </div>
-  </div>
-  <div class="row text-center button-holder">
-    <div class="col-sm-12">
-      <button type="button" ui-sref="admin.pmcatalog" class="btn btn-primary">Volver al listado</button>
+    <div class="row text-center button-holder">
+      <div class="col-sm-12">
+        <button type="button" ui-sref="admin.pmcatalog" class="btn btn-primary">Volver al listado</button>
+      </div>
     </div>
   </div>
 </div>
