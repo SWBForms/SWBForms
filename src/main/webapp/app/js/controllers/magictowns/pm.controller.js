@@ -10,9 +10,11 @@
     let cnt = this;
     cnt.pmList = [];
 
-    $timeout(() => {
-      $(".sameheight").matchHeight();
-    }, 300);
+    angular.element(document).ready(function () {
+      $timeout(() => {
+        $(".sameheight").matchHeight();
+      }, 2000);
+    });
 
     $Datasource.listObjects("MagicTown")
     .then((response) => {
