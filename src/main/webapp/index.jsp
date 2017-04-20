@@ -8,25 +8,25 @@
 
   if (null != logoutAction && "true".equals(logoutAction)) {
     session.removeAttribute("_USER_");
-  } else {
-    if(email!=null && password!=null) {
-      SWBScriptEngine engine=DataMgr.initPlatform(session);
-      SWBDataSource ds=engine.getDataSource("User");
-      DataObject r=new DataObject();
-      DataObject data=new DataObject();
-      r.put("data", data);
-      data.put("email", email);
-      data.put("password", password);
-      DataObject ret=ds.fetch(r);
-      DataList rdata=ret.getDataObject("response").getDataList("data");
-      if(!rdata.isEmpty()) {
-        rdata.remove("password");
-        session.setAttribute("_USER_", rdata.get(0));
-        response.sendRedirect("/app/#/admin/");
-        return;
-      } else {
-        hasError = true;
-      }
+  }
+
+  if(email!=null && password!=null) {
+    SWBScriptEngine engine=DataMgr.initPlatform(session);
+    SWBDataSource ds=engine.getDataSource("User");
+    DataObject r=new DataObject();
+    DataObject data=new DataObject();
+    r.put("data", data);
+    data.put("email", email);
+    data.put("password", password);
+    DataObject ret=ds.fetch(r);
+    DataList rdata=ret.getDataObject("response").getDataList("data");
+    if(!rdata.isEmpty()) {
+      rdata.remove("password");
+      session.setAttribute("_USER_", rdata.get(0));
+      response.sendRedirect("/app/#/admin/");
+      return;
+    } else {
+      hasError = true;
     }
   }
 %>
@@ -98,7 +98,7 @@
             </div>
             <div id="login" class="col-md-4">
                <div class="forms-container" style="padding:10px;">
-                  <form class="form" method="post">
+                  <form class="form" method="post" action="/">
                      <div class="form-group">
                         <label class="sr-only" aria-hidden="true">Usuario</label>
                         <input placeholder="email" class="form-control" name="email" type="email" required autofocus="true">
