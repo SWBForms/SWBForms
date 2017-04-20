@@ -45,7 +45,7 @@
       .then(res => {
         if (res.data && res.data.length) {
           cnt.dsList = res.data;
-          cnt.dsList.forEach(item => { item.id = item.name});
+          cnt.dsList.map(item => { return {id: item, name: item} });
 
           $Datasource.listObjects("Extractor").then(res => {
             if(res.data.data && res.data.data.length) {
