@@ -180,22 +180,6 @@ eng.dataSources["Extractor"] = {
   ]
 };
 
-eng.dataSources["Widget"] = {
-    scls: "Widget",
-    modelid: DBModel,
-    dataStore: "mongodb",
-    displayField: "name",
-    secure: true,
-    fields: [
-        {name:"name", title: "Nombre", required: true, type: "string"},
-        {name:"type", title: "Tipo", required: true, type: "string"},
-        {name:"col", title: "Columna", required: true, type: "int"},
-        {name:"row", title: "Fila", required: true, type: "int"},
-        {name:"sizeX", title: "Tamaño X", required: true, type: "int"},
-        {name:"sizeY", title: "Tamaño Y", required: true, type: "int"}
-    ]
-};
-
 /******* DataProcessors ************/
 eng.dataProcessors["UserProcessor"]={
     dataSources: ["User"],
