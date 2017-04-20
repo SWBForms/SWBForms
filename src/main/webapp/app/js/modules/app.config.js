@@ -220,7 +220,7 @@
         templateUrl: "templates/container.html"
       })
       .state('admin.dashboards', {
-        url: '/dashboards',
+        url: '/dashboard',
         params: {
           id: null
         },
@@ -231,39 +231,8 @@
           },
           'content': {
             templateUrl: 'templates/dashboards/dashboards.html',
-            controller: 'DashboardListCtrl',
+            controller: 'DashboardCtrl',
             controllerAs: "dashboards"
-          }
-        },
-        resolve: {
-          menuItems: function() {
-            return adminMenuItems;
-          },
-          loadDependencies: function($ocLazyLoad, $stateParams) {
-            return $ocLazyLoad.load([
-              {
-                  serie: true,
-                  files: [
-                    'lib/angular-gridster/dist/angular-gridster.min.js',
-                    'lib/angular-bootstrap/ui-bootstrap.min.js',
-                    'lib/bootbox/bootbox.js'
-                  ]
-              }
-            ]);
-          }
-        }
-      })
-      .state('admin.editdashboard', {
-        url: '/:mode/dashboard/:id',
-        views: {
-          'sidenav': {
-            templateUrl: 'templates/includes/sidenav.html',
-            controller: 'SideNavCtrl'
-          },
-          'content': {
-            templateUrl: 'templates/dashboards/editDashboard.html',
-            controller: 'editDashboardCtrl',
-            controllerAs: "editdashboard"
           }
         },
         resolve: {
@@ -277,10 +246,98 @@
                   files: [
                     'lib/AngularJS-Toaster/toaster.min.css',
                     'lib/bootbox/bootbox.js',
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.editdashboard', {
+        url: '/dashboard/edit/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/dashboards/editDashboard.html',
+            controller: 'EditDashboardCtrl',
+            controllerAs: "ds"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/bootbox/bootbox.js',
+                    'lib/angular-bootstrap/ui-bootstrap.min.js',
                     'lib/d3/d3.min.js',
                     'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/gridster/dist/jquery.gridster.min.js',
                     'lib/angular-gridster/dist/angular-gridster.min.css',
                     'lib/angular-gridster/dist/angular-gridster.min.js',
+                    'lib/leaflet-markercluster/dist/MarkerCluster.css',
+                    'lib/leaflet-markercluster/dist/MarkerCluster.Default.css',
+                    'lib/leaflet/dist/leaflet.css',
+                    'lib/leaflet/dist/leaflet.js',
+                    'lib/leaflet-markercluster/dist/leaflet.markercluster.js',
+                    'lib/spin.js/spin.min.js',
+                    'lib/leaflet-spin/leaflet.spin.min.js',
+                    'lib/google-maps/lib/Google.min.js',
+                    'js/dataviz/constants.js',
+                    'js/dataviz/charts.js',
+                    'js/dataviz/maps.js',
+                    'js/dataviz/datatables.js',
+                    'js/dataviz/dataviz.js'
+                  ]
+              }
+            ]);
+          }
+        }
+      })
+      .state('admin.previewdashboard', {
+        url: '/dashboard/preview/:id',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl'
+          },
+          'content': {
+            templateUrl: 'templates/dashboards/previewDashboard.html',
+            controller: 'PreviewDashboardCtrl',
+            controllerAs: "ds"
+          }
+        },
+        resolve: {
+          menuItems: function() {
+            return adminMenuItems;
+          },
+          loadDependencies: function($ocLazyLoad, $stateParams) {
+            return $ocLazyLoad.load([
+              {
+                  serie: true,
+                  files: [
+                    'lib/AngularJS-Toaster/toaster.min.css',
+                    'lib/bootbox/bootbox.js',
+                    'lib/angular-bootstrap/ui-bootstrap.min.js',
+                    'lib/d3/d3.min.js',
+                    'lib/datatables.net/js/jquery.dataTables.min.js',
+                    'lib/gridster/dist/jquery.gridster.min.js',
+                    'lib/angular-gridster/dist/angular-gridster.min.css',
+                    'lib/angular-gridster/dist/angular-gridster.min.js',
+                    'lib/leaflet-markercluster/dist/MarkerCluster.css',
+                    'lib/leaflet-markercluster/dist/MarkerCluster.Default.css',
+                    'lib/leaflet/dist/leaflet.css',
+                    'lib/leaflet/dist/leaflet.js',
+                    'lib/leaflet-markercluster/dist/leaflet.markercluster.js',
+                    'lib/spin.js/spin.min.js',
+                    'lib/leaflet-spin/leaflet.spin.min.js',
                     'lib/google-maps/lib/Google.min.js',
                     'js/dataviz/constants.js',
                     'js/dataviz/charts.js',

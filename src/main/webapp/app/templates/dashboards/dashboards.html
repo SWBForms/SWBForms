@@ -18,8 +18,8 @@
             <tr ng-repeat="dashboard in dashboards.dashboardList">
               <td>{{dashboard.name}}</td>
               <td class="text-right">
-                <a class="btn btn-sm btn-primary" ui-sref="admin.editdashboard({id: '{{dashboard._id}}', mode: 'view'})"><span class="fa fa-eye"></span></a> 
-                <a class="btn btn-sm btn-primary" ui-sref="admin.editdashboard({id: '{{dashboard._id}}', mode: 'edit'})"><span class="fa fa-pencil"></span></a>
+                <a class="btn btn-sm btn-primary" ui-sref="admin.previewdashboard({id: '{{dashboard._id}}'})"><span class="fa fa-eye"></span></a>
+                <a class="btn btn-sm btn-primary" ui-sref="admin.editdashboard({id: '{{dashboard._id}}'})"><span class="fa fa-pencil"></span></a>
                 <a class="btn btn-sm btn-primary" ng-click="deleteDashboard(dashboard._id)"><span class="fa fa-trash-o"></span></a>
               </td>
             </tr>
