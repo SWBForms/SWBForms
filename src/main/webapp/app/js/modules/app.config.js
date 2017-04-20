@@ -9,7 +9,7 @@
   config.$inject = ["$stateProvider", "$urlRouterProvider"];
   function config($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state('dashboard', {
+      /*.state('dashboard', {
         abstract: true,
         url: "/dashboard",
         templateUrl: "templates/container.html"
@@ -30,7 +30,7 @@
             return dashboardMenuItems;
           }
         }
-      })
+      })*/
       .state('pminfo', {
         url: "/pminfo/:id",
         templateUrl: 'templates/magictowns/pmInfo.html',
@@ -230,7 +230,7 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/dashboard/dashboards.html',
+            templateUrl: 'templates/dashboards/dashboards.html',
             controller: 'DashboardListCtrl',
             controllerAs: "dashboards"
           }
@@ -261,7 +261,7 @@
             controller: 'SideNavCtrl'
           },
           'content': {
-            templateUrl: 'templates/dashboard/editDashboard.html',
+            templateUrl: 'templates/dashboards/editDashboard.html',
             controller: 'editDashboardCtrl',
             controllerAs: "editdashboard"
           }
@@ -1224,6 +1224,7 @@
     var adminMenuItems = [
       {
         label: "Usuarios y permisos",
+        roles: ["Admin"],
         menuItems: [
           {
             label:"Usuarios",
@@ -1243,33 +1244,33 @@
             stateLink: 'admin.extractors'
           },
           {
-            label:"Capas",
-            stateLink: 'admin.geolayers'
-          },
-          {
-            label:"DataSources",
+            label:"Conjuntos",
             stateLink: 'admin.datasources'
           },
           {
-            label: "Dashboards",
-            stateLink: "admin.dashboards"
+            label:"Capas",
+            stateLink: 'admin.geolayers'
           }
         ]
       },
       {
-        label: "Catálogo de PM",
+        label: "Pueblos Mágicos",
         stateLink: 'admin.pmcatalog'
       },
       {
-        label: "API",
-        link: "#",
+        label: "Tableros",
+        stateLink: 'admin.dashboards'
+      },
+      {
+        label: "Puntos de acceso",
+        roles: ["Admin"],
         menuItems: [
           {
-            label:"EndPoints",
+            label:"End Points",
             stateLink: "admin.endpoints"
           },
           {
-            label:"API Keys",
+            label:"Llaves API",
             stateLink:"admin.apikeys"
           }
         ]
