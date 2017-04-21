@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
@@ -361,46 +362,39 @@ public class LoginService {
 	public Response addApiKey(String content) throws IOException {
 		HttpSession session = httpRequest.getSession();
 		DataObject res = new DataObject();
-		Response ret;
 
 		//API Keys can only be created in Web App
 		if (null == session.getAttribute("_USER_")) {
-			ret = Response.status(403).build();
-		} else {
-			//Get request body
-			DataObject objData = null;
-			try {
-				JSONObject payload = new JSONObject(content);
-				objData = new DataObject();
+			return Response.status(Status.FORBIDDEN).build();
+		}
+		
+		//Get request body
+		DataObject objData = null;
+		try {
+			JSONObject payload = new JSONObject(content);
+			objData = new DataObject();
 
-				if (!payload.optString("appName").isEmpty()) {
-					objData.put("appName", payload.getString("appName"));
-					//objData.put("enabled", payload.optBoolean("enabled"));
-				}
-			} catch (JSONException jspex) {
-				ret = Response.status(400).entity(ERROR_BADREQUEST).build();
+			if (!payload.optString("appName").isEmpty()) {
+				objData.put("appName", payload.getString("appName"));
+				//objData.put("enabled", payload.optBoolean("enabled"));
 			}
-
-			if (null == objData) {
-				ret = Response.status(400).entity(ERROR_BADREQUEST).build();
-			} else {
-				//Generate app Key and Secret
-				String apiKey = FSTUtils.API.generateAPIKey();
-				String apiSecret = FSTUtils.API.generateAPIKey();
-
-				objData.put("appKey", apiKey);
-				objData.put("appSecret", apiSecret);
-
-				//Add api key object
-				apiKeyDataSource.addObj(objData);//TODO: Check errors from SWBForms API
-
-				//Build response
-				res.put("key", apiKey);
-				res.put("secret", apiSecret);
-				ret = Response.status(200).entity(res).build();
-			}
+		} catch (JSONException jspex) {
+			return Response.status(Status.BAD_REQUEST).build();
 		}
 
-		return ret;
+		//Generate app Key and Secret
+		String apiKey = FSTUtils.API.generateAPIKey();
+		String apiSecret = FSTUtils.API.generateAPIKey();
+
+		objData.put("appKey", apiKey);
+		objData.put("appSecret", apiSecret);
+
+		//Add api key object
+		apiKeyDataSource.addObj(objData);//TODO: Check errors from SWBForms API
+
+		//Build response
+		res.put("key", apiKey);
+		res.put("secret", apiSecret);
+		return Response.ok(res).build();
 	}
 }

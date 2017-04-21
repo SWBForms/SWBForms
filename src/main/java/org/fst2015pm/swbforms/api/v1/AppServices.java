@@ -20,6 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.FileUtils;
 import org.fst2015pm.swbforms.utils.CSVDBFReader;
@@ -56,11 +58,10 @@ public class AppServices {
 			for(String key : map.keySet()) {
 				ret.put(key);
 			}
-			
-			return Response.status(200).entity(ret.toString()).build();
+			return Response.ok(ret.toString()).build();
+		} else {
+			return Response.status(Status.FORBIDDEN).build();
 		}
-		
-		return Response.status(401).build();
 	}
 	
 	@Path("/csvpreview")
@@ -86,7 +87,7 @@ public class AppServices {
 			try {
 				url = new URL(fileUrl);
 			} catch (MalformedURLException muex) {
-				return Response.status(400).entity(ERROR_BADREQUEST).build();
+				return Response.status(Status.BAD_REQUEST).entity(ERROR_BADREQUEST).build();
 			}
 			
 			System.out.println("..Downloading resource "+url);
@@ -108,13 +109,13 @@ public class AppServices {
 			JSONObject ret = reader.readJSON(relPath, true, 10);
 			ret.put("uuid", folderUUID);
 					
-			return Response.status(200).entity(ret.toString()).build();
+			return Response.ok(ret.toString()).build();
 		} catch(JSONException jsex) {
 			jsex.printStackTrace();
-			return Response.status(400).entity(ERROR_BADREQUEST).build(); 
+			return Response.status(Status.BAD_REQUEST).entity(ERROR_BADREQUEST).build(); 
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
-			return Response.status(500).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	
@@ -131,12 +132,12 @@ public class AppServices {
 		try {
 			DataObject fetch = endpoints.fetch();
 			if (null != fetch) {
-				return Response.status(200).entity(fetch.getDataObject("response")).build();
+				return Response.ok(fetch.getDataObject("response")).build();
 			}
-			return Response.status(200).entity("{data:[]}").build();
+			return Response.ok("{data:[]}").build();
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
-			return Response.status(500).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	
@@ -145,14 +146,14 @@ public class AppServices {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response doUpdateDBDataSources() {
 		HttpSession session = httpRequest.getSession();
-		if (null == session.getAttribute("_USER_")) return Response.status(401).entity(ERROR_FORBIDDEN).build();
+		if (null == session.getAttribute("_USER_")) return Response.status(Status.FORBIDDEN).entity(ERROR_FORBIDDEN).build();
 		
 		try {
 			updateDBDataSources(session);
-			return Response.status(200).build();
+			return Response.ok().build();
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
-			return Response.status(500).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	

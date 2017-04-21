@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.FileUtils;
 import org.fst2015pm.swbforms.utils.FSTUtils;
@@ -70,13 +71,13 @@ public class DataSourceService {
 					}
 				}
 			} catch (JSONException jsex) {
-				return Response.status(500).build();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 
-			return Response.status(200).entity(ret.toString()).build();
+			return Response.ok().entity(ret.toString()).build();
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).build();
 	}
 
 	@GET
@@ -96,7 +97,7 @@ public class DataSourceService {
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
-			if (null == ds) return Response.status(400).build();
+			if (null == ds) return Response.status(Status.BAD_REQUEST).build();
 
 			//Get datasource fields
 			HashMap<String, String> dsFields = new HashMap<>();
@@ -132,13 +133,13 @@ public class DataSourceService {
 			}
 
 			if (null != dsFetch) {
-				return Response.status(200).entity(dsFetch.getDataObject("response")).build();
+				return Response.ok().entity(dsFetch.getDataObject("response")).build();
 			} else {
-				return Response.status(500).build();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).entity("forbidden").build();
 	}
 
 	@POST
@@ -155,7 +156,7 @@ public class DataSourceService {
 
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
-			if (null == ds) return Response.status(400).build();
+			if (null == ds) return Response.status(Status.BAD_REQUEST).build();
 
 			JSONObject objData = null;
 			HashMap<String, JSONObject> imgFields = new HashMap<>();
@@ -178,7 +179,7 @@ public class DataSourceService {
 					}
 				}
 			} catch (JSONException jspex) {
-				return Response.status(500).build();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 
 			if (null != objData) {
@@ -192,14 +193,14 @@ public class DataSourceService {
 					if (null != response && 0 == response.getInt("status")) {
 						objNew = processImages(ds, imgFields, response.getDataObject("data"));
 					}
-					return Response.status(200).entity(objNew.getDataObject("response")).build();
+					return Response.ok().entity(objNew.getDataObject("response")).build();
 				} else {
-					return Response.status(400).build();
+					return Response.status(Status.BAD_REQUEST).build();
 				}
 			}
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).build();
 	}
 
 	@GET
@@ -217,15 +218,15 @@ public class DataSourceService {
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 
-			if (null == ds) return Response.status(400).build();
+			if (null == ds) return Response.status(Status.BAD_REQUEST).build();
 			DataObject dsFetch = ds.fetchObjById(oId);
 			if (null == dsFetch)
-				return Response.status(400).build();
+				return Response.status(Status.BAD_REQUEST).build();
 
-			return Response.status(200).entity(dsFetch).build();
+			return Response.ok().entity(dsFetch).build();
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).build();
 	}
 
 	@PUT
@@ -245,7 +246,7 @@ public class DataSourceService {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
             DataObject updateObj = null;
 
-			if (null == ds) return Response.status(400).build();
+			if (null == ds) return Response.status(Status.FORBIDDEN).build();
 
 			JSONObject objData = null;
 			HashMap<String, JSONObject> imgFields = new HashMap<>();
@@ -268,7 +269,7 @@ public class DataSourceService {
 					}
 				}
 			} catch (JSONException jspex) {
-				return Response.status(500).build();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 
 			if (null != objData) {
@@ -281,14 +282,14 @@ public class DataSourceService {
 					if (null != response && 0 == response.getInt("status")) {
 						objNew = processImages(ds, imgFields, response.getDataObject("data"));
 					}
-					return Response.status(200).entity(objNew.getDataObject("response")).build();
+					return Response.ok().entity(objNew.getDataObject("response")).build();
 				} else {
-					return Response.status(400).build();
+					return Response.status(Status.BAD_REQUEST).build();
 				}
 			}
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).build();
 	}
 
 	@DELETE
@@ -307,9 +308,9 @@ public class DataSourceService {
 		if (!checkSession || (checkSession && null != session.getAttribute("_USER_"))) {
 			SWBDataSource ds = engine.getDataSource(dataSourceId);
 
-			if (null == ds) return Response.status(400).build();
+			if (null == ds) return Response.status(Status.BAD_REQUEST).build();
 			DataObject obj = ds.fetchObjById(oId);
-			if (null == obj) return Response.status(400).build();
+			if (null == obj) return Response.status(Status.BAD_REQUEST).build();
 			
 			ArrayList<String> imgFields = new ArrayList<>();
 			for (String key : obj.keySet()) {
@@ -328,10 +329,10 @@ public class DataSourceService {
 					FileUtils.deleteQuietly(new File(fName));
 				}
 			}
-			return Response.status(200).entity(ret).build();
+			return Response.ok().entity(ret).build();
 		}
 
-		return Response.status(403).entity("forbidden").build();
+		return Response.status(Status.FORBIDDEN).build();
 	}
 	
 	private DataObject processImages(SWBDataSource ds, HashMap<String, JSONObject> imgFields, DataObject dob) {

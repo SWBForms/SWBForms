@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.fst2015pm.swbforms.utils.FSTUtils;
 import org.json.JSONArray;
@@ -48,45 +49,40 @@ public class SignalService {
 	public Response getSignals(@Context UriInfo context) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
-		Response ret = null;
 
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		} else {
-			SWBDataSource ds = engine.getDataSource("TourismSignal");
-			DataObject dsFetch = null;
-
-			try {
-				DataObject wrapper = new DataObject();
-				DataObject q = new DataObject();
-				MultivaluedMap<String, String> params = context.getQueryParameters();
-				for (String key : params.keySet()) {
-					q.put(key, params.getFirst(key));
-				}
-
-				wrapper.put("data", q);
-				dsFetch = ds.fetch(wrapper);
-
-				if (null != dsFetch) {
-					DataObject response = dsFetch.getDataObject("response");
-					if (null != response) {
-						DataList dlist = response.getDataList("data");
-						if (!dlist.isEmpty()) {
-							ret = Response.status(200).entity(dlist).build();
-						} else {
-							ret = Response.status(200).entity("[]").build();
-						}
-					}
-				} else {
-					ret = Response.status(500).build();
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				ret = Response.status(500).build();
-			}
 		}
+		SWBDataSource ds = engine.getDataSource("TourismSignal");
+		DataObject dsFetch = null;
+		DataList dlist = null;
 
-		return ret;
+		try {
+			DataObject wrapper = new DataObject();
+			DataObject q = new DataObject();
+			MultivaluedMap<String, String> params = context.getQueryParameters();
+			for (String key : params.keySet()) {
+				q.put(key, params.getFirst(key));
+			}
+
+			wrapper.put("data", q);
+			dsFetch = ds.fetch(wrapper);
+
+			if (null != dsFetch) {
+				DataObject response = dsFetch.getDataObject("response");
+				if (null != response) {
+					dlist = response.getDataList("data");
+				}
+			}
+			if (!dlist.isEmpty()) {
+				return Response.ok(dlist).build();
+			} else {
+				return Response.ok("[]").build();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@GET
@@ -95,29 +91,25 @@ public class SignalService {
 	public Response getSignal(@PathParam("objId") String oId) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
-		Response ret = null;
 
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
-			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		} else {
-			SWBDataSource ds = engine.getDataSource("TourismSignal");
-			DataObject dsFetch = null;
-
-			try {
-				dsFetch = ds.fetchObjById(oId);
-
-				if (null != dsFetch) {
-					ret = Response.status(200).entity(dsFetch).build();
-				} else {
-					ret = Response.status(400).build();
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				ret = Response.status(500).build();
-			}
+			return Response.status(Status.FORBIDDEN).build();
 		}
+		SWBDataSource ds = engine.getDataSource("TourismSignal");
+		DataObject dsFetch = null;
 
-		return ret;
+		try {
+			dsFetch = ds.fetchObjById(oId);
+
+			if (null != dsFetch) {
+				return Response.ok(dsFetch).build();
+			} else {
+				return Response.status(Status.NOT_FOUND).build();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@POST
@@ -129,67 +121,65 @@ public class SignalService {
 		SWBDataSource ds = engine.getDataSource("TourismSignal");
 
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
-			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		} else {
-			if (null == ds) {
-				return Response.status(500).build();
-			}
+			return Response.status(Status.FORBIDDEN).entity(ERROR_FORBIDDEN).build();
+		}
+		
+		if (null == ds) return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 
-			try {
-				JSONArray objArray = new JSONArray(content);
-				JSONArray retArray = new JSONArray();
+		try {
+			JSONArray objArray = new JSONArray(content);
+			JSONArray retArray = new JSONArray();
 
-				Iterator<Object> it = objArray.iterator();
-				while(it.hasNext()) {
-					JSONObject objData = (JSONObject)it.next();//objArray.getJSONObject(i);
-					objData.remove("_id");
+			Iterator<Object> it = objArray.iterator();
+			while(it.hasNext()) {
+				JSONObject objData = (JSONObject)it.next();//objArray.getJSONObject(i);
+				objData.remove("_id");
 
-					//Strip image data
-					JSONObject imageData = objData.optJSONObject("image");
-					String imgContent = null;
-					String imgName = null;
-					if (null != imageData) {
-						objData.remove("image");
-						imgName = imageData.optString("fileName");
-						imgContent = imageData.optString("content");
-					}
-
-					//Transform JSON to dataobject to avoid fail
-					DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());
-					DataObject objNew = ds.addObj(obj);
-					DataObject response = objNew.getDataObject("response");
-
-					if (null != response && 0 == response.getInt("status")) {
-						DataObject dlist = response.getDataObject("data");
-						String oId = dlist.getId();
-
-						if (oId.lastIndexOf(":") > 0) {
-				            oId = oId.substring(oId.lastIndexOf(":") + 1);
-				        }
-
-						//Store image data
-						if (null != imgName && null != imgContent) {
-							imgName = imgName.replaceAll("[/\\\\]+", "");
-							String path = context.getRealPath("/") + "public/images/TourismSignal/" + oId;
-							if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
-								String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
-										"://" + httpRequest.getServerName() +
-										(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
-								
-								dlist.put("image", requestUrl + "/public/images/TourismSignal/" + oId + "/" + imgName);
-								ds.updateObj(dlist);
-							}
-						}
-
-						JSONObject el = new JSONObject();
-						el.put("_id", dlist.getId());
-						retArray.put(el);
-					}
+				//Strip image data
+				JSONObject imageData = objData.optJSONObject("image");
+				String imgContent = null;
+				String imgName = null;
+				if (null != imageData) {
+					objData.remove("image");
+					imgName = imageData.optString("fileName");
+					imgContent = imageData.optString("content");
 				}
-				return Response.status(200).entity(retArray.toString()).build();
-			} catch (JSONException jspex) {
-				return Response.status(400).entity(ERROR_BADREQUEST).build();
+
+				//Transform JSON to dataobject to avoid fail
+				DataObject obj = (DataObject) DataObject.parseJSON(objData.toString());
+				DataObject objNew = ds.addObj(obj);
+				DataObject response = objNew.getDataObject("response");
+
+				if (null != response && 0 == response.getInt("status")) {
+					DataObject dlist = response.getDataObject("data");
+					String oId = dlist.getId();
+
+					if (oId.lastIndexOf(":") > 0) {
+			            oId = oId.substring(oId.lastIndexOf(":") + 1);
+			        }
+
+					//Store image data
+					if (null != imgName && null != imgContent) {
+						imgName = imgName.replaceAll("[/\\\\]+", "");
+						String path = context.getRealPath("/") + "public/images/TourismSignal/" + oId;
+						if (FSTUtils.FILE.storeBase64File(path, imgName, imgContent)) {
+							String requestUrl = ("production".equals(FSTUtils.getEnvConfig()) ? "https" : httpRequest.getScheme()) +
+									"://" + httpRequest.getServerName() +
+									(80 == httpRequest.getServerPort() ? "" : ":" + httpRequest.getServerPort());
+							
+							dlist.put("image", requestUrl + "/public/images/TourismSignal/" + oId + "/" + imgName);
+							ds.updateObj(dlist);
+						}
+					}
+
+					JSONObject el = new JSONObject();
+					el.put("_id", dlist.getId());
+					retArray.put(el);
+				}
 			}
+			return Response.ok(retArray.toString()).build();
+		} catch (JSONException jspex) {
+			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
 }

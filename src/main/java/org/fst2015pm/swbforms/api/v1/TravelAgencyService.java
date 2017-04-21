@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,45 +48,41 @@ public class TravelAgencyService {
 	public Response getAgencies(@Context UriInfo context) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
-		Response ret = null;
 
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
 			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		} else {
-			SWBDataSource ds = engine.getDataSource("TravelAgency");
-			DataObject dsFetch = null;
-
-			try {
-				DataObject wrapper = new DataObject();
-				DataObject q = new DataObject();
-				MultivaluedMap<String, String> params = context.getQueryParameters();
-				for (String key : params.keySet()) {
-					q.put(key, params.getFirst(key));
-				}
-
-				wrapper.put("data", q);
-				dsFetch = ds.fetch(wrapper);
-
-				if (null != dsFetch) {
-					DataObject response = dsFetch.getDataObject("response");
-					if (null != response) {
-						DataList dlist = response.getDataList("data");
-						if (!dlist.isEmpty()) {
-							ret = Response.status(200).entity(dlist).build();
-						} else {
-							ret = Response.status(200).entity("[]").build();
-						}
-					}
-				} else {
-					ret = Response.status(500).build();
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				ret = Response.status(500).build();
-			}
 		}
+		
+		SWBDataSource ds = engine.getDataSource("TravelAgency");
+		DataObject dsFetch = null;
+		DataList dlist = null;
 
-		return ret;
+		try {
+			DataObject wrapper = new DataObject();
+			DataObject q = new DataObject();
+			MultivaluedMap<String, String> params = context.getQueryParameters();
+			for (String key : params.keySet()) {
+				q.put(key, params.getFirst(key));
+			}
+
+			wrapper.put("data", q);
+			dsFetch = ds.fetch(wrapper);
+
+			if (null != dsFetch) {
+				DataObject response = dsFetch.getDataObject("response");
+				if (null != response) {
+					dlist = response.getDataList("data");
+				}
+			}
+			if (!dlist.isEmpty()) {
+				return Response.ok(dlist).build();
+			} else {
+				return Response.ok("[]").build();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@GET
@@ -94,29 +91,26 @@ public class TravelAgencyService {
 	public Response getAgency(@PathParam("objId") String oId) {
 		HttpSession session = httpRequest.getSession();
 		SWBScriptEngine engine = DataMgr.initPlatform("/WEB-INF/dbdatasources.js", session);
-		Response ret = null;
 
 		if (!mgr.validateCredentials(httpRequest, useCookies, true)) {
-			return Response.status(401).entity(ERROR_FORBIDDEN).build();
-		} else {
-			SWBDataSource ds = engine.getDataSource("TravelAgency");
-			DataObject dsFetch = null;
-
-			try {
-				dsFetch = ds.fetchObjById(oId);
-
-				if (null != dsFetch) {
-					ret = Response.status(200).entity(dsFetch).build();
-				} else {
-					ret = Response.status(400).build();
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				ret = Response.status(500).build();
-			}
+			return Response.status(Status.FORBIDDEN).build();
 		}
+		
+		SWBDataSource ds = engine.getDataSource("TravelAgency");
+		DataObject dsFetch = null;
 
-		return ret;
+		try {
+			dsFetch = ds.fetchObjById(oId);
+
+			if (null != dsFetch) {
+				return Response.ok(dsFetch).build();
+			} else {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@POST
