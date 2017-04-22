@@ -8,6 +8,8 @@
 
   if (null != logoutAction && "true".equals(logoutAction)) {
     session.removeAttribute("_USER_");
+    response.sendRedirect("/");
+    return;
   }
 
   if(email!=null && password!=null) {
