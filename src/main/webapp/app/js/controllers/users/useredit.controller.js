@@ -16,6 +16,7 @@
     cnt.password1 = "";
     cnt.password2 = "";
     cnt.formTitle = "Agregar usuario";
+    cnt.processing = false;
 
     $Datasource.listObjects("MagicTown")
     .then((res) => {
@@ -45,6 +46,8 @@
 
     cnt.submitForm = function(form) {
       if (form.$valid && cnt.isPasswordEqual()) {
+        cnt.processing = true;
+        
         cnt.userData.roles = cnt.selectedRoles;
         if (!cnt.userData.magictown) cnt.userData.magictown = "";
         if ($stateParams.id && $stateParams.id.length) {

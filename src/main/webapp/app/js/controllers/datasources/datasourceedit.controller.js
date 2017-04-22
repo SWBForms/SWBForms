@@ -14,6 +14,7 @@
     cnt.dsEntry = {};
     cnt.dSourceName;
     cnt.nameValid = true;
+    cnt.processing = false;
 
     if($stateParams.id && $stateParams.id.length) {
       cnt.formTitle = "Editar Datasource";
@@ -27,6 +28,7 @@
       if (form.$valid && cnt.nameValid) {
         cnt.dsData.name = cnt.dSourceName;
 
+        cnt.processing = true;
         if (!cnt.dsData._id) {
           $Datasource.addObject(cnt.dsData, "DBDataSource")
           .then(response => {

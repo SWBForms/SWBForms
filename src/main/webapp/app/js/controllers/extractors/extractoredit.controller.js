@@ -12,6 +12,7 @@
     cnt.extractorData = {};
     cnt.dsList = [];
     cnt.charsetList = [];
+    cnt.processing = false;
 
     if ($stateParams.extractordef) {
       cnt.formTitle = "Previsualización";
@@ -81,6 +82,7 @@
       if (form) valid = form.$valid;
 
       if (valid) {
+        cnt.processing = true;
         if (!cnt.extractorData._id) {
           $Datasource.addObject(cnt.extractorData, "Extractor")
           .then(response => {

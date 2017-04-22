@@ -221,9 +221,6 @@
       })
       .state('admin.dashboards', {
         url: '/dashboard',
-        params: {
-          id: null
-        },
         views: {
           'sidenav': {
             templateUrl: 'templates/includes/sidenav.html',
@@ -1276,7 +1273,7 @@
         }
       });
 
-    $urlRouterProvider.otherwise("/dashboard/");
+    $urlRouterProvider.otherwise("/admin/");
 
     var adminMenuItems = [
       {
@@ -1393,8 +1390,8 @@
     ];
   };
 
-  run.$inject = ["$rootScope", "$state", "$templateCache", "$http", "$window"];
-  function run($rootScope, $state, $templateCache, $http, $window) {
+  run.$inject = ["$rootScope", "$state", "$stateParams", "$templateCache", "$http", "$window"];
+  function run($rootScope, $state, $stateParams, $templateCache, $http, $window) {
     let apiVersion = 1;
     $http({
       url: `/api/v${apiVersion}/services/login/me`,
@@ -1405,7 +1402,7 @@
       $window.location.href = "/"
     });
 
-    $rootScope.$state = $state;
+    //$rootScope.$state = $state;
   };
 
 })();

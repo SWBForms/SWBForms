@@ -11,6 +11,7 @@
     cnt.formTitle = "Agregar API";
     cnt.dsList = [];
     cnt.endpointData = {};
+    cnt.processing = false;
 
     if($stateParams.id && $stateParams.id.length) {
       cnt.formTitle = "Editar API";
@@ -42,6 +43,7 @@
 
     cnt.submitForm = function(form) {
       if (form.$valid) {
+        cnt.processing = true;
         if (!cnt.endpointData._id) {
           $Datasource.addObject(cnt.endpointData, "DSEndpoint")
           .then(response => {

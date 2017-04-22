@@ -5,8 +5,8 @@
     .module('FST2015PM.controllers')
     .controller('EditDashboardCtrl', EditDashboardCtrl);
 
-  EditDashboardCtrl.$inject = ["$state","$stateParams", "$Datasource","$http", "uuid"];
-  function EditDashboardCtrl($state, $stateParams, $Datasource, $http, uuid) {
+  EditDashboardCtrl.$inject = ["$state","$stateParams", "$Datasource","$http", "uuid", "$uibModal"];
+  function EditDashboardCtrl($state, $stateParams, $Datasource, $http, uuid, $uibModal) {
     let cnt = this;
     cnt.widgets = [];
     cnt.formTitle = "Agregar tablero";
@@ -49,6 +49,14 @@
     cnt.removeWidget = function(widgetId) {
       cnt.widgets = cnt.widgets.filter((item) => {
         return item.id !== widgetId;
+      });
+    };
+
+    cnt.configWidget = function() {
+      console.log("alo");
+      let instance = $uibModal.open({
+        template:'<p>Hi</p>',
+        controller: function() {}
       });
     };
 

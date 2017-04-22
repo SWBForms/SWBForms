@@ -18,6 +18,7 @@
     cnt.pictureData = {};
     cnt.validMime = true;
     cnt.canSend = true;
+    cnt.processing = false;
 
     $Datasource.listObjects("State")
     .then(response => {
@@ -66,6 +67,8 @@
 
     cnt.submitForm = function(form) {
       if (form.$valid) {
+        cnt.processing = true;
+        
         if (cnt.validMime && cnt.pictureData && cnt.pictureData.base64) {
           cnt.pmData.picture = {
             fileName: cnt.pictureData.filename,

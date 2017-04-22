@@ -10,6 +10,7 @@
     let cnt = this;
     cnt.formTitle = "Agregar API";
     cnt.apiKeyData = {};
+    cnt.processing = false;
 
     if($stateParams.id && $stateParams.id.length) {
       cnt.formTitle = "Editar API";
@@ -20,6 +21,7 @@
 
     cnt.submitForm = function(form) {
       if (form.$valid) {
+        cnt.processing = true;
         if (!cnt.apiKeyData._id) {
           $APIKey.createAPIKey(cnt.apiKeyData)
           .then(response => {
