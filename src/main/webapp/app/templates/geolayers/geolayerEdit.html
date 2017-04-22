@@ -61,7 +61,7 @@
         </div>
         <div class="panel-footer text-right">
           <button type="submit" ng-disabled="geo.processing" class="btn btn-primary btn-minw"><span ng-show="geo.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
-          <button ui-sref="admin.geolayers" class="btn btn-default btn-minw">Cancelar</button>
+          <button ui-sref="admin.geolayers" ng-disabled="geo.processing" class="btn btn-default btn-minw">Cancelar</button>
         </div>
       </form>
     </div>

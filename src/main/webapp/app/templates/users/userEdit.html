@@ -55,7 +55,7 @@
         </div>
         <div class="panel-footer text-right">
           <button type="submit" ng-disabled="users.processing" class="btn btn-primary btn-minw"><span ng-show="users.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
-          <button ui-sref="admin.users" class="btn btn-default btn-minw">Cancelar</button>
+          <button ui-sref="admin.users" ng-disabled="users.processing" class="btn btn-default btn-minw">Cancelar</button>
         </div>
       </form>
     </div>

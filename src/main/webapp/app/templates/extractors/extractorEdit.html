@@ -111,7 +111,7 @@
         <div class="panel-footer text-right">
           <button type="submit" ng-disabled="extractors.processing" ng-show="!extractors.showPreview" class="btn btn-primary btn-minw"><span ng-show="extractors.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
           <button type="button" ng-click="extractors.previewData(editForm, extractors.extractorData)" ng-show="extractors.showPreview" class="btn btn-primary btn-minw">Siguiente</button>
-          <button ui-sref="admin.extractors" class="btn btn-default btn-minw">Cancelar</button>
+          <button ui-sref="admin.extractors" ng-disabled="extractors.processing" class="btn btn-default btn-minw">Cancelar</button>
         </div>
       </form>
     </div>

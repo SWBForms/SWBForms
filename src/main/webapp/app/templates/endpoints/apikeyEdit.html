@@ -30,7 +30,7 @@
         </div>
         <div class="panel-footer text-right">
           <button ng-disabled="apis.processing" ng-show="!apis.apiKeyData._id || !apis.apiKeyData._id.length" type="submit" class="btn btn-primary btn-minw"><span ng-show="apis.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
-          <button ui-sref="admin.apikeys" class="btn btn-default btn-minw">{{(!apis.apiKeyData._id || !apis.apiKeyData._id.length) ? "Cancelar" : "Regresar"}}</button>
+          <button ui-sref="admin.apikeys" ng-disabled="apis.processing" class="btn btn-default btn-minw">{{(!apis.apiKeyData._id || !apis.apiKeyData._id.length) ? "Cancelar" : "Regresar"}}</button>
         </div>
       </form>
     </div>
