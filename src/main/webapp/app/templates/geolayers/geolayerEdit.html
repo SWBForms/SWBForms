@@ -1,4 +1,4 @@
-<div class="animate fadeIn">
+<div>
   <div class="row title-ribbon">
     <h3>{{geo.formTitle}}</h3>
   </div>
@@ -60,7 +60,7 @@
           </div>
         </div>
         <div class="panel-footer text-right">
-          <button type="submit" class="btn btn-primary btn-minw">Guardar</button>
+          <button type="submit" ng-disabled="geo.processing" class="btn btn-primary btn-minw"><span ng-show="geo.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
           <button ui-sref="admin.geolayers" class="btn btn-default btn-minw">Cancelar</button>
         </div>
       </form>

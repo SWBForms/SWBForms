@@ -10,7 +10,7 @@
     height: 100%;
   }
 </style>
-<div class="animated fadeIn">
+<div>
   <div class="row title-ribbon">
     <h3>{{ ds.formTitle }} - {{ds.dashboardData.name}}</h3>
   </div>
@@ -51,7 +51,7 @@
                   <div class="panel-heading">
                     {{item.name}}
                     <div class="pull-right">
-                      <a class="btn btn-xs btn-default"><span class="fa fa-wrench fa-fw"></span></a>
+                      <a ng-click="ds.configWidget()" class="btn btn-xs btn-default"><span class="fa fa-wrench fa-fw"></span></a>
                       <a ng-click="ds.removeWidget(item.id)" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></a>
                     </div>
                   </div>

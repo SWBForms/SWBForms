@@ -1,4 +1,4 @@
-<div class="animated fadeIn">
+<div>
   <div class="row title-ribbon">
     <h3>{{mtown.formTitle}}</h3>
   </div>
@@ -125,6 +125,9 @@
             <div class="form-group" ng-class="{ 'has-error' : (pmForm.$submitted || pmForm.picture.$touched) && pmForm.picture.$invalid }">
               <label class="col-sm-2 control-label">Fotografía</label>
               <div class="col-sm-10">
+                <div class="thumbnail" ng-show="mtown.pmData.picture">
+                  <img class="img img-responsive" ng-src="{{mtown.pmData.picture}}" />
+                </div>
                 <input type="file" name="picture" maxsize="5120"
                   accept="image/jpeg,image/png,image/jpeg"
                   class="form-control" ng-model="mtown.pictureData"
@@ -139,7 +142,7 @@
           </div>
         </div>
         <div class="panel-footer text-right">
-          <button type="submit" ng-disabled="mtown.canSend === false" class="btn btn-primary btn-minw">Guardar</button>
+          <button type="submit" ng-disabled="mtown.canSend === false || mtown.processing" class="btn btn-primary btn-minw"><span ng-show="mtown.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
           <button ui-sref="admin.pmcatalog" class="btn btn-default btn-minw" type="button">Cancelar</button>
         </div>
       </div>
