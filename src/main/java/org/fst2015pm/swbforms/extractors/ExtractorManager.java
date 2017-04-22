@@ -115,12 +115,12 @@ public class ExtractorManager {
             String className = extractorConfig.getString("class");
             PMExtractor extractor = hmExtractor.get(extractorConfig.getId());
             String status = null;
-            if ((null != extractor)) {  //Revisando el tipo de extractor para saber su estaus.
+            if (null != extractor) {  //Revisando el tipo de extractor para saber su estaus.
             	status = extractor.getStatus();
-                if (null == status && status.equals("EXTRACTING")) {
+                //if (null == status && status.equals("EXTRACTING")) {
                     // el extractor tiene el status de EXTRACTING, se detiene o que se debería de hacer ??
-                    extractor.stop();
-                }
+                    //extractor.stop();
+                //}
             }
 
             if (null != status && extractor.canStart() || null == extractor) {
@@ -169,7 +169,7 @@ public class ExtractorManager {
         PMExtractor ret;
         if (null != extractorId) {
             ret = hmExtractor.get(extractorId);
-            if (ret.canStart()) {//revisando si se puede inicializar el extractor
+            if (null != ret && ret.canStart()) {//revisando si se puede inicializar el extractor
                 ret.start();
                 return true;
             }
