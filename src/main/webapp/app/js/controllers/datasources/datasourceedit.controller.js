@@ -8,7 +8,7 @@
   DSEditCtrl.$inject = ["$Datasource", "$stateParams", "$state"];
   function DSEditCtrl($Datasource, $stateParams, $state) {
     let cnt = this;
-    cnt.formTitle = "Agregar Datasource";
+    cnt.formTitle = "Agregar Conjunto";
     cnt.dsList = [];
     cnt.dsData = {};
     cnt.dsEntry = {};
@@ -17,7 +17,7 @@
     cnt.processing = false;
 
     if($stateParams.id && $stateParams.id.length) {
-      cnt.formTitle = "Editar Datasource";
+      cnt.formTitle = "Editar Conjunto";
       $Datasource.getObject($stateParams.id, "DBDataSource").then(ds => {
         cnt.dsData = ds.data;
         cnt.dSourceName = ds.data.name;

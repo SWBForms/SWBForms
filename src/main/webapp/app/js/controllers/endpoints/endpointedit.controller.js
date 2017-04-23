@@ -8,13 +8,13 @@
   EndpointEditCtrl.$inject = ["$Datasource", "$stateParams", "$state"];
   function EndpointEditCtrl($Datasource, $stateParams, $state) {
     let cnt = this;
-    cnt.formTitle = "Agregar API";
+    cnt.formTitle = "Agregar EndPoint";
     cnt.dsList = [];
     cnt.endpointData = {};
     cnt.processing = false;
 
     if($stateParams.id && $stateParams.id.length) {
-      cnt.formTitle = "Editar API";
+      cnt.formTitle = "Editar EndPoint";
       $Datasource.getObject($stateParams.id, "DSEndpoint").then(ds => {
         cnt.endpointData = ds.data;
       });
