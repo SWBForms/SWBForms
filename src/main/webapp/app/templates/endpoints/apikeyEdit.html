@@ -1,0 +1,38 @@
+<div>
+  <div class="row title-ribbon">
+    <h3>{{apis.formTitle}}</h3>
+  </div>
+  <div class="row">
+    <div class="panel panel-default box-panel">
+      <form name="editForm" novalidate class="form-horizontal" ng-submit="apis.submitForm(editForm)">
+        <div class="panel-body">
+          <div class="col-sm-8 col-sm-offset-2">
+            <div class="form-group" ng-class="{ 'has-error' : (editForm.$submitted || editForm.appName.$touched) && editForm.appName.$invalid }">
+              <label class="col-sm-2 control-label">Aplicación</label>
+              <div class="col-sm-10">
+                <input type="text" name="appName" required class="form-control" ng-model="apis.apiKeyData.appName" ng-disabled="apis.apiKeyData._id && apis.apiKeyData._id.length"/>
+                <span ng-show="(editForm.$submitted || editForm.appName.$touched) && editForm.appName.$invalid" class="help-block">El nombre de la aplicación es requerido</span>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apis.apiKeyData.appKey && apis.apiKeyData.appKey.length" >
+              <label class="col-sm-2 control-label">App Key</label>
+              <div class="col-sm-10">
+                <p class="form-control-static">{{apis.apiKeyData.appKey}}</p>
+              </div>
+            </div>
+            <div class="form-group" ng-show="apis.apiKeyData.appSecret && apis.apiKeyData.appSecret.length" >
+              <label class="col-sm-2 control-label">App Secret</label>
+              <div class="col-sm-10">
+                <p class="form-control-static">{{apis.apiKeyData.appSecret}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer text-right">
+          <button ng-disabled="apis.processing" ng-show="!apis.apiKeyData._id || !apis.apiKeyData._id.length" type="submit" class="btn btn-primary btn-minw"><span ng-show="apis.processing" class="fa fa-cog fa-spin fa-lg fa-fw"></span>Guardar</button>
+          <button ui-sref="admin.apikeys" ng-disabled="apis.processing" class="btn btn-default btn-minw">{{(!apis.apiKeyData._id || !apis.apiKeyData._id.length) ? "Cancelar" : "Regresar"}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

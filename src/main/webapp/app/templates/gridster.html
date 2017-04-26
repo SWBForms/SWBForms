@@ -1,0 +1,17 @@
+<div>
+  <h1 class="page-header">Gridster Responsive Layout</h1>
+  <div class="text-right">
+    <button class="btn btn-default" ng-click="addWidget()">Add widget</button>
+    <button class="btn btn-default" ng-click="serializeDashboard()">Serialize dashboard</button>
+  </div>
+    <div class="gridster">
+      <ul class="list list-unstyled">
+        <li ng-repeat="widget in widgets" data-sizex="{{widget.sizex}}" data-sizey="{{widget.sizey}}" data-col="{{widget.col}}" data-row="{{widget.row}}">
+          <div class="gridster-box">
+            <div class="handle-resize"></div>
+            <div ng-bind-html="widget.content"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
