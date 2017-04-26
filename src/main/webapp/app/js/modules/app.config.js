@@ -1582,6 +1582,40 @@
             ]);
           }
         }
+      })
+      .state('admin.activity', {
+        url: '/activity',
+        views: {
+          'sidenav': {
+            templateUrl: 'templates/includes/sidenav.html',
+            controller: 'SideNavCtrl',
+            controllerAs: 'nav'
+          },
+          'content': {
+            templateUrl: 'templates/activityfeed/activityFeed.html',
+            controller: 'ActivityFeedCtrl as activity'
+          }
+        },
+        resolve: {
+          userInfo: ['$q', '$LoginService', function($q, $LoginService) {
+            var deferred = $q.defer();
+            $LoginService.me()
+            .then(function(response) {
+              deferred.resolve(response);
+            }).catch(function(err) {
+              deferred.reject({notLoggedIn: true});
+            });
+            return deferred.promise;
+          }],
+          menuItems: ['$ACLService', function($ACLService) {
+            return $ACLService.getUserActions()
+            .then(function(result) {
+              return result.data || [];
+            }).catch(function(err) {
+              return [];
+            });
+          }]
+        }
       });
 
     $urlRouterProvider.otherwise("/admin/");
@@ -1604,7 +1638,5 @@
     }).catch(function(error) {
       $window.location.href = "/";
     });
-
-    //$rootScope.$state = $state;
   };
 })();

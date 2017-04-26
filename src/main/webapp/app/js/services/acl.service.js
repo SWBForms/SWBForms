@@ -116,7 +116,7 @@
     },
     {
       label: "Bitácora",
-      link: '#'
+      stateLink: 'admin.activity'
     },
   ];
 
