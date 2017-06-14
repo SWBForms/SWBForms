@@ -645,7 +645,7 @@ var eng = {
     },
             
     //Realiza un fetch de una forma con los datos especificados            
-    fetchForm:function(form, data)
+    fetchForm:function(form, data, callback)
     {
         form.fetchData(data,function()
         {
@@ -675,6 +675,7 @@ var eng = {
                     });
                 }               
             }
+            if(callback)callback();
         });
     },
             
@@ -1125,10 +1126,14 @@ var eng = {
         
         if (fetchId && fetchId != null)
         {
-            eng.fetchForm(form, {_id: fetchId});
+            eng.fetchForm(form, {_id: fetchId}, function()
+            {
+                if(base.onLoad)base.onLoad(form);
+            });
+        }else
+        {        
+            if(base.onLoad)base.onLoad(form);
         }
-        
-        if(base.onLoad)base.onLoad(form);
         
         eng.resize(form);        
         
@@ -1946,7 +1951,7 @@ var eng = {
                 eng.utils.loadJS(file,false,cache);     
             }else if (Array.isArray(file))
             {
-                eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+file;
+                eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+JSON.stringify(file);
                 for(var i=0;i<file.length;i++)
                 {
                     eng.utils.loadJS(file[i],false,cache);                       

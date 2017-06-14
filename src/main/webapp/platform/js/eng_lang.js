@@ -960,7 +960,7 @@ isc.FileUpload.addProperties({
                     
                     content += "        <span><a style=\"color: #404040;text-decoration: none;\" target=\"_new\" href=\"/fd/" + dataValue[i].id + "/"+encodeURI(dataValue[i].name)+"\">" + dataValue[i].name + "</a>";
                     if(p<100)content+=" ("+p+")";
-                    if(this.isEditable())content += "<img style=\"margin-left: 2px; cursor: pointer; vertical-align: middle;\" onClick=\"" + this.ID + ".remove('"+dataValue[i].id+"');\" src=\"/isomorphic/skins/Enterprise/images/actions/close.png\"/>";
+                    if(this.isEditable())content += "<img style=\"margin-left: 2px; cursor: pointer; vertical-align: middle;\" onClick=\"" + this.ID + ".remove('"+dataValue[i].id+"');\" src=\"/platform/isomorphic/skins/Enterprise/images/actions/close.png\"/>";
                     if(i<dataValue.length-1)content+=",";
                     content += "        </span>";
                     
