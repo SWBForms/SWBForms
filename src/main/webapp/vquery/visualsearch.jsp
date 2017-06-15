@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Itzaak</title>
+        <title>VisualSearch</title>
 
         <link rel="stylesheet" href="visualsearch/visualsearch.css" type="text/css" media="screen" charset="utf-8">
 
