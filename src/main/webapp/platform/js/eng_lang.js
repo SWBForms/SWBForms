@@ -42,6 +42,7 @@ eng.fieldProcesors["select"] = function(field)
     }
     
     if(base.displayFormat)dsfmt=base.displayFormat;
+    //if(!base.sortby)dsfmt=base.displayFormat;    
     //console.log(dsfmt,base.displayFormat);
     
     
@@ -102,7 +103,7 @@ eng.fieldProcesors["select"] = function(field)
     //eng.utils.removeAttribute(base, "displayFormat");
     
     base.optionDataSource= dsObjDef.dsId;
-    base.editorProperties = {displayField: dsf, addUnknownValues:false};
+    base.editorProperties = {displayField: dsf, addUnknownValues:false, sortField:dsf, textMatchStyle:"substring"};
 
     if (base.showFilter)
     {

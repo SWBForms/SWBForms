@@ -33,5 +33,6 @@
         <div><a href="/register">/register</a></div>
         <div><a href="/utils/users.html">/utils/users.html</a></div>
         <div><a href="/demo">/demo</a></div>
+        <div><a href="/vquery/visualsearch.jsp">/vquery/visualsearch.jsp</a></div>
     </body>
 </html>
