@@ -504,6 +504,25 @@ eng.dataServices["LogsService"] = {
 };
 
 
+//******* DataExtractors ************
+eng.dataExtractors["SWBSocial1"]={
+    dataSource:"SWBSocial",
+    class:"org.semanticwb.bigdata.engine.extractors.SWBSocialExtr",
+    timer: {time:10,unit:"s"},
+    url:"http://swbsocial.infotec.com.mx",
+    brand:"infotec",
+    stream:"conacyt",
+};
+
+eng.dataExtractors["SWBSocial2"]={
+    dataSource:"SWBSocial",
+    class:"org.semanticwb.bigdata.engine.extractors.SWBSocialExtr",
+    
+    url:"http://swbsocial.infotec.com.mx",
+    brand:"infotec",
+    stream:"Sep",
+};
+
 
 //dataProcesor arrojando exceptions
 eng.dataProcessors["MagicTownProcessor"] = {
@@ -582,3 +601,7 @@ g.getRecord(0)
 
 var g2=requisitionFrm.linkToForms[4].form.getField("focon").grid;
 g2.addData({noPartida:5})
+
+
+eng.getDataSource("TiposVialidad").toValueMap("identificador","nombre");        //regresa objeto con mapeo de valores
+eng.getDataSource("TiposVialidad").toValueMap("identificador")                  //regresa arreglo de valores

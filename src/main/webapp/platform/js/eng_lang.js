@@ -77,7 +77,7 @@ eng.fieldProcesors["select"] = function(field)
     //base.foreignKey = dsObjDef.dsId + "._id";
     //***** nueva propiedad *********// diaplayName
     //base.editorProperties = {optionDataSource: dsObjDef.dsId, valueField: "_id", displayField: ds.displayField};
-    base.valueField= "_id";
+    if(!base.valueField)base.valueField="_id";
     
     base.displayField=dsf;
     if(dsfmt)
@@ -301,7 +301,7 @@ eng.fieldProcesors["gridSelect"] = function(field)
         else dsf=ds.displayField;  
     }
 
-    base.valueField= "_id";
+    if(!base.valueField)base.valueField="_id";
     base.displayField= dsf;
     
     if(base.displayFormat)
@@ -887,6 +887,7 @@ isc.FileUpload.addProperties({
     colSpan:5,
     discardEditsOnHideField:false,
     filters:{mime_types:[]},
+    //onUploadComplete                           //parameter callback
     //canEdit:true,
     // Implement 'createCanvas' to build a ListGrid from which the user may 
     // select items.
@@ -1080,6 +1081,7 @@ isc.FileUpload.addProperties({
                         UploadComplete: function(up, files) 
                         {
                             // Called when all files are either uploaded or failed
+                            if(this.onUploadComplete)onUploadComplete(up,files);
                             //console.log('[UploadComplete]',up,files);
                         },
 

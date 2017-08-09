@@ -1730,6 +1730,27 @@ var eng = {
                 return this.validate({data:obj});
             }, 
             
+            toValueMap:function(id,disp)
+            {
+                var data=this.fetch().data;
+                if(disp)
+                {
+                    var ret={};
+                    for(var x=0;x<data.length;x++)
+                    {
+                            ret[data[x][id]]=data[x][disp];
+                    }	
+                }else
+                {
+                    var ret=[];
+                    for(var x=0;x<data.length;x++)
+                    {
+                            ret[x]=data[x][id];
+                    }			
+                }
+                return ret;
+            },               
+            
             $asArray:function()
             {
                 var _this=this;
