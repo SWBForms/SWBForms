@@ -1957,6 +1957,8 @@ var eng = {
             isc.DateItem.DEFAULT_START_DATE.setYear(1900);
             Time.setDefaultDisplayTimezone("-06:00");
             Time.adjustForDST=false;
+            NumberUtil.decimalSymbol=".";
+            NumberUtil.groupingSymbol=",";              
             
             eng.utils.loadJS("/platform/js/eng_lang.js",false,cache);
             

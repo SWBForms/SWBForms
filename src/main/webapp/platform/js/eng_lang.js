@@ -174,7 +174,7 @@ eng.fieldProcesors["select"] = function(field)
         var fname=base.dependentSelect;
         var pname=undefined;
         //si recibe un objeto con los parametros dependentField, filterProp en lugar de un string con el valor por default de dependentField
-        if("object" == typeof fname) 
+        if("object" == typeof fname)
         {
             fname=base.dependentSelect.dependentField;
             pname=base.dependentSelect.filterProp;
