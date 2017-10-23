@@ -145,7 +145,10 @@
         
         String dssp = request.getParameter("dssp");    
         String ds = request.getParameter("ds");    
-        SWBScriptEngine engine=DataMgr.getUserScriptEngine(dssp,user,false);
+        String dsint = request.getParameter("dsint");   
+        if(dsint==null)dsint="false";
+        
+        SWBScriptEngine engine=DataMgr.getUserScriptEngine(dssp,user,Boolean.parseBoolean(dsint));
         //System.out.println("engine:"+engine);        
         
         //JSONObject json = new JSONObject(in);

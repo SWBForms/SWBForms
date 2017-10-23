@@ -459,6 +459,9 @@ form.submitButton.setTitle("Enviar");
     }
 ]
 
+
+/************************************* LOG ***********************************************/
+
 eng.dataSources["Log"] = {
     scls: "Log",
     modelid: "Forms",
@@ -504,6 +507,47 @@ eng.dataServices["LogsService"] = {
 };
 
 
+            <script type="text/javascript">
+                eng.createGrid(
+                {
+                    width: "98%", height: 300,
+                    showFilter: true,
+                    
+                    fields: [
+        		{name: "source"},
+        		{name: "user"},
+        		{name: "dataSource"},
+        		{name: "client"},
+        		{name: "contract"},
+        		{name: "project"},
+        		{name: "action"},
+        		{name: "timestamp", formatCellValue: function (value, record, rowNum, colNum, grid){
+        		    return new Date(value);
+        		}},
+        		{name:"data", type:"string", title:"Data",formatCellValue: function (value, record, rowNum, colNum, grid){
+        		    return JSON.stringify(value);
+        		}}
+    		    ],
+    		    showRollOverCanvas:true,
+		    showRollUnderCanvas:false, // disable the rollUnderCanvas because we're not using it
+		    rollOverCanvasConstructor:isc.HLayout,
+		    rollOverCanvasProperties:{
+		        snapTo:"TR", height:20, width:20,
+		        members:[
+		            {_constructor:"Button", title:"+", 
+		             click:"isc.say('Data:<pre>' + JSON.stringify(this.parentElement.record.data,null,' ')+'</pre>'+((this.parentElement.record.oldValues!=null)?('<br>OldValues:<pre>' + JSON.stringify(this.parentElement.record.oldValues,null,' ')+'</pre>'):''),{title:'Detalle del registro', width:750, height:450})", 
+		             height:20, width:20},
+		        ]
+		    },                    
+                    autoFetchTextMatchStyle:"exact",                    
+                }, "Log");
+
+            </script>  
+
+
+/***************************************************************************************/
+
+
 //******* DataExtractors ************
 eng.dataExtractors["SWBSocial1"]={
     dataSource:"SWBSocial",
@@ -540,6 +584,19 @@ eng.dataProcessors["MagicTownProcessor"] = {
     }
 };
 
+//DEPENDENCE SELECT
+    fields: [
+        {name: "calle", title: "Calle", required: true, type: "string"},
+        {name: "colonia", title: "Colonia", required: true, type: "string"},
+        {name: "delegacion", title: "Delegacion/Municipio", type: "text"},
+        {name: "pais", title: "Pais", stype: "select", dataSource:"Paises", changed:"form.clearValue('estado');", dependentSelect_:"estado"},
+        {name: "estado", title: "Estado", stype: "select", dataSource:"Estados", getPickListFilterCriteria : function () {
+            var pais = this.form.getValue("pais");
+            return {pais:pais};
+         }},
+        {name: "cp", title: "Codigo Postal", type: "int"},
+    ]
+    
 
 //invoke java Class
 var MyJavaClass = Java.type('my.package.MyJavaClass');
@@ -605,3 +662,45 @@ g2.addData({noPartida:5})
 
 eng.getDataSource("TiposVialidad").toValueMap("identificador","nombre");        //regresa objeto con mapeo de valores
 eng.getDataSource("TiposVialidad").toValueMap("identificador")                  //regresa arreglo de valores
+
+
+
+
+
+
+var data={query:{data:{sexo:"HOMBRE","estado":"15"}},fields:{"nombre":"Nombre","email":"Email","nacimiento":"Nacimiento","sexo":"Sexo","cp":"CP","rfc":"RFC"}};
+eng.utils.getSynchData("/ex?dssp=/admin/datasources.js&ds=Consultores",JSON.stringify(data)).response
+
+var data={query:{data:{"estado":"15"}},fields:["identificador","programa.convocatoria","hombres","mujeres"]};
+eng.utils.getSynchData("/ex?dssp=/admin/datasources.js&ds=Folios",JSON.stringify(data)).response
+
+var data={query:{data:{"estado":"15"}}};
+eng.utils.getSynchData("/ex?dssp=/admin/datasources.js&ds=Folios&ext=xls",JSON.stringify(data)).response
+eng.utils.getSynchData("/ex?dssp=/admin/datasources.js&ds=Folios&ext=csv",JSON.stringify(data)).response
+
+eng.utils.getSynchData('/ex?dssp=/admin/datasources.js&ds=Folios&ext=xls&data={query:{data:{"estado":"15"}},fields:["identificador","programa.convocatoria","hombres","mujeres"]}').response
+
+
+http://localhost:8080/ex?dssp=/admin/datasources.js&ds=Folios&ext=xls&data={query:{data:{%22estado%22:%2215%22}}}
+
+
+
+
+//Sort DataObject
+
+    report.sort(new Comparator<Map.Entry<String,Object>>(){
+         @Override
+         public int compare(Map.Entry<String,Object> o1, Map.Entry<String,Object> o2) {
+             //System.out.println("compare");
+             return ((DataList)o1.getValue()).getString(0).compareToIgnoreCase(((DataList)o2.getValue()).getString(0));
+         }        
+    });
+    
+    
+//sort DataList    
+    report.sort(new Comparator<Object>(){
+         @Override
+         public int compare(Object o1, Object o2) {
+             return ((DataList)o1).getString(1).compareToIgnoreCase(((DataList)o2).getString(1));
+         }        
+    });     

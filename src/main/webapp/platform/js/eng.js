@@ -866,10 +866,10 @@ var eng = {
         
         if(base.canExport===true)
         {        
-        
-            exp_button = isc.ToolStripButton.create({
+            exp_button = isc.ToolStripMenuButton.create({
                 icon: "[SKIN]/actions/download.png",
                 prompt: "Exportar Datos",
+                title: "",
                 autoDraw:false,
             });
             mem.push(exp_button);
@@ -940,7 +940,93 @@ var eng = {
         {
             if(base.exportButtonClick===undefined)
             {        
-                exp_button.click =function()
+                var expMenu=isc.Menu.create({
+                    autoDraw:false,
+                    width:150,
+                    data:[
+                        {title:"Exportar Vista", icon: "[SKIN]/actions/download.png", 
+                            click:function()
+                            {
+                                var data={query:{data:grid.getCriteria()}};
+                                if(grid.autoFetchTextMatchStyle)
+                                {
+                                   data.query.textMatchStyle=grid.autoFetchTextMatchStyle;
+                                }
+                                var sort=grid.getSort();
+                                if(sort)
+                                {
+                                    var s=[];
+                                    for(var i=0;i<sort.length;i++)
+                                    {
+                                        if(sort[i].direction=="descending")
+                                        {
+                                            s.push("-"+sort[i].property);
+                                        }else 
+                                        {
+                                            s.push(sort[i].property);
+                                        }
+                                    }
+                                    data.query.sortBy=s;
+                                }
+                                var fields=grid.getAllFields();
+                                if(fields)
+                                {
+                                    var s={};
+                                    for(var i=0;i<fields.length;i++)
+                                    {
+                                        if(!fields[i].excludeFromState)
+                                        {
+                                            var key=fields[i].name;
+                                            if(fields[i].editorProperties && fields[i].editorProperties.displayField)
+                                            {
+                                                key=key+"."+fields[i].editorProperties.displayField;
+                                            }
+                                            s[key]=fields[i].title;
+                                        }
+                                    }
+                                    data.fields=s;                                    
+                                }                                
+                                var path="/ex"+grid.getDataSource().dataURL.substring(3)+"&ext=xls"+"&data="+encodeURI(JSON.stringify(data));
+                                //console.log(data,path);
+                                window.location.href=path;
+                            }
+                        },
+                        {title:"Exportar DS", 
+                            click:function()
+                            {
+                                var data={query:{data:grid.getCriteria()}};
+                                if(grid.autoFetchTextMatchStyle)
+                                {
+                                   data.query.textMatchStyle=grid.autoFetchTextMatchStyle;
+                                }
+                                var sort=grid.getSort();
+                                if(sort)
+                                {
+                                    var s=[];
+                                    for(var i=0;i<sort.length;i++)
+                                    {
+                                        if(sort[i].direction=="descending")
+                                        {
+                                            s.push("-"+sort[i].property);
+                                        }else 
+                                        {
+                                            s.push(sort[i].property);
+                                        }
+                                    }
+                                    data.query.sortBy=s;
+                                }
+                                var path="/ex"+grid.getDataSource().dataURL.substring(3)+"&ext=xls"+"&data="+encodeURI(JSON.stringify(data));
+                                //console.log(data,path);
+                                window.location.href=path;
+                            }                            
+                        },
+                    ]
+                });  
+                
+                exp_button.menu=expMenu;
+                
+/*                
+                exp_button.click_ =function()
                 {
                   var uri = 'data:application/vnd.ms-excel;base64,'
                     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
@@ -988,6 +1074,7 @@ var eng = {
                     };
                     to();
                 };
+*/                
             }else
             {
                 exp_button.click = base.exportButtonClick;
