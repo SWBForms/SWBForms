@@ -1823,17 +1823,23 @@ var eng = {
                 if(disp)
                 {
                     var ret={};
-                    for(var x=0;x<data.length;x++)
+                    if(data)
                     {
+                        for(var x=0;x<data.length;x++)
+                        {
                             ret[data[x][id]]=data[x][disp];
-                    }	
+                        }	
+                    }
                 }else
                 {
                     var ret=[];
-                    for(var x=0;x<data.length;x++)
+                    if(data)
                     {
+                        for(var x=0;x<data.length;x++)
+                        {
                             ret[x]=data[x][id];
-                    }			
+                        }
+                    }
                 }
                 return ret;
             },               
