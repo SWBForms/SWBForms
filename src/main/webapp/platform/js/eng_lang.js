@@ -982,7 +982,8 @@ isc.FileUpload.addProperties({
         }
         
         if(this.isEditable())content="<button onclick=\""+this.ID+"_button.click()\">Cargar Archivo</button>"+content;
-        content = "<div style=\"width:100%; height:18px; overflow:hidden;\">"+content+"</div>";
+        //content = "<div style=\"width:100%; height:18px; overflow:hidden;\">"+content+"</div>";
+        content = "<div style=\"width:100%; height:18px;\">"+content+"</div>";
         this.canvas.setContents(content);
         
         //console.log(dataValue);  

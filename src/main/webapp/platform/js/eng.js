@@ -25,6 +25,8 @@ var eng = {
     
     dataSourceServlet:"/ds",
     
+    onbeforeunloadForms:[],
+    
     //Metodos Internos
     
     //Construccion de un array
@@ -577,6 +579,15 @@ var eng = {
     {
         var win = window.open(url, target);
         win.focus();
+    },
+    
+    
+    onbeforeunload:function()
+    {
+        for(var i=0;i<eng.onbeforeunloadForms.length;i++)
+        {
+            if(eng.onbeforeunloadForms[i].valuesHaveChanged())return false;
+        }
     },
     
     //realiza un submit a una forma dada
@@ -1224,6 +1235,8 @@ var eng = {
         
         eng.resize(form);        
         
+        eng.onbeforeunloadForms.push(form);
+        
         return form;
     },
     
@@ -1823,23 +1836,17 @@ var eng = {
                 if(disp)
                 {
                     var ret={};
-                    if(data)
+                    for(var x=0;x<data.length;x++)
                     {
-                        for(var x=0;x<data.length;x++)
-                        {
                             ret[data[x][id]]=data[x][disp];
-                        }	
-                    }
+                    }	
                 }else
                 {
                     var ret=[];
-                    if(data)
+                    for(var x=0;x<data.length;x++)
                     {
-                        for(var x=0;x<data.length;x++)
-                        {
                             ret[x]=data[x][id];
-                        }
-                    }
+                    }			
                 }
                 return ret;
             },               
@@ -2076,6 +2083,7 @@ var eng = {
             
             //TODO:config debug level
             window.console.warn=function(){};
+            window.onbeforeunload=function(){return eng.onbeforeunload()};
         }
     }
     
