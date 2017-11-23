@@ -61,7 +61,14 @@
             return getFieldTitle(att,sds);
         }else
         {
-            return ds.getDataSourceScriptField(name).getString("title");
+            ScriptObject obj=ds.getDataSourceScriptField(name);
+            if(obj!=null)
+            {
+                return obj.getString("title");
+            }else
+            {
+                return "-";
+            }
         }
     }
 
