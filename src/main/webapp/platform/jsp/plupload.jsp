@@ -59,11 +59,12 @@
                         }
 
                         String fname=this.name;
+                        System.out.println("fname:"+fname);
                         int i=fname.lastIndexOf('.');
                         if(i>-1)fname=fname.substring(0,i);
                         
                         File dst = new File(dstFile.getPath() + "/" + fname);
-                        //System.out.println("dst:"+dst);
+                        System.out.println("dst:"+dst);
 
                         saveUploadFile(input, dst);
                     }

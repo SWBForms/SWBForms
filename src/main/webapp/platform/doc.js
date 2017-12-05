@@ -704,3 +704,7 @@ http://localhost:8080/ex?dssp=/admin/datasources.js&ds=Folios&ext=xls&data={quer
              return ((DataList)o1).getString(1).compareToIgnoreCase(((DataList)o2).getString(1));
          }        
     });     
+    
+    
+//Mover los botones arriba
+form.layout.members.reverse();

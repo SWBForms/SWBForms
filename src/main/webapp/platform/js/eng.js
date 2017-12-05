@@ -822,7 +822,15 @@ var eng = {
             base.warnOnRemoval = true;      
         base.canRemoveRecords = eng.utils.removeAttribute(base, "canRemove");
         base.showFilterEditor = eng.utils.removeAttribute(base, "showFilter");
-
+        
+        //autoResize
+        if (base.autoResize===undefined)
+            base.autoResize = false;
+        if (base.resizeWidthMargin===undefined)
+            base.resizeWidthMargin = 0;
+        if (base.resizeHeightMargin===undefined)
+            base.resizeHeightMargin = 0;
+        
         var totalsLabel = isc.Label.create({
             padding: 5,
             autoDraw:false,
@@ -1092,6 +1100,16 @@ var eng = {
             }    
         }
         
+        if(base.autoResize===true)
+        {
+            window.onresize=function(){ 
+                grid.setHeight(window.innerHeight-base.resizeHeightMargin);
+                grid.setWidth(window.innerWidth-base.resizeWidthMargin);
+            };
+            grid.setHeight(window.innerHeight-base.resizeHeightMargin);
+            grid.setWidth(window.innerWidth-base.resizeWidthMargin);
+        }        
+        
         return grid;
     },
             
@@ -1193,7 +1211,7 @@ var eng = {
             form.tabs=tabs;
         }
         
-        var buttons=buttons=isc.HLayout.create({height: "20px", padding:"10px", membersMargin:20, align:"right", members: butts,autoDraw:false});
+        var buttons=isc.HLayout.create({height: "20px", padding:"10px", membersMargin:20, align:"right", members: butts,autoDraw:false});
         
         var layout=isc.VLayout.create({
             membersMargin: 5,
