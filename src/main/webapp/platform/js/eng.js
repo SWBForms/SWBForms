@@ -1502,7 +1502,9 @@ var eng = {
                 if(aScriptSource==null)
                 {
                     aScriptSource = eng.utils.getSynchData(file).responseText + '\n////# sourceURL=' + file + '\n';
-                    sessionStorage.setItem(file,aScriptSource);
+                    try{
+                        sessionStorage.setItem(file,aScriptSource);
+                    }catch(err){console.log(err,aScriptSource.length)}
                 }
             }else
             {
@@ -2089,7 +2091,7 @@ var eng = {
                 {
                     eng.dataSourceScriptPath=file;
                 }
-                eng.utils.loadJS(file,false,cache);     
+                eng.utils.loadJS(cache?file:file+"?t="+new Date().getTime(),false,cache);
             }else if (Array.isArray(file))
             {
                 eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+JSON.stringify(file);

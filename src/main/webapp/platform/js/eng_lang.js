@@ -86,7 +86,7 @@ eng.fieldProcesors["select"] = function(field)
         {   
             var record = item.getSelectedRecord();
             if (record) {
-                console.log("formatValue:"+value,record,dsfmt,item,this);
+                //console.log("formatValue:"+value,record,dsfmt,item,this);
                 if("function" == typeof dsfmt)
                 {
                     return dsfmt(value, record);
@@ -421,7 +421,7 @@ isc.GridEditorItem.addProperties({
     endRow:true, 
     startRow:true,
     winEdit: false,
-    //canEdit: true,
+    //canEdit: "*",
     
     // this is going to be an editable data item
     shouldSaveValue:true,
@@ -431,8 +431,14 @@ isc.GridEditorItem.addProperties({
     createCanvas : function () {
         this.dataSourceName = this.dataSource;
         this.dataSource = eng.createDataSource(this.dataSource,true,this);
+        
+        //console.log(this);
            
-        canEdit=this.canEdit!==undefined?this.canEdit:this.form.canEdit!==undefined?this.form.canEdit:true;        
+        var canEdit=this.canEdit!==undefined?this.canEdit:this.form.canEdit!==undefined?this.form.canEdit:true;   
+        
+        this.canEdit=true;
+        
+        //console.log(canEdit);
         
         var totalsLabel = isc.Label.create({
             padding: 5,
@@ -535,7 +541,7 @@ isc.GridEditorItem.addProperties({
                 height: 24,
                 members: mem
             });
-        }else
+        }else       
         {
             toolStrip = isc.ToolStrip.create({
                 width: "100%",
@@ -573,8 +579,8 @@ isc.GridEditorItem.addProperties({
             autoSaveEdits: false,
             cellHeight:this.cellHeight,
             gridComponents: ["filterEditor","header", "body","summaryRow", toolStrip],
-            autoFitData: "vertical",
-            autoFitMaxRecords: 5,
+            //autoFitData: "vertical",
+            //autoFitMaxRecords: 5,
             initialCriteria: this.initialCriteria,
             showRecordComponents:this.showRecordComponents,
             showRecordComponentsByCell:this.showRecordComponentsByCell,
@@ -617,7 +623,10 @@ isc.GridEditorItem.addProperties({
                 }else
                 {
                     //console.log(this,record,recordNum);
-                    this.startEditing(recordNum);
+                    if(this.canEdit)
+                    {
+                        this.startEditing(recordNum);
+                    }
                     //this.parentElement.parentElement.startEditing(this.parentElement.parentElement.data.indexOf(record));
                 }
             },
@@ -714,7 +723,13 @@ isc.GridEditorItem.addProperties({
         {
             this.grid.discardAllEdits(null);
             this.dataValue = dataValue;
-            this.grid.invalidateCache();
+            try {
+                this.grid.invalidateCache();
+            }
+            catch(err) {
+                console.log(err);
+            }
+            
             //if(dataValue==null)dataValue="";
             if(dataValue != null)
             {
