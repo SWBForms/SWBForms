@@ -23,11 +23,11 @@ and open the template in the editor.
             
             var form=eng.createForm({
                 width: "100%",                
-                height: 320,
-                showTabs:true,
+                //height: 450,
+                //showTabs:false,
                 title:"Forma",
                 onLoad:function(f){
-                    alert(f.getValue("folio"));
+                    //alert(f.getValue("folio"));
                 }                
             }, <%=id%>,"Notas");
             
