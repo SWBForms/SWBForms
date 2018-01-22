@@ -1693,7 +1693,24 @@ var eng = {
             var sURLVariables = sPageURL.split('/');
             if(index < sURLVariables.length)
                 return sURLVariables[index];
-        }          
+        },
+        
+        getDataSourceDisplayFields: function(dsName)
+        {
+            var ds=eng.dataSources[dsName];
+            if(ds)
+            {
+                var ret="\n    fields: [\n";
+                for(var i=0;i<ds.fields.length;i++)
+                {
+                    ret+="        {name: \""+ds.fields[i].name+"\"}";
+                    if(i+1<ds.fields.length)ret+=",";
+                    ret+="\n";
+                }                 
+                ret+="    ]\n";
+                return ret;
+            }           
+        }
         
     },
     

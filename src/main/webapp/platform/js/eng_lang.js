@@ -329,10 +329,10 @@ eng.fieldProcesors["gridSelect"] = function(field)
 
     if (!base.editorType)
         base.editorType = "GridSelectItem";
-//    if (!base.width)
-//        base.width = "100%";
-//    if (!base.height)
-//        base.height = "150";
+    if (!base.width)
+        base.width = "100%";
+    if (!base.height)
+        base.height = "250";
     if (!base.startRow)
         base.startRow = true;
     if (!base.colSpan)
@@ -1197,7 +1197,12 @@ isc.GridSelectItem.addProperties({
             showAllRecords:true,
             initialCriteria: this.initialCriteria,
             autoFetchData:false,
-            data:eng.getDataSource(this.dsDef.dsName).fetch({data:this.initialCriteria}).data
+            data:eng.getDataSource(this.dsDef.dsName).fetch({data:this.initialCriteria}).data,
+            recordDrop : function (draggedRecords, targetRecord, targetIndex, sourceWidget) {
+                // Call the super implementation of recordDrop() to update the order of rows in the ListGrid.
+                this.Super("recordDrop", arguments);
+                _this.storeData();
+            }            
         });
         
         var grid2=isc.ListGrid.create({
@@ -1213,25 +1218,46 @@ isc.GridSelectItem.addProperties({
             canReorderRecords: true,
             dragDataAction: "move",
             autoFetchData:false,
+            recordDrop : function (draggedRecords, targetRecord, targetIndex, sourceWidget) {
+                // Call the super implementation of recordDrop() to update the order of rows in the ListGrid.
+                this.Super("recordDrop", arguments);
+                _this.storeData();
+            }
         });
         
         var _this=this;
+        
+        _this.storeData=function()
+        {
+            var val=[];
+            for(var x=0;x<grid2.data.length;x++)
+            {
+                val.push(grid2.data[x]._id);
+            }
+            _this.form.setValue(_this.name,val);
+            console.log(val);
+        }        
             
         var c=isc.HStack.create({membersMargin:10, width:this.width, height:this.height, members:[
             grid1,
             isc.VStack.create({width:"32", height:74, layoutAlign:"center", membersMargin:10, members:[
-                isc.Img.create({src:"/platform/isomorphic/skins/Tahoe/images/DynamicForm/unstacked_spinner_plus.png",
+                isc.Img.create({src:"/platform/isomorphic/skins/Tahoe/images/DynamicForm/unstacked_spinner_plus.png", height:"25px",
                     click:function(){
                         grid2.transferSelectedData(grid1);
                         _this.dataValue=grid2.data;
-                        //_this.form.setValue(_this.name,grid2.data);
+                        _this.storeData();
                     }
                 }),
-                isc.Img.create({src:"/platform/isomorphic/skins/Tahoe/images/DynamicForm/unstacked_spinner_minus.png",
+                isc.Img.create({src:"/platform/isomorphic/skins/Tahoe/images/DynamicForm/unstacked_spinner_minus.png", height:"25px",
                     click:function(){
                         grid1.transferSelectedData(grid2);
                         _this.dataValue=grid2.data;
-                        //_this.form.setValue(_this.name,grid2.data);
+                        var val=[];
+                        for(var x=0;x<grid2.data.length;x++)
+                        {
+                            val.push(grid2.data[x]._id);
+                        }
+                        _this.storeData();                  
                     }
                 })
             ]}),
@@ -1278,6 +1304,7 @@ isc.GridSelectItem.addProperties({
                 }
             }
             this.grid.transferSelectedData(this.gridSelect);
+            this.grid.deselectAllRecords();
         }
     }    
 });
