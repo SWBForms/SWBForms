@@ -708,3 +708,26 @@ http://localhost:8080/ex?dssp=/admin/datasources.js&ds=Folios&ext=xls&data={quer
     
 //Mover los botones arriba
 form.layout.members.reverse();
+
+
+
+
+
+//contextdata
+eng.dataSources["Direccion"] = {
+    scls: "Direccion",
+    modelid: "{contextData.model}",
+    dataStore: "mongodb",      
+    displayField: "calle",
+    fields: [
+        {name: "calle", title: "Calle", required: true, type: "string"},
+        {name: "numero", title: "Numero", type: "string"},
+        {name: "colonia", title: "Colonia", type: "string"},
+        {name: "municipio", title: "Municipio", type: "string"},
+        {name: "cp", title: "CP", type: "int", validators_:[{stype:"zipcode"}]},
+        {name: "pais", title: "Pais", required: true, stype: "select", dataSource:"Pais", dependentSelect:"estado", dependentSelect_: {filterProp:"pais", dependentField:"estado"}},
+        {name: "estado", title: "Estado", required: true, stype: "select", dataSource:"Estado", canFilter:false, initialCriteria_ : {} },
+    ]
+};
+
+eng
