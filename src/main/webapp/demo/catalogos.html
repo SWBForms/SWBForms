@@ -13,7 +13,7 @@ and open the template in the editor.
     </head>
     <body>
         <script type="text/javascript">
-            eng.initPlatform("datasources.js",false);
+            eng.initPlatform(["datasources_1.js","datasources_2.js"],false);
         </script>         
             
         <div>Marcas</div>
@@ -58,6 +58,17 @@ and open the template in the editor.
                 canAdd:true,
                 canRemove:true
             }, "Estados");
-        </script>            
+        </script>  
+        
+        <div>Variables</div>
+        <script type="text/javascript">
+            eng.createGrid({
+                width: "100%", 
+                height: 200,
+                canEdit:true,
+                canAdd:true,
+                canRemove:true
+            }, "Variables");
+        </script>          
     </body>
 </html>

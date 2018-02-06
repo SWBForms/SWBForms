@@ -27,15 +27,32 @@ eng.dataStores["ts_leveldb"]={
 };
 */
 //******* DataSorices ************
+var roles={director:"Director",gerente:"Gerente",subgerente:"Subgerente"};
+var groups={infotec:"INFOTEC",dac:"DAC",gdnps:"GDNPS",dads:"DADS"};
+
 eng.dataSources["User"]={
     scls: "User",
     modelid: "SWBForms",
     dataStore: "mongodb",   
+    displayField: "fullname",
     fields:[
         {name:"fullname",title:"Nombre",type:"string"},
         //{name:"username",title:"Usuario",type:"string"},
         {name:"password",title:"Contraseña",type:"password"},
-        {name:"email",title:"Correo electrónico",type:"string"},
+        {name:"email",title:"Correo electrónico",type:"string", validators: [{type:"isUnique"}]},
+        {name:"roles",title:"Roles",stype:"select", valueMap:roles,multiple:true},
+        {name:"groups",title:"Grupos",stype:"select", valueMap:groups,multiple:true},
+    ],
+};
+
+eng.dataSources["Permission"]={
+    scls: "Permission",
+    modelid: "SWBForms",
+    dataStore: "mongodb",  
+    displayField: "name",
+    fields:[
+        {name:"name",title:"Nombre",type:"string"},
+        {name:"roles",title:"Roles",stype:"select", valueMap:roles,multiple:true},
     ],
 };
 
@@ -53,6 +70,7 @@ eng.dataProcessors["UserProcessor"]={
     }          
 };
 
+/******* Routes ************/
 eng.routes["global"]={
     loginFallback: "login",
     routeList:[
@@ -62,5 +80,6 @@ eng.routes["global"]={
         { routePath: "work", isRestricted: "true"},
         { routePath: "work/*", jspMapTo: "/work/jsp/", isRestricted: "true" },
         { routePath: "ds", forwardTo: "/platform/jsp/datasource.jsp", isRestricted: "true" },
+        { routePath: "ex", forwardTo: "/platform/jsp/export.jsp", isRestricted: "true" },
     ],
 };

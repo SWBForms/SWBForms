@@ -1,7 +1,11 @@
-var counter=0;
 
 eng.validators["email"] = {type:"regexp", expression:"^([a-zA-Z0-9_.\\-+])+@(([a-zA-Z0-9\\-])+\\.)+[a-zA-Z0-9]{2,4}$",errorMessage:"No es un correo electrónico válido"};
 
+var sec={
+    roles:["director","gerente"],
+    groups:["dads"],
+    users:[{email:"softjei2@gmail.com"}]
+};
 
 eng.dataSources["Clientes"] = {
     scls: "Clientes",
@@ -17,7 +21,27 @@ eng.dataSources["Clientes"] = {
         {name: "rfc", title: "RFC", required: false, type: "string"},
         {name: "sexo", title: "Sexo", stype: "select", 
             valueMap:{male:"Hombre",female:"Mujer"}},
-    ]
+    ],
+    security:{
+        fetch_:{
+            roles:["director","gerente"],
+            groups:["dac","dads"],
+            users:[{sex:"male"}]    //OR
+        },
+        add_:{
+            roles:["director","gerente"],
+            groups:["dac","dads"],
+            users:[{email:"softjei@gmail.com"}]    //OR
+        },
+        remove:{
+            roles:["director"],
+        },
+        update:{
+            roles:["director"],
+            groups_:["dads"],
+            users_:[{email:"softjei2@gmail.com"}]
+        }        
+    }    
 };
 
 eng.dataSources["Notas"] = {
@@ -28,7 +52,7 @@ eng.dataSources["Notas"] = {
     fields: [
         {name: "folio", title: "Folio", canEdit:false, required: false, type: "string"},
         {name: "fecha", title: "Fecha", type: "date"},
-        {name: "cliente", title: "Cliente", stype: "select", dataSource:"Clientes"},
+        {name: "cliente", title: "Cliente", stype: "select", multiple:true, dataSource:"Clientes"},
         {name: "productos", title: "Productos", stype: "grid", 
             showGridSummary:true,
             dataSource:"DetalleNota"
@@ -58,12 +82,25 @@ eng.dataProcessors["NotasProcessor"] = {
     actions:["add"],
     request: function(request, dataSource, action)
     {
-        request.data.folio="2016_"+counter;
-        counter++;        
+        var Counter = Java.type('demo.Counter');        
+        
+        /*
+        var obj=this.getDataSource("Variables").fetch({data:{nombre:"notas"}}).response.data[0];
+        var n=parseInt(obj.valor)+1;
+        obj.valor=""+n;
+        this.getDataSource("Variables").updateObj(obj);
+        */
+       
+        request.data.folio="2017_"+Counter.count(this); 
+        
+        print(this.getContextData("cliente"));
+        this.setContextData("folio",request.data.folio);
+        
         return request;
     },
     response_: function(response, dataSource, action)
     {
+        //response.data.folio+="Hola";
         return response;
     }
 };
@@ -75,7 +112,7 @@ eng.dataSources["Marcas"] = {
     dataStore: "mongodb",    
     displayField: "nombre",
     fields: [
-        {name: "nombre", title: "Nonbre", required: true, type: "string"},
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "descripcion", title: "Descripción", type: "text"},
     ]
 };
@@ -86,7 +123,7 @@ eng.dataSources["Productos"] = {
     dataStore: "mongodb",    
     displayField: "nombre",
     fields: [
-        {name: "nombre", title: "Nonbre", required: true, type: "string"},
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "descripcion", title: "Descripción", type: "text"},
         {name: "precio", title: "Precio", type: "float"},
         {name: "iva", title: "IVA", type: "float"},
@@ -184,8 +221,11 @@ eng.dataSources["Direcciones"] = {
         {name: "calle", title: "Calle", required: true, type: "string"},
         {name: "colonia", title: "Colonia", required: true, type: "string"},
         {name: "delegacion", title: "Delegacion/Municipio", type: "text"},
-        {name: "pais", title: "Pais", stype: "select", dataSource:"Paises", dependentSelect:"estado"},
-        {name: "estado", title: "Estado", stype: "select", dataSource:"Estados"},
+        {name: "pais", title: "Pais", stype: "select", dataSource:"Paises", changed:"form.clearValue('estado');", dependentSelect_:"estado"},
+        {name: "estado", title: "Estado", stype: "select", dataSource:"Estados", getPickListFilterCriteria : function () {
+            var pais = this.form.getValue("pais");
+            return {pais:pais};
+         }},
         {name: "cp", title: "Codigo Postal", type: "int"},
     ]
 };
@@ -209,5 +249,16 @@ eng.dataSources["Paises"] = {
     fields: [
         {name: "nombre", title: "Nombre", required: true, type: "string"},
         {name: "abre", title: "Abre", required: true, type: "string"},
+    ]
+};
+
+eng.dataSources["Variables"] = {
+    scls: "Variables",
+    modelid: "SWBF2",
+    dataStore: "mongodb",    
+    displayField: "nombre",
+    fields: [
+        {name: "nombre", title: "Nombre", required: true, type: "string"},
+        {name: "valor", title: "valor", required: true, type: "string"},
     ]
 };

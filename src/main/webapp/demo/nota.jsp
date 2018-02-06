@@ -22,10 +22,13 @@ and open the template in the editor.
             eng.initPlatform("datasources.js",false);
             
             var form=eng.createForm({
-                width: "100%",
-                height: 320,
-                showTabs:true,
-                title:"Forma"
+                width: "100%",                
+                //height: 450,
+                //showTabs:false,
+                title:"Forma",
+                onLoad:function(f){
+                    //alert(f.getValue("folio"));
+                }                
             }, <%=id%>,"Notas");
             
             form.submitButton.setTitle("Enviar");

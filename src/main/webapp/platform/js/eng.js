@@ -1,4 +1,4 @@
-var isomorphicDir = "/platform/isomorphic/";
+window.isomorphicDir = "/platform/isomorphic/";
 
 var eng = {
     operationBindings: [
@@ -24,6 +24,8 @@ var eng = {
     dataSourceScriptPath:"",            //ruta de datasource.js
     
     dataSourceServlet:"/ds",
+    
+    onbeforeunloadForms:[],
     
     //Metodos Internos
     
@@ -465,6 +467,7 @@ var eng = {
                         fields:link.fields,
                         values:link.values,
                         canEdit:form.canEdit,
+                        autoDraw: false,
                     });
                     sform.tindex=form.tindex;
 
@@ -477,7 +480,7 @@ var eng = {
                                 contents: link.title,
                                 width: "100%",
                                 height: 25,
-                                autoDraw: true,
+                                autoDraw: false,
                                 baseStyle: "exampleSeparator"
                             }),
                             sform
@@ -498,7 +501,8 @@ var eng = {
                         titleAlign : "right",
                         disabled : false,
                         dataSource: ds,
-                        fields:link.fields
+                        fields:link.fields,
+                        autoDraw: false
                     });
                     
                     sform.tindex=form.tindex+1;
@@ -513,6 +517,7 @@ var eng = {
                         disabled: link.disabled,
                         enableWhen: link.enableWhen,
                         pane: spane,
+                        autoDraw: false
                     };
                     
                     tabs.addTab(stab);
@@ -577,6 +582,15 @@ var eng = {
     {
         var win = window.open(url, target);
         win.focus();
+    },
+    
+    
+    onbeforeunload:function()
+    {
+        for(var i=0;i<eng.onbeforeunloadForms.length;i++)
+        {
+            if(eng.onbeforeunloadForms[i].valuesHaveChanged())return false;
+        }
     },
     
     //realiza un submit a una forma dada
@@ -645,7 +659,7 @@ var eng = {
     },
             
     //Realiza un fetch de una forma con los datos especificados            
-    fetchForm:function(form, data)
+    fetchForm:function(form, data, callback)
     {
         form.fetchData(data,function()
         {
@@ -675,6 +689,7 @@ var eng = {
                     });
                 }               
             }
+            if(callback)callback();
         });
     },
             
@@ -756,6 +771,8 @@ var eng = {
                 data.dataFormat = "json";
                 data.dataURL = eng.dataSourceServlet+"?dssp="+eng.dataSourceScriptPath+"&ds="+dsObjDef.dsName;// + "&scls=" + data.scls;//+"&modelid=" + data.modelid;
                 data.operationBindings = eng.operationBindings;
+                data.jsonPrefix="";
+                data.jsonSuffix="";
                 
                 if(formDef && formDef.fields)
                 {
@@ -765,6 +782,7 @@ var eng = {
                 data.fields.unshift({name: "_id", type: "string", hidden: true, primaryKey: true});    //Insertar llave primaria
               
                 var rds=isc.RestDataSource.create(data);
+                
                 eng.dataSourcesCache[dsObjDef.dsId]=rds;              
               
                 return rds;
@@ -785,7 +803,7 @@ var eng = {
         if (base.emptyCellValue===undefined)
             base.emptyCellValue = "--";
         if (base.dataPageSize===undefined)
-            base.dataPageSize = 20;
+            base.dataPageSize = 100;
         if (base.dataSource===undefined)
             base.dataSource = ds;
         if (base.autoFetchData===undefined)
@@ -804,11 +822,21 @@ var eng = {
             base.canAdd = false;
         if (base.canPrint===undefined)
             base.canPrint = true;      
+        if (base.canExport===undefined)
+            base.canExport = true;      
         if (base.warnOnRemoval===undefined)
             base.warnOnRemoval = true;      
         base.canRemoveRecords = eng.utils.removeAttribute(base, "canRemove");
         base.showFilterEditor = eng.utils.removeAttribute(base, "showFilter");
-
+        
+        //autoResize
+        if (base.autoResize===undefined)
+            base.autoResize = false;
+        if (base.resizeWidthMargin===undefined)
+            base.resizeWidthMargin = 0;
+        if (base.resizeHeightMargin===undefined)
+            base.resizeHeightMargin = 0;
+        
         var totalsLabel = isc.Label.create({
             padding: 5,
             autoDraw:false,
@@ -859,12 +887,18 @@ var eng = {
             mem.push(button2);
         }
         
-        var exp_button = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/download.png",
-            prompt: "Exportar Datos",
-            autoDraw:false,
-      	});
-      	mem.push(exp_button);
+        var exp_button;
+        
+        if(base.canExport===true)
+        {        
+            exp_button = isc.ToolStripMenuButton.create({
+                icon: "[SKIN]/actions/download.png",
+                prompt: "Exportar Datos",
+                title: "",
+                autoDraw:false,
+            });
+            mem.push(exp_button);
+        }
         
         var toolStrip = isc.ToolStrip.create({
             width: "100%",
@@ -925,55 +959,162 @@ var eng = {
                 grid.editHilites();
             };
         }
+
         
-        exp_button.click =function()
+        if(base.canExport===true)
         {
-          var uri = 'data:application/vnd.ms-excel;base64,'
-            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
-            , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-            , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
-          
-            setTimeout(function(){grid.data.getAllRows();},0);
-
-            var f=function()
-            {  			
-                grid.getClientExportData(null,function(data)
+            if(base.exportButtonClick===undefined)
+            {        
+                var expMenu=isc.Menu.create({
+                    autoDraw:false,
+                    width:150,
+                    data:[
+                        {title:"Exportar Vista", icon: "[SKIN]/actions/download.png", 
+                            click:function()
+                            {
+                                var data={query:{data:grid.getCriteria()}};
+                                if(grid.autoFetchTextMatchStyle)
+                                {
+                                   data.query.textMatchStyle=grid.autoFetchTextMatchStyle;
+                                }
+                                var sort=grid.getSort();
+                                if(sort)
+                                {
+                                    var s=[];
+                                    for(var i=0;i<sort.length;i++)
+                                    {
+                                        if(sort[i].direction=="descending")
+                                        {
+                                            s.push("-"+sort[i].property);
+                                        }else 
+                                        {
+                                            s.push(sort[i].property);
+                                        }
+                                    }
+                                    data.query.sortBy=s;
+                                }
+                                var fields=grid.getAllFields();
+                                if(fields)
+                                {
+                                    var s={};
+                                    for(var i=0;i<fields.length;i++)
+                                    {
+                                        if(!fields[i].excludeFromState)
+                                        {
+                                            var key=fields[i].name;
+                                            if(fields[i].editorProperties && fields[i].editorProperties.displayField)
+                                            {
+                                                key=key+"."+fields[i].editorProperties.displayField;
+                                            }
+                                            s[key]=fields[i].title;
+                                        }
+                                    }
+                                    data.fields=s;                                    
+                                }                                
+                                var path="/ex"+grid.getDataSource().dataURL.substring(3)+"&ext=xls"+"&data="+encodeURI(JSON.stringify(data));
+                                //console.log(data,path);
+                                window.location.href=path;
+                            }
+                        },
+                        {title:"Exportar DS", 
+                            click:function()
+                            {
+                                var data={query:{data:grid.getCriteria()}};
+                                if(grid.autoFetchTextMatchStyle)
+                                {
+                                   data.query.textMatchStyle=grid.autoFetchTextMatchStyle;
+                                }
+                                var sort=grid.getSort();
+                                if(sort)
+                                {
+                                    var s=[];
+                                    for(var i=0;i<sort.length;i++)
+                                    {
+                                        if(sort[i].direction=="descending")
+                                        {
+                                            s.push("-"+sort[i].property);
+                                        }else 
+                                        {
+                                            s.push(sort[i].property);
+                                        }
+                                    }
+                                    data.query.sortBy=s;
+                                }
+                                var path="/ex"+grid.getDataSource().dataURL.substring(3)+"&ext=xls"+"&data="+encodeURI(JSON.stringify(data));
+                                //console.log(data,path);
+                                window.location.href=path;
+                            }                            
+                        },
+                    ]
+                });  
+                
+                exp_button.menu=expMenu;
+                
+/*                
+                exp_button.click_ =function()
                 {
-                  var table="<tr>";
-                  for(var x=0;x<grid.fields.length;x++)
-                  {
-                      var f=grid.fields[x];
-                      if(!f.isRemoveField)table+="<th>"+f.title+"</th>";
-                  }
-                  table+="</tr>";
+                  var uri = 'data:application/vnd.ms-excel;base64,'
+                    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+                    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
 
-                  for(var y=0;y<data.length;y++)
-                  {
-                      table+="<tr>";
-                      for(var x=0;x<grid.fields.length;x++)
-                      {
-                          var f=grid.fields[x];
-                          if(!f.isRemoveField)table+="<td>"+data[y][f.name]+"</td>";
-                      }
-                      table+="</tr>";
-                  }                                      
+                    setTimeout(function(){grid.data.getAllRows();},0);
 
-                  var ctx = {worksheet: name || 'Worksheet', table: table};
-                  var a = document.createElement('a');
-                  a.href=uri + base64(format(template, ctx));
-                  a.download = 'exported_table.xls';
-                  a.click();
-              });
-            };    		
-            var to=function()
+                    var f=function()
+                    {  			
+                        grid.getClientExportData(null,function(data)
+                        {
+                          var table="<tr>";
+                          for(var x=0;x<grid.fields.length;x++)
+                          {
+                              var f=grid.fields[x];
+                              if(!f.isRemoveField)table+="<th>"+f.title+"</th>";
+                          }
+                          table+="</tr>";
+
+                          for(var y=0;y<data.length;y++)
+                          {
+                              table+="<tr>";
+                              for(var x=0;x<grid.fields.length;x++)
+                              {
+                                  var f=grid.fields[x];
+                                  if(!f.isRemoveField)table+="<td>"+data[y][f.name]+"</td>";
+                              }
+                              table+="</tr>";
+                          }                                      
+
+                          var ctx = {worksheet: name || 'Worksheet', table: table};
+                          var a = document.createElement('a');
+                          a.href=uri + base64(format(template, ctx));
+                          a.download = 'exported_table.xls';
+                          a.click();
+                      });
+                    };    		
+                    var to=function()
+                    {
+                        setTimeout(function(){
+                            if(grid.data.cachedRows<grid.data.size())to();
+                            else f();
+                        },200);
+                    };
+                    to();
+                };
+*/                
+            }else
             {
-                setTimeout(function(){
-                    if(grid.data.cachedRows<grid.data.size())to();
-                    else f();
-                },200);
+                exp_button.click = base.exportButtonClick;
+            }    
+        }
+        
+        if(base.autoResize===true)
+        {
+            window.onresize=function(){ 
+                grid.setHeight(window.innerHeight-base.resizeHeightMargin);
+                grid.setWidth(window.innerWidth-base.resizeWidthMargin);
             };
-            to();
-        };
+            grid.setHeight(window.innerHeight-base.resizeHeightMargin);
+            grid.setWidth(window.innerWidth-base.resizeWidthMargin);
+        }        
         
         return grid;
     },
@@ -1017,8 +1158,8 @@ var eng = {
         
         formBase.autoDraw=false;
 
-        var form = isc.DynamicForm.create(formBase);        
-
+        var form = isc.DynamicForm.create(formBase);   
+        
         var butts=[];
         
         if(!(form.canPrint===false))
@@ -1066,17 +1207,30 @@ var eng = {
         {
             var tab={
                 title: base.title,
+                autoDraw:false,
                 pane: pane
             };
 
             tabs=isc.TabSet.create({
                 ID: dsObjDef.dsName + "Tabs",
+                autoDraw:false,
+                border:0,
                 tabs: [tab]
             });
             form.tabs=tabs;
+            //Height autosize
+            form.tabs.tabSelected=function(){
+                var p=form.tabs.getSelectedTab().pane;
+                if(p.getWidth()==p.getScrollWidth())d=50;else d=64;
+                form.tabs.setHeight(p.getScrollHeight()+d)
+                
+                console.log(p.getScrollHeight(),p.getClipHeight(),p.getHeight(),p.getInnerContentHeight(),p.getOuterViewportHeight());
+                console.log(p.getClipHeight()-p.getScrollHeight());
+            };
+            //form.tabs.tabSelected();
         }
         
-        var buttons=buttons=isc.HLayout.create({height: "20px", padding:"10px", membersMargin:20, align:"right", members: butts,autoDraw:false});
+        var buttons=isc.HLayout.create({height: "20px", padding:"10px", membersMargin:20, align:"right", members: butts,autoDraw:false});
         
         var layout=isc.VLayout.create({
             membersMargin: 5,
@@ -1107,10 +1261,21 @@ var eng = {
         
         if (fetchId && fetchId != null)
         {
-            eng.fetchForm(form, {_id: fetchId});
+            eng.fetchForm(form, {_id: fetchId}, function()
+            {
+                if(form.tabs)form.tabs.tabSelected();
+                if(base.onLoad)base.onLoad(form);
+            });
+        }else
+        {        
+            if(form.tabs)form.tabs.tabSelected();
+            if(base.onLoad)base.onLoad(form);
         }
         
-        eng.resize(form);
+        eng.resize(form);        
+        
+        eng.onbeforeunloadForms.push(form);
+        
         return form;
     },
     
@@ -1358,7 +1523,9 @@ var eng = {
                 if(aScriptSource==null)
                 {
                     aScriptSource = eng.utils.getSynchData(file).responseText + '\n////# sourceURL=' + file + '\n';
-                    sessionStorage.setItem(file,aScriptSource);
+                    try{
+                        sessionStorage.setItem(file,aScriptSource);
+                    }catch(err){console.log(err,aScriptSource.length)}
                 }
             }else
             {
@@ -1526,7 +1693,24 @@ var eng = {
             var sURLVariables = sPageURL.split('/');
             if(index < sURLVariables.length)
                 return sURLVariables[index];
-        }          
+        },
+        
+        getDataSourceDisplayFields: function(dsName)
+        {
+            var ds=eng.dataSources[dsName];
+            if(ds)
+            {
+                var ret="\n    fields: [\n";
+                for(var i=0;i<ds.fields.length;i++)
+                {
+                    ret+="        {name: \""+ds.fields[i].name+"\"}";
+                    if(i+1<ds.fields.length)ret+=",";
+                    ret+="\n";
+                }                 
+                ret+="    ]\n";
+                return ret;
+            }           
+        }
         
     },
     
@@ -1703,6 +1887,27 @@ var eng = {
                 eng.utils.filterObj(obj);
                 return this.validate({data:obj});
             }, 
+            
+            toValueMap:function(id,disp)
+            {
+                var data=this.fetch().data;
+                if(disp)
+                {
+                    var ret={};
+                    for(var x=0;x<data.length;x++)
+                    {
+                            ret[data[x][id]]=data[x][disp];
+                    }	
+                }else
+                {
+                    var ret=[];
+                    for(var x=0;x<data.length;x++)
+                    {
+                            ret[x]=data[x][id];
+                    }			
+                }
+                return ret;
+            },               
             
             $asArray:function()
             {
@@ -1903,13 +2108,20 @@ var eng = {
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_Forms.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_DataBinding.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"system/modules/ISC_Calendar.js",false,cache);
-            eng.utils.loadJS(isomorphicDir+"skins/Enterprise/load_skin.js",false,cache);
+            eng.utils.loadJS(isomorphicDir+"skins/Tahoe/load_skin.js",false,cache);
             eng.utils.loadJS(isomorphicDir+"locales/frameworkMessages_es.properties",false,cache);
             eng.utils.loadJS("/platform/plupload/js/plupload.full.min.js",false,cache);
-            
+                        
             isc.DateItem.DEFAULT_START_DATE.setYear(1900);
+            
+            isc.Canvas.resizeControls(10);            
+            Page.setEvent("load",function(){
+                isc.Canvas.resizeFonts(3);                        
+            });
             Time.setDefaultDisplayTimezone("-06:00");
             Time.adjustForDST=false;
+            NumberUtil.decimalSymbol=".";
+            NumberUtil.groupingSymbol=",";              
             
             eng.utils.loadJS("/platform/js/eng_lang.js",false,cache);
             
@@ -1922,24 +2134,19 @@ var eng = {
                 {
                     eng.dataSourceScriptPath=file;
                 }
-                eng.utils.loadJS(file,false,cache);     
+                eng.utils.loadJS(cache?file:file+"?t="+new Date().getTime(),false,cache);
             }else if (Array.isArray(file))
             {
+                eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+JSON.stringify(file);
                 for(var i=0;i<file.length;i++)
                 {
-                    if(file[i].charAt(0)!='/')
-                    {
-                        eng.dataSourceScriptPath=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+file[i];
-                    }else
-                    {
-                        eng.dataSourceScriptPath=file[i];
-                    }
                     eng.utils.loadJS(file[i],false,cache);                       
                 }
             }
             
             //TODO:config debug level
             window.console.warn=function(){};
+            window.onbeforeunload=function(){return eng.onbeforeunload()};
         }
     }
     
