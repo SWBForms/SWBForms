@@ -129,15 +129,15 @@
         <script src="/swbforms/codemirror/addon/lint/json-lint.js"></script>
         <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
         
-        <script src="/swbforms/codemirror/addon/edit/matchbrackets.js"></script>  
-        <script src="/swbforms/codemirror/addon/edit/closebrackets.js"></script>  
+        <script src="/swbforms/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="/swbforms/codemirror/addon/edit/closebrackets.js"></script>
         <script src="/swbforms/codemirror/addon/comment/continuecomment.js"></script>
-        <script src="/swbforms/codemirror/addon/comment/comment.js"></script> 
+        <script src="/swbforms/codemirror/addon/comment/comment.js"></script>
         
         <script src="/swbforms/codemirror/mode/css/css.js"></script>
         <script src="/swbforms/codemirror/addon/hint/css-hint.js"></script>
         <script src="/swbforms/codemirror/addon/lint/css-lint.js"></script>
-        <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>        
+        <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>
         
         <script src="/swbforms/codemirror/mode/clike/clike.js"></script>
         

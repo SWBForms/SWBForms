@@ -14,21 +14,21 @@
     <body>
         <script type="text/javascript">
             eng.initPlatform("/test/datasources.js",false);
-        </script>  
+        </script>
         
         <div>
             <h2 style="margin-right: 50px">Pais</h2>
             <script type="text/javascript">
                 eng.createGrid({left:"-10", margin:"10px", width: "100%", height: 200, canEdit:true,canAdd:true,canRemove:true}, "Pais");
-            </script>          
-        </div>          
+            </script>
+        </div>
         
         <div>
             <h2 style="margin-right: 50px">Estado</h2>
             <script type="text/javascript">
                 eng.createGrid({left:"-10", margin:"10px", width: "100%", height: 200,canEdit:true, canAdd:true,canRemove:true}, "Estado");
-            </script>          
-        </div>          
+            </script>
+        </div>
         
     </body>
 </html>

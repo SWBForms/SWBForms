@@ -2116,7 +2116,7 @@ var eng = {
             
             isc.Canvas.resizeControls(10);            
             Page.setEvent("load",function(){
-                isc.Canvas.resizeFonts(3);                        
+                //isc.Canvas.resizeFonts(3);                        
             });
             Time.setDefaultDisplayTimezone("-06:00");
             Time.adjustForDST=false;
@@ -2148,7 +2148,23 @@ var eng = {
             window.console.warn=function(){};
             window.onbeforeunload=function(){return eng.onbeforeunload()};
         }
-    }
+    },
+    
+    require: function(file, cache)
+    {
+        if(!cache && cache!=false)
+        {
+            cache=true;
+        }
+        if(typeof file === 'string')
+        {
+            if(file.charAt(0)!='/')
+            {
+                file=window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))+"/"+file;
+            }
+            eng.utils.loadJS(cache?file:file+"?t="+new Date().getTime(),false,cache);
+        }            
+    }    
     
 };
 
